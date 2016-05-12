@@ -1,0 +1,36 @@
+﻿@model IEnumerable<AttendanceRRHH.Models.Shift>
+@using Resources
+
+<div class="col-md-3 tiles red no-padding">
+    <div class="tiles-body">
+        <div class="calender-options-wrapper">
+
+            <div class="row form-row">
+                <div class="col-md-12">
+                    <label class="form-label">@Resources.Employee</label>
+                    @Html.DropDownList("EmployeeId", null, htmlAttributes: new { @class = "form-control select-drop" })
+                </div>
+            </div>
+
+            <div id='external-events' class="hide-inphone events-wrapper">
+                <div class="events-heading">@Resources.Shifts</div>
+                @foreach (var item in Model)
+                {
+                    <div class='external-event' id="@item.ShiftId">@item.Name</div>
+                }
+            </div>
+
+            <div class="hide-inphone events-wrapper">
+            </div>
+
+            <div class="row form-row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <input class="btn btn-default" type="submit" value="Clear" />
+                        <input class="btn btn-primary" type="submit" value="Save" />
+                    </div>                 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

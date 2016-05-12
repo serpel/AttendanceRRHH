@@ -1,0 +1,93 @@
+﻿@model IEnumerable<AttendanceRRHH.Models.ShiftTime>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Shift.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DayNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsLaborDay)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StartTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EndTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HasLunchTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LunchStartTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LunchEndTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.InsertedAt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UpdatedAt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsActive)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Shift.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DayNumber)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IsLaborDay)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StartTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EndTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HasLunchTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LunchStartTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LunchEndTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.InsertedAt)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UpdatedAt)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IsActive)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ShiftTimeId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ShiftTimeId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ShiftTimeId })
+        </td>
+    </tr>
+}
+
+</table>

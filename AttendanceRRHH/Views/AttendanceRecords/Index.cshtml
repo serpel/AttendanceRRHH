@@ -1,0 +1,51 @@
+﻿@model IEnumerable<AttendanceRRHH.Models.AttendanceRecord>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Device.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Employee.EmployeeCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.InsertedAt)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Device.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Employee.EmployeeCode)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Date)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.InsertedAt)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.AttendanceRecodId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.AttendanceRecodId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.AttendanceRecodId })
+        </td>
+    </tr>
+}
+
+</table>

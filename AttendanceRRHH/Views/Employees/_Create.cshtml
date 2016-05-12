@@ -1,0 +1,143 @@
+﻿@model AttendanceRRHH.Models.Employee
+@using Resources;
+
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title" id="myModalLabel">@Resources.CreateNew</h4>
+</div>
+
+@using (Html.BeginForm())
+{
+    <div class="modal-body">
+
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="row form-row">
+            <div class="col-md-4">
+                <label class="form-label">@Resources.NationalCardId</label>
+                @Html.EditorFor(model => model.NationalCardId, new { htmlAttributes = new { @class = "form-control", @placeholder = Resources.NationalCardId } })
+                @Html.ValidationMessageFor(model => model.NationalCardId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row form-row">
+            <div class="col-md-4">
+                <label class="form-label">@Resources.Code</label>
+                @Html.EditorFor(model => model.EmployeeCode, new { htmlAttributes = new { @class = "form-control", @placeholder = Resources.Code } })
+                @Html.ValidationMessageFor(model => model.EmployeeCode, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">@Resources.FirstName</label>
+                @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = Resources.FirstName } })
+                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">@Resources.LastName</label>
+                @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control", @placeholder = Resources.LastName } })
+                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row form-row">
+            <div class="col-md-12">
+                <label class="form-label">@Resources.Address</label>
+                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control", @placeholder = Resources.Address } })
+                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <div class="col-md-4">
+                <label class="form-label">@Resources.Gender</label>
+                @Html.EnumDropDownListFor(model => model.Gender, htmlAttributes: new { @class = "form-control", @placeholder = Resources.Gender })
+                @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">@Resources.BirthDate</label>
+                @Html.EditorFor(model => model.Birthdate, new { htmlAttributes = new { @class = "form-control", @placeholder = Resources.BirthDate } })
+                @Html.ValidationMessageFor(model => model.Birthdate, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">@Resources.PhoneNumber</label>
+                @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = Resources.PhoneNumber } })
+                @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <div class="col-md-12">
+                <label class="form-label">@Resources.ProfileUrl</label>
+                @Html.EditorFor(model => model.ProfileUrl, new { htmlAttributes = new { @class = "form-control", @placeholder = Resources.ProfileUrl } })
+                @Html.ValidationMessageFor(model => model.ProfileUrl, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <div class="col-md-6">
+                <label class="form-label">@Resources.HireDate</label>
+                @Html.EditorFor(model => model.HireDate, new { htmlAttributes = new { @class = "form-control", @placeholder = Resources.HireDate } })
+                @Html.ValidationMessageFor(model => model.HireDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <div class="col-md-6">
+                <label class="form-label">@Resources.Department</label>
+                @Html.DropDownList("DepartmentId", null, htmlAttributes: new { @class = "form-control", @placeholder = Resources.Department })
+                @Html.ValidationMessageFor(model => model.DepartmentId, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">@Resources.JobPosition</label>
+                @Html.DropDownList("JobPositionId", null, htmlAttributes: new { @class = "form-control", @placeholder = Resources.JobPosition })
+                @Html.ValidationMessageFor(model => model.JobPositionId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <div class="col-md-6">
+                <label class="form-label">@Resources.Country</label>
+                @Html.DropDownList("CountryId", null, htmlAttributes: new { @class = "form-control", @placeholder = Resources.Countries })
+                @Html.ValidationMessageFor(model => model.CountryId, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">@Resources.City</label>
+                @Html.DropDownList("CityId", null, htmlAttributes: new { @class = "form-control", @placeholder = Resources.Cities })
+                @Html.ValidationMessageFor(model => model.CityId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row form-row">
+            <div class="col-md-6">
+                <label class="form-label">@Resources.Shift</label>
+                @Html.DropDownList("ShiftId", null, htmlAttributes: new { @class = "form-control", @placeholder = Resources.Shift })
+                @Html.ValidationMessageFor(model => model.ShiftId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row form-row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="checkbox-inline">
+                        <label>
+                            @Html.CheckBox("IsActive") @Resources.IsActive
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row form-row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="checkbox-inline">
+                        <label>
+                            @Html.CheckBox("IsExtraHourPay") @Resources.ExtraHour
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn" type="button" data-dismiss="modal">Cancel</button>
+        <input class="btn btn-primary" type="submit" value="Save" />
+    </div>
+}

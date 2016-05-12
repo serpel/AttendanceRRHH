@@ -1,0 +1,67 @@
+﻿@using Resources
+@{
+    ViewBag.Title = "Profile";
+    var culture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name.ToLowerInvariant();
+}
+
+<h2>Profile</h2>
+
+@helper selected(string c, string culture)
+{
+    if (c == culture)
+    {
+            @:checked="checked"
+    }
+}
+@*@using (Html.BeginForm("SetCulture", "Manage", FormMethod.Post))
+{
+    <fieldset>
+        <legend>@Resources.ChooseYourLanguage</legend>
+        <div class="control-group">
+            <div class="controls">
+                <label for="en-us">
+                    <input name="culture" id="en-us" value="en-us" type="radio" @selected("en-us", culture) /> English
+                </label>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <label for="es">
+                    <input name="culture" id="es" value="es" type="radio" @selected("es", culture) /> Español
+                </label>
+            </div>
+        </div>
+    </fieldset>
+}*@
+
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="grid simple">
+            <div class="grid-title no-border">
+            </div>
+            <div class="grid-body no-border">
+                <div class="row column-seperation">
+                    @using (Html.BeginForm("SetCulture", "Manage", FormMethod.Post))
+                    {
+                        <div class="col-md-5">
+                            <div class="input-append success date col-md-12 col-lg-10">
+                                <input name="culture" id="en-us" value="en-us" type="radio" @selected("en-us", culture) /> English
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="input-append success date col-md-12 col-lg-10">
+                                <input name="culture" id="es" value="es" type="radio" @selected("es", culture) /> Español
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <input type="submit" value="Save" placeholder="Save" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

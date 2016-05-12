@@ -1,0 +1,106 @@
+﻿@model AttendanceRRHH.Models.ShiftTime
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ShiftTime</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Shift.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Shift.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DayNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DayNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsLaborDay)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsLaborDay)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StartTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StartTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EndTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EndTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HasLunchTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HasLunchTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LunchStartTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LunchStartTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LunchEndTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LunchEndTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.InsertedAt)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.InsertedAt)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UpdatedAt)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UpdatedAt)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsActive)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsActive)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ShiftTimeId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

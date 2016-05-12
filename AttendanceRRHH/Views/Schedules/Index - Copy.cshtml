@@ -1,0 +1,310 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+@section StylesOnTop{
+    @*<link href="~/Content/assets/plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="~/Content/assets/plugins/fullcalendar/fullcalendar.print.min.css" rel="stylesheet" type="text/css" media="print" />*@
+    <link href="~/Content/fullcalendar.min.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="~/Content/fullcalendar.print.css" rel="stylesheet" type="text/css" media="print"/>
+}
+
+@Html.Action("CalendarTopPanel")
+
+<div class="row" style="max-height:600px;">
+    <div class="tiles row tiles-container red no-padding">
+
+        @Html.Action("CalendarLeftPanel")
+        
+        <div class="col-md-9 tiles white no-padding">
+            <div class="tiles-body">
+                @*<div class="full-calender-header">
+                    <div class="pull-left">
+                        <div class="btn-group ">
+                            <button class="btn btn-success" id="calender-prev"><i class="fa fa-angle-left"></i></button>
+                            <button class="btn btn-success" id="calender-next"><i class="fa fa-angle-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <div data-toggle="buttons-radio" class="btn-group">
+                            <button class="btn btn-primary active" type="button" id="change-view-month">month</button>
+                            <button class="btn btn-primary " type="button" id="change-view-week">week</button>
+                            <button class="btn btn-primary" type="button" id="change-view-day">day</button>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>*@
+                <div id='calendar'></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/Scripts/moment.js"></script>
+    @*<script src="~/Content/assets/plugins/fullcalendar/fullcalendar.js"></script>*@
+    <script src="~/Scripts/fullcalendar.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajax({
+                url: '@Url.Action("GetCompanies")',
+                type: 'POST',
+                data: { },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.length > 0) {
+                        var items = "";
+                        items += "<option value='0'>Select Company</option>";
+                        $.each(data, function (i, val) {
+                            items += "<option value='" + val.CompanyId + "'>" + val.Name + "</option>";
+                        });
+                        $('#Company').html(items);
+                    } else {
+                        $('#Company').html(0);
+                        $('#Department').html(0);
+                        $('#Employee').html(0);
+                    }
+                },
+                error: function (xhr) {
+                    alert(xhr.responseText);
+                }
+            });
+
+            $('#Company').change(function () {
+                $.ajax({
+                    url: '@Url.Action("GetDepartments")',
+                    type: 'POST',
+                    data: { company: $('#Company').val() },
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        if (data.length > 0) {
+                            var items = "";
+                            items += "<option value='0'>Select Department</option>";
+                            $.each(data, function (i, val) {
+                                items += "<option value='" + val.DepartmentId + "'>" + val.Name + "</option>";
+                            });
+                            $('#Department').html(items);
+                        } else {
+                            $('#Department').html(0);
+                            $('#Employee').html(0);
+                        }
+                    },
+                    error: function (xhr) {
+                        alert(xhr.responseText);
+                    }
+                });
+            });
+
+            $('#Department').change(function () {
+                $.ajax({
+                    url: '@Url.Action("GetEmployees")',
+                    type: 'POST',
+                    data: { department: $('#Department').val() },
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        if (data.length > 0) {
+                            var items = "";
+                            items += "<option value='0'>Select Employee</option>";
+                            $.each(data, function (i, val) {
+                                items += "<option value='" + val.EmployeeId + "'>" + val.EmployeeCode + ' - ' + val.FirstName + ' ' + val.LastName + "</option>";
+                            });
+                            $('#Employee').html(items);
+                        } else {
+                            $('#Employee').html(0);
+                        }
+                    },
+                    error: function (xhr) {
+                        alert(xhr.responseText);
+                    }
+                });
+            });
+
+            $('#search').click(function () {
+                 $.ajax({
+                    url: '@Url.Action("Search")',
+                    type: 'POST',
+                    data: { employee: $('#Employee').val() },
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        if (data.success) {
+                            $('#calendar').fullCalendar('removeEvents');
+
+                            $.each(data.data, function (index, value) {
+
+                                var obj = {
+                                    id: value.id,
+                                    title: value.title,
+                                    start: new Date(moment(value.start).format()),
+                                    end: new Date(moment(value.end).format()),
+                                    url: value.url
+                                };
+
+                                $('#calendar').fullCalendar('renderEvent', obj, true);
+                            });
+                        } else {
+                            alert(data.message);
+                        }
+                    },
+                    error: function (xhr) {
+                        alert(xhr.responseText);
+                    }
+                });
+            });
+
+            /* buttons clicks */
+            $('#save').click(function () {
+                var events = $('#calendar').fullCalendar('clientEvents');
+
+                //recorro todos los eventos para crear un arreglo serializable
+                var eventList = [];
+                $.each(events, function (i, v) {
+                    var event = {
+                        ScheduleId: v.id,
+                        ShiftId: v.url, // TODO: fix this bad aproach of even object (i just saved the shiftid on url standard field)
+                        StartDate: v.start,
+                        EndDate: v.end
+                    }
+                    eventList.push(event);
+                });
+
+                $.ajax({
+                    url: '@Url.Action("Save")',
+                    type: 'POST',
+                    data: {
+                        json: JSON.stringify(eventList),
+                        date: moment($('#calendar').fullCalendar('getDate')).format("YYYY-MM-DD"),
+                        employee: $('#Employee').val()
+                    },
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        if (data.success == true) {
+                            alert('Successfully saved.');
+                        } else {
+                            alert('Something wrong on save event: ' + data.message);
+                        }
+                    },
+                    error: function (xhr) {
+                        alert(xhr);
+                    }
+                });
+            });
+
+            $('#clear').click(function() {
+                $('#calendar').fullCalendar('removeEvents');
+            });
+
+
+            /* initialize the external events
+            -----------------------------------------------------------------*/
+
+            $('#external-events div.external-event').each(function () {
+
+                // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
+                // it doesn't need to have a start or end
+                var eventObject = {
+                    url: this.id,
+                    title: $.trim($(this).text()) // use the element's text as the event title
+                };
+
+                // store the Event Object in the DOM element so we can get to it later
+                $(this).data('eventObject', eventObject);
+
+                // make the event draggable using jQuery UI
+                $(this).draggable({
+                    zIndex: 999,
+                    revert: true,      // will cause the event to go back to its
+                    revertDuration: 0  //  original position after the drag
+                });
+            });
+           
+            /* initialize the calendar
+            -----------------------------------------------------------------*/
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                editable: true,
+                droppable: true,
+                //eventOverlap: function(stillEvent, movingEvent) {
+                //    return stillEvent.allDay && movingEvent.allDay;
+                //},              
+                drop: function (date, allDay) {
+
+                    // retrieve the dropped element's stored Event Object
+                    var originalEventObject = $(this).data('eventObject');
+
+                    // we need to copy it, so that multiple events don't have a reference to the same object
+                    var copiedEventObject = $.extend({}, originalEventObject);
+
+                    // assign it the date that was reported
+                    copiedEventObject.start = date;
+                    copiedEventObject.allDay = allDay;
+                    // render the event on the calendar
+                    // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+                    $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
+
+                }              
+                @*,
+                events: function (start, end, timezone, callback) {
+                    $.ajax({
+                        url: '@Url.Action("GetEventsByEmployee")',
+                        dataType: 'json',
+                        data: {
+                            employee: $('#Employee').val()
+                        },
+                        success: function (doc) {
+                            var events = [];
+                            $(doc).find('event').each(function () {
+                                events.push({
+                                    title: $(this).attr('title'),
+                                    start: $(this).attr('start'),
+                                    end: $(this).attr('end')
+                                });
+                            });
+                            callback(events);
+                        }
+                    })
+                }*@
+            });
+            /* Hide Default header : coz our bottons look awesome */
+            $('.fc-header').hide();
+
+            //Get the current date and display on the tile
+            var currentDate = $('#calendar').fullCalendar('getDate');
+
+            $('#calender-current-day').html(currentDate.format("dddd"));
+            $('#calender-current-date').html(currentDate.format("MMM YYYY"));
+
+            $('#calender-prev').click(function () {
+                $('#calendar').fullCalendar('prev');
+                currentDate = $('#calendar').fullCalendar('getDate');
+                $('#calender-current-day').html($.fullCalendar.formatDate(currentDate, "dddd"));
+                $('#calender-current-date').html($.fullCalendar.formatDate(currentDate, "MMM yyyy"));
+            });
+            $('#calender-next').click(function () {
+                $('#calendar').fullCalendar('next');
+                currentDate = $('#calendar').fullCalendar('getDate');
+                $('#calender-current-day').html($.fullCalendar.formatDate(currentDate, "dddd"));
+                $('#calender-current-date').html($.fullCalendar.formatDate(currentDate, "MMM yyyy"));
+            });
+
+            $('#change-view-month').click(function () {
+                $('#calendar').fullCalendar('changeView', 'month');
+            });
+
+            $('#change-view-week').click(function () {
+                $('#calendar').fullCalendar('changeView', 'agendaWeek');
+            });
+            $('#change-view-day').click(function () {
+                $('#calendar').fullCalendar('changeView', 'agendaDay');
+            });
+        });
+    </script>
+}

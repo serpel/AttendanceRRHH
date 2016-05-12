@@ -1,0 +1,79 @@
+﻿@using Resources
+
+<div class="page-sidebar" id="main-menu">
+    <div class="page-sidebar-wrapper scrollbar-dynamic" id="main-menu-wrapper">
+        <!-- BEGIN MINI-PROFILE -->
+        <div class="user-info-wrapper">
+            <!--
+             <div class="profile-wrapper">
+                 <img src='@Url.Content("~/Content/assets/img/profiles/avatar.jpg")' alt="" data-src='@Url.Content("~/Content/assets/img/profiles/avatar.jpg")' data-src-retina='@Url.Content("~/Content/assets/img/profiles/avatar2x.jpg")' width="69" height="69" />
+             </div>
+            <div class="user-info">
+                 <div class="greeting">Welcome</div>
+                 <div class="username">John <span class="semi-bold">Smith</span></div>
+                 <div class="status">Status<a href="#"><div class="status-icon green"></div>Online</a></div>
+             </div>-->
+        </div>
+        <!-- END MINI-PROFILE -->
+        <!-- BEGIN SIDEBAR MENU -->
+        <p class="menu-title">@Resources.Browse<span class="pull-right"><a href="javascript:;"><i class="fa fa-refresh"></i></a></span></p>
+        <ul>
+            <!-- BEGIN SELECTED LINK -->
+            <li class="start active">
+                <a href="@Url.Action("Index", "Home")">
+                    <i class="icon-custom-home"></i>
+                    <span class="title">@Resources.Dashboard</span>
+                    <span class="selected"></span>
+                    <!--<span class="badge badge-important pull-right">@ViewBag.DeviseUnavailableCount</span>-->
+                </a>
+            </li>
+            <li class="">
+                <a href="@Url.Action("Index","TimeSheets")">
+                    <i class="fa fa-list"></i>
+                    <span class="title">@Resources.Records</span>
+                    <span class="selected"></span>
+                </a>
+            </li>
+            <li class="">
+                <a href="@Url.Action("Index","Schedules")">
+                    <i class="fa fa-calendar"></i>
+                    <span class="title">@Resources.WorkSchedule</span>
+                    <span class="selected"></span>
+                </a>
+            </li>
+            <li class="">
+                <a href="javascript:;"> <i class="fa fa-user"></i> <span class="title">@Resources.Employee</span> <span class="arrow "></span> </a>
+                <ul class="sub-menu">
+                    <li><a href="@Url.Action("Index","Employees")"> @Resources.Employees </a></li>
+                    <li><a href="@Url.Action("Index", "Departments")"> @Resources.Department</a></li>
+                    <li><a href="@Url.Action("Index", "JobPositions")"> @Resources.Positions</a></li>
+                    <li><a href="@Url.Action("Index", "EmployeeAbsences")"> @Resources.Absence</a></li>
+                </ul>
+            </li>
+            @*<a href=">
+                    <i class="fa fa-user"></i>
+                    <span class="title">@Resources.Employees</span>
+                    <span class="selected"></span>
+                </a>*@
+            <li class="">
+                <a href="javascript:;"> <i class="icon-custom-thumb"></i> <span class="title">@Resources.Settings</span> <span class="arrow "></span> </a>
+                <ul class="sub-menu">
+                    <li> <a href="@Url.Action("Index", "Shifts")"> @Resources.Shifts </a> </li>
+                    <li> <a href="@Url.Action("Index", "Countries")"> @Resources.Countries </a> </li>
+                    <li> <a href="@Url.Action("Index", "Cities")"> @Resources.Cities </a> </li>
+                    <li> <a href="@Url.Action("Index", "Companies")"> @Resources.Companies</a> </li>
+                    @*<li> <a href="@Url.Action("Index", "Users")"> @Resources.Users </a> </li>*@
+                    <li> <a href="@Url.Action("Index", "Devices")"> @Resources.Devices</a> </li>
+                    @*<li> <a href="@Url.Action("Index", "DeviceTypes")"> Device Types</a> </li>*@
+                    <li> <a href="@Url.Action("Index", "Process")"> @Resources.Process</a> </li>
+                    <li> <a href="@Url.Action("Index", "Role")"> @Resources.Roles </a> </li>
+                </ul>
+            </li>
+            <!-- END SELECTED LINK -->
+            <!-- END TWO LEVEL MENU -->
+        </ul>
+        <!-- END SIDEBAR MENU -->
+        <div class="clearfix"></div>
+        <!-- END SIDEBAR WIDGETS -->
+    </div>
+</div>

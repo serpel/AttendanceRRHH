@@ -1,0 +1,58 @@
+﻿@model AttendanceRRHH.Models.EmployeeAbsence
+@using Resources
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title" id="myModalLabel">@Resources.Edit</h4>
+</div>
+
+@using (Html.BeginForm())
+{
+    <div class="modal-body">
+
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.EmployeeAbsenceId)
+        @Html.HiddenFor(model => model.EmployeeId)
+
+        <div class="row form-row">
+            <div class="col-md-12">
+                <label class="form-label">@Resources.Absence</label>
+                @Html.DropDownList("AbsenceId", null, htmlAttributes: new { @class = "form-control select-drop" })
+                @Html.ValidationMessageFor(model => model.AbsenceId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <div class="col-md-6">
+                <label class="form-label">@Resources.StartDate</label>
+                @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control datetimepicker" } })
+                @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">@Resources.EndDate</label>
+                @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control datetimepicker" } })
+                @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <div class="col-md-12">
+                <label class="form-label">@Resources.Comment</label>
+                @Html.EditorFor(model => model.Comment, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Comment, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" type="button" data-dismiss="modal">Cancel</button>
+        <input class="btn btn-primary" type="submit" value="Save" />
+    </div>
+}
+
+<script>
+    $('.select-drop').select2();
+    $('.datetimepicker').datetimepicker({});
+</script>
+

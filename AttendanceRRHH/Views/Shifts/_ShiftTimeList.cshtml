@@ -1,0 +1,98 @@
+﻿@model AttendanceRRHH.Models.ShiftViewModel
+
+<table class="table table-striped table-flip-scroll cf" id="shifttime">
+    <thead class="cf">
+        <tr>
+            <td style="width:5%">
+                Day
+            </td>
+            <td style="width:1%">
+                IsLaborDay
+            </td>
+            <td style="width:10%">
+                StartTime
+            </td>
+            <td style="width:10%">
+                EndTime
+            </td>
+            <td style="width:1%">
+                HasLunchTime
+            </td>
+            <td style="width:10%">
+                LunchStartTime
+            </td>
+            <td style="width:10%">
+                LunchEndTime
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        @for (var i = 0; i < Model.TimeList.Count; i++)
+        {
+            <tr>
+                @Html.HiddenFor(m => m.TimeList[i].ShiftTimeId)
+                <td>
+                    @Html.EditorFor(m => m.TimeList[i].DayNumber, new { htmlAttributes = new { @class = "form-control", @readonly = "true" } })
+                </td>
+                <td>
+                    @*<div class="checkbox check-info">
+                            @if (item.IsLaborDay)
+                            {
+                                <input type="checkbox" id="@item.DayNumber" checked="checked" name="IsLaborDay">
+                            }
+                            else
+                            {
+                                <input type="checkbox" id="@item.DayNumber" checked="" name="IsLaborDay">
+                            }
+                            <label for="@item.DayNumber"></label>
+                        </div>*@
+                </td>
+                <td>
+                    <div class="input-group transparent clockpicker">
+                        @Html.EditorFor(m => m.TimeList[i].StartTime, new { htmlAttributes = new { @class = "form-control", @placeholder = "Pick a time", @type = "text" } })
+                        <span class="input-group-addon ">
+                            <i class="fa fa-clock-o"></i>
+                        </span>
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group transparent clockpicker">
+                        @Html.EditorFor(m => m.TimeList[i].EndTime, new { htmlAttributes = new { @class = "form-control", @placeholder = "Pick a time", @type = "text" } })
+                        <span class="input-group-addon ">
+                            <i class="fa fa-clock-o"></i>
+                        </span>
+                    </div>
+                </td>
+                <td>
+                    @*<div class="checkbox check-info">
+                            @if (item.HasLunchTime)
+                            {
+                                <input type="checkbox" id="@item.DayNumber" checked="checked" name="HasLunchTime">
+                            }
+                            else
+                            {
+                                <input type="checkbox" id="@item.DayNumber" checked="" name="HasLunchTime">
+                            }
+                            <label for="@item.DayNumber"></label>
+                        </div>*@
+                </td>
+                <td>
+                    <div class="input-group transparent clockpicker">
+                        @Html.EditorFor(m => m.TimeList[i].LunchStartTime, new { htmlAttributes = new { @class = "form-control", @placeholder = "Pick a time", @type = "text" } })
+                        <span class="input-group-addon ">
+                            <i class="fa fa-clock-o"></i>
+                        </span>
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group transparent clockpicker">
+                        @Html.EditorFor(m => m.TimeList[i].LunchEndTime, new { htmlAttributes = new { @class = "form-control", @placeholder = "Pick a time", @type = "text" } })
+                        <span class="input-group-addon ">
+                            <i class="fa fa-clock-o"></i>
+                        </span>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

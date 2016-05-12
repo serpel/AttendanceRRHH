@@ -1,0 +1,72 @@
+﻿@using Resources
+@{
+    ViewBag.Title = "Index";
+}
+
+@section Styles{
+<link href="~/Content/assets/plugins/bootstrap-datepicker/css/datepicker.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+}
+
+<div class="row">
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-8">
+        <div class="grid simple">
+            <div class="grid-title no-border">
+            </div>
+            <div class="grid-body no-border">
+                <div class="row column-seperation">
+                    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "runform" }))
+                    {
+                        <div class="col-md-5">
+                            <div>
+                                @Html.DropDownList("company", null, htmlAttributes: new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="input-append success date col-md-12 col-lg-10">
+                                <input type="text" class="form-control" id="date" name="date">
+                                <span class="add-on"><span class="arrow"></span><i class="fa fa-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <input type="submit" value="@Resources.Run" placeholder="@Resources.Run" class="btn btn-primary" id="run" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{  
+    <script src="~/Content/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#date').datepicker({
+                autoclose: true,
+                todayHighlight: true,
+                format: "yyyy-mm-dd"
+            });
+
+            $('#run').click(function () {
+                $.ajax({
+                    url: '@Url.Action("Run")',
+                    type: 'POST',
+                    async: false,
+                    data: $('#runform').serialize(),
+                    success: function (data) {
+                        if (data.success == true) {
+                            alert('Successfully');
+                        } else {
+                            alert('Error on excecuting task');
+                        }
+                    }
+                });
+            });        
+        });
+    </script>
+}
