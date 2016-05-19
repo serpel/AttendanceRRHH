@@ -224,6 +224,7 @@
     <Compile Include="Controllers\ProcessController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\SchedulesController.cs" />
+    <Compile Include="Controllers\SchedulesController2.cs" />
     <Compile Include="Controllers\ShiftsController.cs" />
     <Compile Include="Controllers\ShiftTimesController.cs" />
     <Compile Include="Controllers\TimeSheetsController.cs" />
@@ -1773,7 +1774,7 @@
     <Content Include="Views\Process\Index.cshtml" />
     <Content Include="Views\Role\Create.cshtml" />
     <Content Include="Views\Role\Index.cshtml" />
-    <Content Include="Views\Schedules\Index.cshtml" />
+    <Content Include="Views\Schedules\Index3.cshtml" />
     <Content Include="Views\Schedules\_CalendarLeftPanel.cshtml" />
     <Content Include="Views\Schedules\_CalendarTopPanel.cshtml" />
     <Content Include="Views\Shared\_LeftNavBar.cshtml" />
@@ -1799,7 +1800,8 @@
     <Content Include="Views\EmployeeAbsences\_Delete.cshtml" />
     <Content Include="Views\EmployeeAbsences\_Edit.cshtml" />
     <Content Include="Views\EmployeeAbsences\Index.cshtml" />
-    <Content Include="Views\Schedules\Index - Copy.cshtml" />
+    <Content Include="Views\Schedules\Index5.cshtml" />
+    <Content Include="Views\Schedules\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using AttendanceRRHH.Models;
 using Newtonsoft.Json;
+using System.Data.Entity;
 
 namespace AttendanceRRHH.Controllers
 {
@@ -14,14 +15,14 @@ namespace AttendanceRRHH.Controllers
 
         // GET: Schedule
         public ActionResult Index()
-        {           
+        {
             return View();
         }
 
         public JsonResult Search(string employee)
         {
             bool success = false;
-            string message = "EmployeeId is empty";
+            string message = "No Records Found";
 
             if (!String.IsNullOrEmpty(employee))
             {
@@ -37,8 +38,8 @@ namespace AttendanceRRHH.Controllers
                             title = s.Shift.Name,
                             start = s.StartDate,
                             end = s.EndDate,
-                            url =  s.ShiftId,
-                            allDay = false                            
+                            url = s.ShiftId,
+                            allDay = false
                         });
 
                     success = true;
@@ -133,47 +134,37 @@ namespace AttendanceRRHH.Controllers
             db.SaveChanges();
         }
 
-        public JsonResult Save(string json, string date, string employee)
+        public JsonResult Save(string json)
         {
             bool success = false;
             string message = "Employee is empty";
 
             try
             {
-                if (!string.IsNullOrEmpty(employee))
+                var events = JsonConvert.DeserializeObject<IEnumerable<Schedule>>(json);
+                List<Schedule> eventsToCreate = new List<Schedule>();
+
+                foreach (Schedule s in events)
                 {
-                    int employeeId = Int32.Parse(employee);
-                    var events = JsonConvert.DeserializeObject<IEnumerable<Schedule>>(json);
-
-                    List<Schedule> eventsToCreate = new List<Schedule>();
-
-                    foreach (Schedule s in events)
+                    if (s.ScheduleId > 0)
                     {
-                        s.InsertedAt = DateTime.Now;
-                        s.UpdatedAt = DateTime.Now;
-                        s.EmployeeId = employeeId;
+                        Schedule tmp = db.Schedules.Find(s.ScheduleId);
+                        tmp.StartDate = s.StartDate;
+                        tmp.EndDate = s.EndDate;
+                        tmp.UpdatedAt = DateTime.Now;
+                        tmp.ShiftId = s.ShiftId;
 
-                        if (s.ScheduleId > 0)
-                        {
-                            Schedule tmp = db.Schedules.Find(s.ScheduleId);
-                            tmp.StartDate = s.StartDate;
-                            tmp.EndDate = s.EndDate;
-                            tmp.UpdatedAt = DateTime.Now;
-                            tmp.ShiftId = s.ShiftId;
-
-                            db.Entry(tmp).State = System.Data.Entity.EntityState.Modified;
-                        }
-                        else
-                        {                           
-                            eventsToCreate.Add(s);
-                        }       
+                        db.Entry(tmp).State = EntityState.Modified;
                     }
-
-                    //DeleteSchedulesByMonth(DateTime.Parse(date), employeeId);
-                    db.Schedules.AddRange(eventsToCreate);
-                    db.SaveChanges();
-                    success = true;
+                    else
+                    {
+                        eventsToCreate.Add(s);
+                    }
                 }
+
+                db.Schedules.AddRange(eventsToCreate);
+                db.SaveChanges();
+                success = true;
             }
             catch (Exception e)
             {

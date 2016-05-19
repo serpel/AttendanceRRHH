@@ -131,7 +131,6 @@
                 todayHighlight: true,
                 format: "yyyy-mm-dd"
             }).on('changeDate', function (e) {
-                console.log(e);
                 $.ajax({
                     url: '@Url.Action("GetTimeSheets")',
                     type: 'GET',
