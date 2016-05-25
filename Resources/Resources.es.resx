@@ -333,4 +333,28 @@
   <data name="Wednesday" xml:space="preserve">
     <value>Miercoles</value>
   </data>
+  <data name="Email" xml:space="preserve">
+    <value>Correo</value>
+  </data>
+  <data name="LastLogin" xml:space="preserve">
+    <value>Ultimo Ingreso</value>
+  </data>
+  <data name="Confirmed" xml:space="preserve">
+    <value>Confirmado?</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Confirmar Contraseña</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Contraseña</value>
+  </data>
+  <data name="KeepMeReminded" xml:space="preserve">
+    <value>Recordarme</value>
+  </data>
+  <data name="SignIn" xml:space="preserve">
+    <value>Ingresar</value>
+  </data>
+  <data name="TroubleLoginIn" xml:space="preserve">
+    <value>Problemas al Ingresar</value>
+  </data>
 </root>

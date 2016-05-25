@@ -24,7 +24,5 @@ namespace AttendanceRRHH.Controllers
 
             return Json(result.ToList(), JsonRequestBehavior.AllowGet);
         }
-
-
     }
 }

@@ -217,13 +217,13 @@
     <value>LastName</value>
   </data>
   <data name="Login" xml:space="preserve">
-    <value>Login</value>
+    <value>Log In</value>
   </data>
   <data name="LogOff" xml:space="preserve">
-    <value>LogOff</value>
+    <value>Log Off</value>
   </data>
   <data name="LogOn" xml:space="preserve">
-    <value>LogOn</value>
+    <value>Log On</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Name</value>
@@ -298,7 +298,7 @@
     <value>Id</value>
   </data>
   <data name="StartDate" xml:space="preserve">
-    <value>StartDate</value>
+    <value>Start Date</value>
   </data>
   <data name="All" xml:space="preserve">
     <value>All</value>
@@ -332,5 +332,29 @@
   </data>
   <data name="Wednesday" xml:space="preserve">
     <value>Wednesday</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="LastLogin" xml:space="preserve">
+    <value>LastLogin</value>
+  </data>
+  <data name="Confirmed" xml:space="preserve">
+    <value>Confirmed</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>ConfirmPassword</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="KeepMeReminded" xml:space="preserve">
+    <value>Keep me reminded</value>
+  </data>
+  <data name="SignIn" xml:space="preserve">
+    <value>Sign in</value>
+  </data>
+  <data name="TroubleLoginIn" xml:space="preserve">
+    <value>Trouble login in ?</value>
   </data>
 </root>
