@@ -8,7 +8,7 @@ namespace AttendanceRRHH.Controllers
 {
     public class JobPositionsController : BaseController
     {
-        private AttendanceContext db = new AttendanceContext();
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         public ActionResult GetJobPositions()
         {

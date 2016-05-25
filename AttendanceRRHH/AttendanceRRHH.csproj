@@ -19,8 +19,8 @@
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
@@ -228,6 +228,7 @@
     <Compile Include="Controllers\ShiftsController.cs" />
     <Compile Include="Controllers\ShiftTimesController.cs" />
     <Compile Include="Controllers\TimeSheetsController.cs" />
+    <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="DAL\AttendanceRecordsRepository.cs" />
     <Compile Include="DAL\CountryRepository.cs" />
     <Compile Include="DAL\EmployeeRepository.cs" />
@@ -261,6 +262,10 @@
     <Compile Include="Migrations\201604282031550_EmployeeIdFieldOnEmployeeAbsenceModel.Designer.cs">
       <DependentUpon>201604282031550_EmployeeIdFieldOnEmployeeAbsenceModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605251749039_UsersAndRoles.cs" />
+    <Compile Include="Migrations\201605251749039_UsersAndRoles.Designer.cs">
+      <DependentUpon>201605251749039_UsersAndRoles.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Absence.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -283,7 +288,6 @@
     <Compile Include="Models\ShiftTime.cs" />
     <Compile Include="Models\ShiftViewModel.cs" />
     <Compile Include="Models\TimeSheet.cs" />
-    <Compile Include="Models\AttendanceContext.cs" />
     <Compile Include="Models\TimeSheetViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -1802,6 +1806,7 @@
     <Content Include="Views\EmployeeAbsences\Index.cshtml" />
     <Content Include="Views\Schedules\Index5.cshtml" />
     <Content Include="Views\Schedules\Index.cshtml" />
+    <Content Include="Views\Users\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1831,6 +1836,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604282031550_EmployeeIdFieldOnEmployeeAbsenceModel.resx">
       <DependentUpon>201604282031550_EmployeeIdFieldOnEmployeeAbsenceModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605251749039_UsersAndRoles.resx">
+      <DependentUpon>201605251749039_UsersAndRoles.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

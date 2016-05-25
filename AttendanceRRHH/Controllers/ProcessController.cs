@@ -11,7 +11,7 @@ namespace AttendanceRRHH.Controllers
 {
     public class ProcessController : BaseController
     {
-        private AttendanceContext db = new AttendanceContext();
+        private ApplicationDbContext db = new ApplicationDbContext();
         // GET: Process
         public ActionResult Index()
         {

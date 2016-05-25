@@ -9,15 +9,15 @@ namespace AttendanceRRHH.DAL
 {
     public class TimeSheetRepository : ITimeSheetRepository, IDisposable
     {
-        private AttendanceContext context;
+        private ApplicationDbContext context;
         private bool disposed = false;
 
         public TimeSheetRepository()
         {
-            context = new AttendanceContext();
+            context = new ApplicationDbContext();
         }
 
-        public TimeSheetRepository(AttendanceContext context)
+        public TimeSheetRepository(ApplicationDbContext context)
         {
             this.context = context;
         }

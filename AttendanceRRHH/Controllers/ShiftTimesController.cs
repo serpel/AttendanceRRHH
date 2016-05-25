@@ -12,7 +12,7 @@ namespace AttendanceRRHH.Controllers
 {
     public class ShiftTimesController : BaseController
     {
-        private AttendanceContext db = new AttendanceContext();
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: ShiftTimes
         public ActionResult Index()

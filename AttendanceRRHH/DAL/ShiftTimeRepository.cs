@@ -8,14 +8,14 @@ namespace AttendanceRRHH.DAL
 {
     public class ShiftTimeRepository : IShiftTimeRepository, IDisposable
     {
-        private AttendanceContext context;
+        private ApplicationDbContext context;
 
         public ShiftTimeRepository()
         {
-            context = new AttendanceContext();
+            context = new ApplicationDbContext();
         }
 
-        public ShiftTimeRepository(AttendanceContext timesheet)
+        public ShiftTimeRepository(ApplicationDbContext timesheet)
         {
             this.context = timesheet;
         }

@@ -8,14 +8,14 @@ namespace AttendanceRRHH.DAL
 {
     public class AttendanceRecordsRepository : IAttendanceRecordsRepository, IDisposable
     {
-        private AttendanceContext context;
+        private ApplicationDbContext context;
 
         public AttendanceRecordsRepository()
         {
-            context = new AttendanceContext();
+            context = new ApplicationDbContext();
         }
 
-        public AttendanceRecordsRepository(AttendanceContext context)
+        public AttendanceRecordsRepository(ApplicationDbContext context)
         {
             this.context = context;
         }

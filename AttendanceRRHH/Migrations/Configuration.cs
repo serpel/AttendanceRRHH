@@ -6,14 +6,14 @@ namespace AttendanceRRHH.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<AttendanceRRHH.Models.AttendanceContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<AttendanceRRHH.Models.ApplicationDbContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(AttendanceRRHH.Models.AttendanceContext context)
+        protected override void Seed(AttendanceRRHH.Models.ApplicationDbContext context)
         {
             context.Absences.AddOrUpdate(x => x.AbsenceId,
                new Absence() { AbsenceId = 1, Name = "Vacaciones", IsActive = true },

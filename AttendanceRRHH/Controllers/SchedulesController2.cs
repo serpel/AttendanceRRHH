@@ -11,7 +11,7 @@ namespace AttendanceRRHH.Controllers
 {
     public class SchedulesController2 : BaseController
     {
-        private AttendanceContext db = new AttendanceContext();
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Schedule
         public ActionResult Index()

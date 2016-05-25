@@ -20,7 +20,7 @@ namespace AttendanceRRHH.Controllers
 {
     public class ShiftsController : BaseController
     {
-        private AttendanceContext db = new AttendanceContext();
+        private ApplicationDbContext db = new ApplicationDbContext();
         private GenericRepository<Shift> sRepository = new GenericRepository<Shift>();
 
         public ActionResult ShiftTimeList()

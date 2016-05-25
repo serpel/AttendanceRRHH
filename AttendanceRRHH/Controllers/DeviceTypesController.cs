@@ -12,7 +12,7 @@ namespace AttendanceRRHH.Controllers
 {
     public class DeviceTypesController : BaseController
     {
-        private AttendanceContext db = new AttendanceContext();
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: DeviceTypes
         public ActionResult Index()

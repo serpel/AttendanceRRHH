@@ -12,7 +12,7 @@ namespace AttendanceRRHH.Controllers
 {
     public class TimeSheetsController : BaseController
     {
-        private AttendanceContext db = new AttendanceContext();
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: TimeSheets
         public ActionResult Index()

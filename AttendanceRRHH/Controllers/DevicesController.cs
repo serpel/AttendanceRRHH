@@ -14,7 +14,7 @@ namespace AttendanceRRHH.Controllers
 {
     public class DevicesController : BaseController
     {
-        private AttendanceContext db = new AttendanceContext();
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         public override ActionResult LeftNavBar()
         {

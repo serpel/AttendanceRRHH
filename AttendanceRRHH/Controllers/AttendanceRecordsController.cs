@@ -12,7 +12,7 @@ namespace AttendanceRRHH.Controllers
 {
     public class AttendanceRecordsController : BaseController
     {
-        private AttendanceContext db = new AttendanceContext();
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: AttendanceRecords
         public ActionResult Index()

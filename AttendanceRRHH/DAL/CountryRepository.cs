@@ -9,11 +9,11 @@ namespace AttendanceRRHH.DAL
 {
     public class CountryRepository : ICountryRepository, IDisposable
     {
-        private AttendanceContext context;
+        private ApplicationDbContext context;
 
-        public CountryRepository():this(new AttendanceContext()){ }
+        public CountryRepository():this(new ApplicationDbContext()){ }
 
-        public CountryRepository(AttendanceContext context)
+        public CountryRepository(ApplicationDbContext context)
         {
             this.context = context;
         }

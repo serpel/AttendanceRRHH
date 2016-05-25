@@ -15,7 +15,7 @@ namespace AttendanceRRHH.Controllers
 {
     public class HomeController2 : BaseController
     {
-        private AttendanceContext db = new AttendanceContext();
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         public JsonResult GetDepartments()
         {

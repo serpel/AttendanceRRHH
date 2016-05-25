@@ -10,7 +10,7 @@ namespace AttendanceRRHH.BLL
 {
     public class ZKDevice : IDevice
     {
-        private AttendanceContext context;
+        private ApplicationDbContext context = new ApplicationDbContext();
 
         public string Description { get; set;  }
 
@@ -40,7 +40,6 @@ namespace AttendanceRRHH.BLL
 
         public ZKDevice()
         {
-            context = new AttendanceContext();
             RecordList = new List<AttendanceRecord>();
         }
 

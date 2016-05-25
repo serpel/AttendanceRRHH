@@ -13,7 +13,7 @@ namespace AttendanceRRHH.Controllers
 {
     public class CountriesController : BaseController
     {
-        private AttendanceContext db = new AttendanceContext();
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         public ActionResult Cities(int? CountryId)
         {

@@ -12,8 +12,7 @@ namespace AttendanceRRHH.Controllers
 {
     public class DepartmentsController : BaseController
     {
-        private AttendanceContext db = new AttendanceContext();
-
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         public ActionResult GetDepartments()
         {

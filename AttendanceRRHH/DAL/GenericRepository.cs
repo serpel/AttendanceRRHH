@@ -10,12 +10,12 @@ namespace AttendanceRRHH.DAL
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
 
-        private AttendanceContext context;
+        private ApplicationDbContext context;
         private DbSet<T> table;
 
-        public GenericRepository():this(new AttendanceContext()){ }
+        public GenericRepository():this(new ApplicationDbContext()){ }
 
-        public GenericRepository(AttendanceContext context)
+        public GenericRepository(ApplicationDbContext context)
         {
             this.table = context.Set<T>();
             this.context = context;

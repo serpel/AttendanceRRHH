@@ -11,15 +11,15 @@ namespace AttendanceRRHH.BLL
 {
     public class DailyProcess
     {
-        private AttendanceContext context;
+        private ApplicationDbContext context;
         private EmployeeRepository eRepository;
         private ShiftTimeRepository sRepository;
         private AttendanceRecordsRepository aRepository;
         private TimeSheetRepository tRepository;
 
-        public DailyProcess():this(new AttendanceContext()) { }
+        public DailyProcess():this(new ApplicationDbContext()) { }
 
-        public DailyProcess(AttendanceContext context)
+        public DailyProcess(ApplicationDbContext context)
         {
             this.context = context;
             eRepository = new EmployeeRepository(context);

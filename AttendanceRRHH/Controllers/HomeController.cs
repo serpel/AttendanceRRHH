@@ -15,7 +15,7 @@ namespace AttendanceRRHH.Controllers
 {
     public class HomeController : BaseController
     {
-        private AttendanceContext db = new AttendanceContext();
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         public ActionResult HomeTopPanel()
         {
@@ -34,7 +34,6 @@ namespace AttendanceRRHH.Controllers
             ViewBag.TotalInactiveEmployees = totalInactives;
 
             ViewBag.Percent = (totalActives/(totalActives + totalInactives)) * 100;
-
 
             return View();
         }

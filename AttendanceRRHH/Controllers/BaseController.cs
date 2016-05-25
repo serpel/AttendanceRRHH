@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace AttendanceRRHH.Controllers
 {
+    [AllowAnonymous]
     public class BaseController : Controller
     {
         // this exist because we need load cross controllers information on left or top menu
