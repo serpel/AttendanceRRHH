@@ -1,5 +1,7 @@
 namespace AttendanceRRHH.Migrations
 {
+    using Microsoft.AspNet.Identity;
+    using Microsoft.AspNet.Identity.EntityFramework;
     using Models;
     using System;
     using System.Data.Entity;
@@ -15,6 +17,31 @@ namespace AttendanceRRHH.Migrations
 
         protected override void Seed(AttendanceRRHH.Models.ApplicationDbContext context)
         {
+            string email = "sergio.peralta@kattangroup.com";
+
+            //create the first user
+            if (!(context.Users.Any(u => u.Email == email)))
+            {
+                var userStore = new UserStore<ApplicationUser>(context);
+                var userManager = new UserManager<ApplicationUser>(userStore);
+                var userToInsert = new ApplicationUser { UserName = email, Email = email };
+                var result = userManager.Create(userToInsert, "Admin.1234");
+
+                //create and asign roles
+                if (result.Succeeded)
+                {
+                    var roleStore = new RoleStore<IdentityRole>(context);
+                    var roleManager = new RoleManager<IdentityRole>(roleStore);
+                    var adminRole = new IdentityRole("Admin");
+                    result = roleManager.Create(adminRole);
+
+                    if (result.Succeeded)
+                    {
+                        userManager.AddToRoles(userToInsert.Id, adminRole.Name);
+                    }                   
+                }
+            }
+
             context.Absences.AddOrUpdate(x => x.AbsenceId,
                new Absence() { AbsenceId = 1, Name = "Vacaciones", IsActive = true },
                new Absence() { AbsenceId = 2, Name = "Feriado", IsActive = true },
