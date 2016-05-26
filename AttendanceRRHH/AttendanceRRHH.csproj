@@ -239,7 +239,7 @@
     <Compile Include="Controllers\JobPositionsController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ProcessController.cs" />
-    <Compile Include="Controllers\RoleController.cs" />
+    <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Controllers\SchedulesController.cs" />
     <Compile Include="Controllers\SchedulesController2.cs" />
     <Compile Include="Controllers\ShiftsController.cs" />
@@ -1728,6 +1728,7 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Account\Login - Copy.cshtml" />
+    <Content Include="Views\Users\_Edit.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
@@ -1794,8 +1795,8 @@
     <Content Include="Views\JobPositions\Index.cshtml" />
     <Content Include="Views\Manage\ShowProfile.cshtml" />
     <Content Include="Views\Process\Index.cshtml" />
-    <Content Include="Views\Role\Create.cshtml" />
-    <Content Include="Views\Role\Index.cshtml" />
+    <Content Include="Views\Roles\_Create.cshtml" />
+    <Content Include="Views\Roles\Index.cshtml" />
     <Content Include="Views\Schedules\Index3.cshtml" />
     <Content Include="Views\Schedules\_CalendarLeftPanel.cshtml" />
     <Content Include="Views\Schedules\_CalendarTopPanel.cshtml" />
@@ -1826,6 +1827,8 @@
     <Content Include="Views\Schedules\Index.cshtml" />
     <Content Include="Views\Users\Index.cshtml" />
     <Content Include="Views\Shared\_LayoutLogin.cshtml" />
+    <Content Include="Views\Roles\_Edit.cshtml" />
+    <Content Include="Views\Roles\_Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

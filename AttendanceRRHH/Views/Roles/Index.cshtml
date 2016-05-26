@@ -1,5 +1,4 @@
-﻿@model IEnumerable<AttendanceRRHH.Models.ApplicationUser>
-@using AttendanceRRHH.Helpers
+﻿@using AttendanceRRHH.Helpers
 @using Resources
 
 @section styles{
@@ -19,9 +18,8 @@
                     <thead>
                         <tr>
                             <th>@Resources.Id</th>
-                            <th>@Resources.Email</th>
-                            <th>@Resources.Confirmed?</th>
-                            <th>@Html.NoEncodeActionLink("<span class='glyphicon glyphicon-plus'></span>", Resources.CreateNew, "Register", "Account", routeValues: null, htmlAttributes: new { data_modal = "", @class = "btn btn-primary pull-right" })</th>
+                            <th>@Resources.Name</th>                            
+                            <th>@Html.NoEncodeActionLink("<span class='glyphicon glyphicon-plus'></span>", Resources.CreateNew, "Create", "Roles", routeValues: null, htmlAttributes: new { data_modal = "", @class = "btn btn-primary pull-right" })</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -41,17 +39,16 @@
 
             var id = '#datatable';
 
-            var controller = 'Users';
+            var controller = 'Roles';
 
             var columns =
             [
                         { data: 'Id' },
-                        { data: 'Email' },
-                        { data: 'EmailConfirmed' },
+                        { data: 'Name' },
                         { data: 'Id' }
             ];
 
-            var url = '@Url.Action("GetUsers")';
+            var url = '@Url.Action("GetRoles")';
 
             var datatable = CreateTable(id, columns, url, controller);
 

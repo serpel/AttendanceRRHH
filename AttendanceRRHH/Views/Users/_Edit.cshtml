@@ -1,0 +1,45 @@
+﻿@model AttendanceRRHH.Models.UserViewModel
+@using Resources
+
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title" id="myModalLabel">@Resources.Edit</h4>
+</div>
+
+
+@using (Html.BeginForm())
+{
+    <div class="modal-body">
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary("", new { @class = "text-danger" })
+        @Html.HiddenFor(m => m.Id)
+
+        <div class="row form-row">
+            <div class="col-md-12">
+                <label class="form-label">@Resources.Email</label>
+                @Html.EditorFor(m => m.Email, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+            </div>
+        </div>
+        <div class="row form-row">
+            <div class="col-md-12">
+                <label class="form-label">@Resources.Roles</label>
+                @Html.DropDownList("Roles", null, htmlAttributes: new { @class = "form-control select-drop", multiple = "multiple", style = "width:100%" })
+            </div>
+        </div>
+        <div class="row form-row">
+            <div class="col-md-12">
+                 <label class="form-label">@Resources.Companies</label>
+                @Html.DropDownList("Companies", null, htmlAttributes: new { @class = "form-control select-drop", multiple = "multiple", style = "width:100%" })
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" type="button" data-dismiss="modal">Cancel</button>
+        <input class="btn btn-primary" type="submit" value="Save" />
+    </div>
+}
+
+<script>
+    $('.select-drop').select2();
+</script>

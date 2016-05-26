@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace AttendanceRRHH.Models
@@ -79,6 +80,22 @@ namespace AttendanceRRHH.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+    }
+
+    public class UserViewModel
+    {
+        [Required]
+        [Display(Name = "Id")]
+        public string Id { get; set; }
+
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
+
+        public ICollection<string> Roles { get; set; }
+
+        public ICollection<int> Companies { get; set; }
     }
 
     public class ResetPasswordViewModel
