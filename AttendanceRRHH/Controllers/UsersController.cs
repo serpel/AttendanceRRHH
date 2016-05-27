@@ -46,10 +46,18 @@ namespace AttendanceRRHH.Controllers
         public ActionResult Edit(string id)
         {
             var user = UserManager.FindById(id);
-            string [] selectedValues = user.Roles.Select(x => x.RoleId).ToArray();
 
-            ViewBag.Roles = new MultiSelectList(db.Roles.ToList(), "Id", "Name", null, selectedValues);
-            ViewBag.Companies = new MultiSelectList(db.Companies.ToList(), "CompanyId", "Name");
+            string[] selectedRoles = user.Roles.Select(x => x.RoleId).ToArray();
+
+            Int32[] selectedCompanies = db.UserCompanies
+                .Where(w => w.User.Id == user.Id)
+                .ToList()
+                .Select(s => s.CompanyId)
+                .Distinct()
+                .ToArray();
+
+            ViewBag.Roles = new MultiSelectList(db.Roles.ToList(), "Id", "Name", null, selectedRoles);
+            ViewBag.Companies = new MultiSelectList(db.Companies.ToList(), "CompanyId", "Name", selectedCompanies);
 
             UserViewModel userV = new UserViewModel() { Id = user.Id, Email = user.Email };
 
@@ -60,6 +68,7 @@ namespace AttendanceRRHH.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(UserViewModel model)
         {
+            //TODO: Fix error when delete all companies
             if (ModelState.IsValid)
             {
                 var user = await UserManager.FindByIdAsync(model.Id);
@@ -90,7 +99,34 @@ namespace AttendanceRRHH.Controllers
                     await UserManager.AddToRolesAsync(user.Id, newRoles);
                 }
 
-                List<string> companies = new List<string>();
+                var companiesToDelete = db.UserCompanies.Where(w => w.User.Id == user.Id).Select(s => s.CompanyId).Except(model.Companies).ToList();
+                var companiesToAdd = model.Companies.Except(db.UserCompanies.Select(s => s.CompanyId)).ToList();
+
+                if (companiesToDelete.Count > 0)
+                {
+                    foreach (var item in companiesToDelete)
+                    {
+                        UserCompany userCompany = db.UserCompanies
+                            .Where(w => w.CompanyId == item)
+                            .FirstOrDefault();
+
+                        if(userCompany != null)
+                            db.UserCompanies.Remove(userCompany);
+                    }
+
+                    await db.SaveChangesAsync();
+                }
+
+                if (companiesToAdd.Count > 0)
+                {
+                    foreach (var item in companiesToAdd)
+                    {
+                        Company company = db.Companies.Find(item);
+                        db.UserCompanies.Add(new UserCompany() { CompanyId = company.CompanyId, Id = user.Id });
+                    }
+                    await db.SaveChangesAsync();
+                }
+
                 //TODO: save company user
 
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
