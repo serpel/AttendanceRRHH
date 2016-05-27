@@ -7,10 +7,11 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using AttendanceRRHH.Models;
+using AttendanceRRHH.DAL.Security;
 
 namespace AttendanceRRHH.Controllers
 {
-    [Authorize]
+    [AccessAuthorizeAttribute(Roles = "Admin, Manager, User")]
     public class ManageController : Controller
     {
         private ApplicationSignInManager _signInManager;

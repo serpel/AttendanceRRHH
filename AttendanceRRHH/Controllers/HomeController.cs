@@ -10,9 +10,11 @@ using AttendanceRRHH.Models;
 using AttendanceRRHH.DAL;
 using AttendanceRRHH.BLL;
 using AttendanceRRHH.Helpers;
+using AttendanceRRHH.DAL.Security;
 
 namespace AttendanceRRHH.Controllers
 {
+    [AccessAuthorizeAttribute(Roles = "Admin, Manager, User")]
     public class HomeController : BaseController
     {
         private ApplicationDbContext db = new ApplicationDbContext();

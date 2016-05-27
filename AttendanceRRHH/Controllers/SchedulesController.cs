@@ -6,9 +6,11 @@ using System.Web.Mvc;
 using AttendanceRRHH.Models;
 using Newtonsoft.Json;
 using System.Data.Entity;
+using AttendanceRRHH.DAL.Security;
 
 namespace AttendanceRRHH.Controllers
 {
+    [AccessAuthorizeAttribute(Roles = "Admin, Manager")]
     public class SchedulesController : BaseController
     {
         private ApplicationDbContext db = new ApplicationDbContext();

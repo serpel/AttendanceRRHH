@@ -14,10 +14,11 @@ using System.Web.Script.Serialization;
 using Newtonsoft.Json;
 using System.IO;
 using System.Text;
-
+using AttendanceRRHH.DAL.Security;
 
 namespace AttendanceRRHH.Controllers
 {
+    [AccessAuthorizeAttribute(Roles = "Admin, Manager")]
     public class ShiftsController : BaseController
     {
         private ApplicationDbContext db = new ApplicationDbContext();

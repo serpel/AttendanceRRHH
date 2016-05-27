@@ -2,9 +2,11 @@
 using System.Linq;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity.EntityFramework;
+using AttendanceRRHH.DAL.Security;
 
 namespace AttendanceRRHH.Controllers
 {
+    [AccessAuthorizeAttribute(Roles = "Admin")]
     public class RolesController : BaseController
     {
         private ApplicationDbContext db = new ApplicationDbContext();

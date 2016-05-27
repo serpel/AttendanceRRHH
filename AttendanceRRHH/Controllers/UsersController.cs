@@ -5,12 +5,15 @@ using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using AttendanceRRHH.DAL.Security;
 
 namespace AttendanceRRHH.Controllers
 {
+    [AccessAuthorizeAttribute(Roles = "Admin")]
     public class UsersController : BaseController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -20,7 +23,11 @@ namespace AttendanceRRHH.Controllers
         {
             get
             {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                if(_userManager == null)
+                {
+                    _userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                }
+                return _userManager;
             }
             private set
             {
@@ -100,7 +107,7 @@ namespace AttendanceRRHH.Controllers
                 }
 
                 var companiesToDelete = db.UserCompanies.Where(w => w.User.Id == user.Id).Select(s => s.CompanyId).Except(model.Companies).ToList();
-                var companiesToAdd = model.Companies.Except(db.UserCompanies.Select(s => s.CompanyId)).ToList();
+                var companiesToAdd = model.Companies.Except(db.UserCompanies.Where(w => w.Id == user.Id).Select(s => s.CompanyId).Distinct()).ToList();
 
                 if (companiesToDelete.Count > 0)
                 {
@@ -108,6 +115,7 @@ namespace AttendanceRRHH.Controllers
                     {
                         UserCompany userCompany = db.UserCompanies
                             .Where(w => w.CompanyId == item)
+                            .Distinct()
                             .FirstOrDefault();
 
                         if(userCompany != null)
@@ -122,13 +130,15 @@ namespace AttendanceRRHH.Controllers
                     foreach (var item in companiesToAdd)
                     {
                         Company company = db.Companies.Find(item);
-                        db.UserCompanies.Add(new UserCompany() { CompanyId = company.CompanyId, Id = user.Id });
+
+                        if(company != null)
+                            db.UserCompanies.Add(new UserCompany() { CompanyId = company.CompanyId, Id = user.Id });
                     }
+
                     await db.SaveChangesAsync();
                 }
 
                 //TODO: save company user
-
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
 
@@ -138,5 +148,104 @@ namespace AttendanceRRHH.Controllers
             return PartialView("_Edit", model);
         }
 
+        public ActionResult Delete(string id)
+        {
+            var user = UserManager.FindById(id);
+            UserViewModel userV = new UserViewModel() { Id = user.Id, Email = user.Email };
+
+            return PartialView("_Delete", userV);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Delete(UserViewModel model)
+        {
+            var user = await UserManager.FindByIdAsync(model.Id);
+            var logins = user.Logins;
+
+            foreach (var login in logins.ToList())
+            {
+                await UserManager.RemoveLoginAsync(login.UserId, new UserLoginInfo(login.LoginProvider, login.ProviderKey));
+            }
+
+            var rolesForUser = await UserManager.GetRolesAsync(user.Id);
+
+            foreach (var item in rolesForUser.ToList())
+            {
+                await UserManager.RemoveFromRoleAsync(user.Id, item);
+            }
+
+            var userClaims = await UserManager.GetClaimsAsync(user.Id);
+
+            foreach (var item in userClaims.ToList())
+            {
+                await UserManager.RemoveClaimAsync(user.Id, item);
+            }
+
+            var userCompanies = db.UserCompanies.Where(w => w.Id == user.Id);
+
+            if (userCompanies != null)
+                db.UserCompanies.RemoveRange(userCompanies);
+
+            var result = await UserManager.DeleteAsync(user);
+
+            return Json(new { success = result.Succeeded }, JsonRequestBehavior.AllowGet);
+        }
+
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error);
+            }
+        }
+
+        //
+        // GET: /Account/Register
+        public ActionResult Create()
+        {
+            return PartialView("_Create");
+        }
+
+        //
+        // POST: /Account/Register
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
+                    // Send an email this link
+                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+                    return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+                }
+                AddErrors(result);
+            }
+
+            // If we got this far, something failed, redisplay form
+            return PartialView("_Create", model);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_userManager != null)
+                {
+                    _userManager.Dispose();
+                    _userManager = null;
+                }
+            }
+
+            base.Dispose(disposing);
+        }
     }
 }

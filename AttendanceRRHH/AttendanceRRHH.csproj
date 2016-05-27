@@ -234,6 +234,7 @@
     <Compile Include="Controllers\DeviceTypesController.cs" />
     <Compile Include="Controllers\EmployeeAbsencesController.cs" />
     <Compile Include="Controllers\EmployeesController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController - Copy.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\JobPositionsController.cs" />
@@ -241,7 +242,6 @@
     <Compile Include="Controllers\ProcessController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Controllers\SchedulesController.cs" />
-    <Compile Include="Controllers\SchedulesController2.cs" />
     <Compile Include="Controllers\ShiftsController.cs" />
     <Compile Include="Controllers\ShiftTimesController.cs" />
     <Compile Include="Controllers\TimeSheetsController.cs" />
@@ -256,6 +256,7 @@
     <Compile Include="DAL\IGenericRepository.cs" />
     <Compile Include="DAL\IShiftTimeRepository.cs" />
     <Compile Include="DAL\ITimeSheetRepository.cs" />
+    <Compile Include="DAL\Security\MyAuthorizeAttribute.cs" />
     <Compile Include="DAL\ShiftTimeRepository.cs" />
     <Compile Include="DAL\TimeSheetRepository.cs" />
     <Compile Include="Global.asax.cs">
@@ -1735,6 +1736,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Account\Login - Copy.cshtml" />
     <Content Include="Views\Users\_Edit.cshtml" />
+    <Content Include="Views\Error\AccessDenied.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
@@ -1835,6 +1837,9 @@
     <Content Include="Views\Shared\_LayoutLogin.cshtml" />
     <Content Include="Views\Roles\_Edit.cshtml" />
     <Content Include="Views\Roles\_Delete.cshtml" />
+    <Content Include="Views\Users\_Delete.cshtml" />
+    <Content Include="Views\Users\_Create.cshtml" />
+    <Content Include="Views\Shared\_LayoutError.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

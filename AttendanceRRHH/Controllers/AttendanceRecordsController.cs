@@ -7,9 +7,11 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using AttendanceRRHH.Models;
+using AttendanceRRHH.DAL.Security;
 
 namespace AttendanceRRHH.Controllers
 {
+    [AccessAuthorizeAttribute(Roles = "Admin, Manager")]
     public class AttendanceRecordsController : BaseController
     {
         private ApplicationDbContext db = new ApplicationDbContext();

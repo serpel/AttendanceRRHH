@@ -93,8 +93,10 @@ namespace AttendanceRRHH.Models
         [Display(Name = "Email")]
         public string Email { get; set; }
 
+        //[Range(1, int.MaxValue, ErrorMessage = "Field can't be empty")]
         public ICollection<string> Roles { get; set; }
 
+        //[Range(1, int.MaxValue, ErrorMessage = "Field can't be empty")]
         public ICollection<int> Companies { get; set; }
     }
 

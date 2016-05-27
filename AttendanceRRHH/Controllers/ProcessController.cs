@@ -6,9 +6,12 @@ using System.Web.Mvc;
 using AttendanceRRHH.BLL;
 using AttendanceRRHH.Models;
 using Hangfire;
+using System.Web.Security;
+using AttendanceRRHH.DAL.Security;
 
 namespace AttendanceRRHH.Controllers
 {
+    [AccessAuthorizeAttribute(Roles = "Admin")]
     public class ProcessController : BaseController
     {
         private ApplicationDbContext db = new ApplicationDbContext();

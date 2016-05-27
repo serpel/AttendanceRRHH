@@ -5,11 +5,11 @@ using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using AttendanceRRHH.Models;
-using AttendanceRRHH.DAL;
-using PagedList;
+using AttendanceRRHH.DAL.Security;
 
 namespace AttendanceRRHH.Controllers
 {
+    [AccessAuthorizeAttribute(Roles = "Admin, Manager")]
     public class EmployeesController : BaseController
     {
         private ApplicationDbContext db = new ApplicationDbContext();

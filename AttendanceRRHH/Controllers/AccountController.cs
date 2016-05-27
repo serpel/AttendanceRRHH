@@ -1,7 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -9,9 +6,6 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using AttendanceRRHH.Models;
-using System.Net;
-using Microsoft.AspNet.Identity.EntityFramework;
-using System.Collections.Generic;
 
 namespace AttendanceRRHH.Controllers
 {
@@ -137,44 +131,8 @@ namespace AttendanceRRHH.Controllers
             }
         }
 
-        [AllowAnonymous]
-        public ActionResult DeleteConfirmed()
-        {
-            return PartialView("DeleteConfirmed");
-        }
-
-        [HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(string id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            var user = await _userManager.FindByIdAsync(id);
-            var logins = user.Logins;
-
-            foreach (var login in logins.ToList())
-            {
-                await _userManager.RemoveLoginAsync(login.UserId, new UserLoginInfo(login.LoginProvider, login.ProviderKey));
-            }
-
-            var rolesForUser = await _userManager.GetRolesAsync(id);
-
-            foreach (var item in rolesForUser.ToList())
-            {
-                var result = await _userManager.RemoveFromRoleAsync(user.Id, item);
-            }
-
-            await _userManager.DeleteAsync(user);
-
-            return Json(new { success = true }, JsonRequestBehavior.AllowGet);
-        }
-
         //
         // GET: /Account/Register
-        [AllowAnonymous]
         public ActionResult Register()
         {
             return PartialView("Register");
@@ -183,7 +141,6 @@ namespace AttendanceRRHH.Controllers
         //
         // POST: /Account/Register
         [HttpPost]
-        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {

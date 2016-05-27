@@ -9,9 +9,11 @@ using System.Web.Mvc;
 using AttendanceRRHH.Models;
 using AttendanceRRHH.BLL;
 using Hangfire;
+using AttendanceRRHH.DAL.Security;
 
 namespace AttendanceRRHH.Controllers
 {
+    [AccessAuthorizeAttribute(Roles = "Admin")]
     public class DevicesController : BaseController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
