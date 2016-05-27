@@ -357,4 +357,10 @@
   <data name="TroubleLoginIn" xml:space="preserve">
     <value>Trouble Login In</value>
   </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>Security</value>
+  </data>
 </root>
