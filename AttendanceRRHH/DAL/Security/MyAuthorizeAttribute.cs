@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Web;
 using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
-using System.Configuration;
 using System.Web.Routing;
-using System.Collections.Generic;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Identity.Owin;
-using AttendanceRRHH.Models;
 
 namespace AttendanceRRHH.DAL.Security
 {

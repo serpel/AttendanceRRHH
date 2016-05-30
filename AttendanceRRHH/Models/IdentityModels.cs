@@ -48,5 +48,6 @@ namespace AttendanceRRHH.Models
         public DbSet<ExtraHour> ExtraHours { get; set; }
         public DbSet<ExtraHourDetail> ExtraHourDetails { get; set; }
         public DbSet<UserCompany> UserCompanies { get; set; }
+        public DbSet<LogEntry> LogEntries { get; set; }
     }
 }

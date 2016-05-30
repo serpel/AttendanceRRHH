@@ -6,6 +6,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using AttendanceRRHH.Models;
+using AttendanceRRHH.BLL;
 
 namespace AttendanceRRHH.Controllers
 {
@@ -76,6 +77,7 @@ namespace AttendanceRRHH.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    MyLogger.GetInstance.Info("Login Success");
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");

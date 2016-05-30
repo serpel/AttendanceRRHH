@@ -1,4 +1,7 @@
-﻿using System;
+﻿using AttendanceRRHH.BLL;
+using NLog.Common;
+using NLog.LayoutRenderers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,7 +20,18 @@ namespace AttendanceRRHH
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            log4net.Config.XmlConfigurator.Configure(new FileInfo(Server.MapPath("~/Web.config")));
+
+            NLog.Config.ConfigurationItemFactory.Default.LayoutRenderers.RegisterDefinition("mdlc", typeof(MdlcLayoutRenderer));
+
+            string nlogPath = Server.MapPath("nlog-web.log");
+            InternalLogger.LogFile = nlogPath;
+            InternalLogger.LogLevel = NLog.LogLevel.Trace;
         }
+
+        //protected void Application_Error()
+        //{
+        //    Exception exception = Server.GetLastError();
+        //    MyLogger.GetInstance.Error(exception.Message, exception);
+        //}
     }
 }

@@ -6,10 +6,12 @@ using System.Net;
 using System.Threading;
 using System.Web;
 using System.Web.Mvc;
+using AttendanceRRHH.BLL;
 
 namespace AttendanceRRHH.Controllers
 {
     //[AllowAnonymous]
+    [Authorize]
     public class BaseController : Controller
     {
         // this exist because we need load cross controllers information on left or top menu
@@ -43,6 +45,13 @@ namespace AttendanceRRHH.Controllers
             Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
 
             return base.BeginExecuteCore(callback, state);
+        }
+
+        //TODO: handle exceptions using a loger
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            MyLogger.GetInstance.Error(filterContext.Exception.Message, filterContext.Exception);
+            base.OnException(filterContext);
         }
     }
 }

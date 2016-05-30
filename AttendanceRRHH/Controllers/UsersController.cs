@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using AttendanceRRHH.DAL.Security;
+using AttendanceRRHH.BLL;
 
 namespace AttendanceRRHH.Controllers
 {
@@ -138,6 +139,8 @@ namespace AttendanceRRHH.Controllers
                     await db.SaveChangesAsync();
                 }
 
+                MyLogger.GetInstance.Info("User was edited Succesfull, userId: " + user.Id + " Email: " + user.Email);
+
                 //TODO: save company user
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
@@ -189,6 +192,8 @@ namespace AttendanceRRHH.Controllers
 
             var result = await UserManager.DeleteAsync(user);
 
+            MyLogger.GetInstance.Info("User was delted Succesfull, userId: " + user.Id + " Email: " + user.Email);
+
             return Json(new { success = result.Succeeded }, JsonRequestBehavior.AllowGet);
         }
 
@@ -224,6 +229,8 @@ namespace AttendanceRRHH.Controllers
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+                    MyLogger.GetInstance.Info("User was created Succesfull, userId: "+user.Id+" Email: "+user.Email);
 
                     return Json(new { success = true }, JsonRequestBehavior.AllowGet);
                 }
