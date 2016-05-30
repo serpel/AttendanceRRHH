@@ -10,7 +10,9 @@
                 <div class="error-description"> @ViewBag.Description </div>
                 <div class="error-description-mini"> The page your looking for is not here </div>
                 <br>
-                @Html.ActionLink("Go to Login", "Login", "Account", null, htmlAttributes: null)
+                @Html.ActionLink("Go to Login", "Login", "Account", null, htmlAttributes: new { @class= "btn btn-primary" })
+                or
+                @Html.ActionLink("Go to Home", "Index", "Home", null, htmlAttributes: new { @class = "btn btn-danger" })
             </div>
         </div>
     </div>
