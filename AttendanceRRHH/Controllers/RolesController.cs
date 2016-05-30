@@ -49,5 +49,27 @@ namespace AttendanceRRHH.Controllers
             return PartialView("_Create", role);
         }
 
+        public ActionResult Edit(int id)
+        {
+            var role = db.Roles.Find(id);
+            return PartialView("_Edit", role);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(IdentityRole role)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(role).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+
+                MyLogger.GetInstance.Info("Role was edited successfull: " + role.Name);
+
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+            }
+
+            return PartialView("_Edit", role);
+        }
     }
 }
