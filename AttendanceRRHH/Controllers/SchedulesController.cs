@@ -7,6 +7,7 @@ using AttendanceRRHH.Models;
 using Newtonsoft.Json;
 using System.Data.Entity;
 using AttendanceRRHH.DAL.Security;
+using AttendanceRRHH.BLL;
 
 namespace AttendanceRRHH.Controllers
 {
@@ -166,6 +167,9 @@ namespace AttendanceRRHH.Controllers
 
                 db.Schedules.AddRange(eventsToCreate);
                 db.SaveChanges();
+
+                MyLogger.GetInstance.Info("Schedules were saved successfull");
+
                 success = true;
             }
             catch (Exception e)

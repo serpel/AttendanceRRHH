@@ -69,6 +69,9 @@ namespace AttendanceRRHH.Controllers
             {
                 db.Devices.Add(device);
                 db.SaveChanges();
+
+                MyLogger.GetInstance.Info("Device was created succesfull, Id: " + device.DeviceId + ", Name: " + device.Description);
+
                 return RedirectToAction("Index");
             }
 
@@ -132,6 +135,9 @@ namespace AttendanceRRHH.Controllers
             Device device = db.Devices.Find(id);
             db.Devices.Remove(device);
             db.SaveChanges();
+
+            MyLogger.GetInstance.Info("Device was delete succesfull, Id: " + id);
+
             return RedirectToAction("Index");
         }
 

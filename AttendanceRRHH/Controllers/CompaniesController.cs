@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using AttendanceRRHH.Models;
 using AttendanceRRHH.DAL.Security;
+using AttendanceRRHH.BLL;
 
 namespace AttendanceRRHH.Controllers
 {
@@ -50,6 +51,9 @@ namespace AttendanceRRHH.Controllers
             {
                 db.Companies.Add(company);
                 db.SaveChanges();
+
+                MyLogger.GetInstance.Info("The Company was created succesfull, Name: "+company.Name);
+
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
 
@@ -70,6 +74,7 @@ namespace AttendanceRRHH.Controllers
             {
                 return HttpNotFound();
             }
+
             ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name", company.CityId);
             ViewBag.CountryId = new SelectList(db.Countries, "CountryId", "Name", company.CountryId);
             return PartialView("_Edit", company);
@@ -86,6 +91,9 @@ namespace AttendanceRRHH.Controllers
             {
                 db.Entry(company).State = EntityState.Modified;
                 db.SaveChanges();
+                
+                MyLogger.GetInstance.Info("The Company was edited succesfull, Id: " + company.CompanyId);
+
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
             ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name", company.CityId);
@@ -116,6 +124,8 @@ namespace AttendanceRRHH.Controllers
             Company company = db.Companies.Find(id);
             db.Companies.Remove(company);
             db.SaveChanges();
+
+            MyLogger.GetInstance.Info("The Company was deleted succesfull, Id: " + id);
 
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }

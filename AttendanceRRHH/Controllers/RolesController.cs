@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity.EntityFramework;
 using AttendanceRRHH.DAL.Security;
+using AttendanceRRHH.BLL;
 
 namespace AttendanceRRHH.Controllers
 {
@@ -40,10 +41,13 @@ namespace AttendanceRRHH.Controllers
                 db.Roles.Add(role);
                 db.SaveChanges();
 
+                MyLogger.GetInstance.Info("Role was created successfull: " + role.Name);
+
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
 
             return PartialView("_Create", role);
         }
+
     }
 }

@@ -38,6 +38,8 @@ namespace AttendanceRRHH.Controllers
                 BackgroundJob.Enqueue(
                     () => Process(Int32.Parse(company), DateTime.Parse(date)));
 
+                MyLogger.GetInstance.Info("Daily records was excuted for Company: " + company + " and date: " + date.ToString());
+
                 success = true;
             }
             catch (Exception e)

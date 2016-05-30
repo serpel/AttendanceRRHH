@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using AttendanceRRHH.Models;
 using AttendanceRRHH.DAL;
 using AttendanceRRHH.DAL.Security;
+using AttendanceRRHH.BLL;
 
 namespace AttendanceRRHH.Controllers
 {
@@ -57,6 +58,8 @@ namespace AttendanceRRHH.Controllers
                 {
                     message = e.Message;
                 }
+
+                MyLogger.GetInstance.Error("The country was created successfull, Name" + country.Name);
 
                 return Json(new { success = true, url = Url.Action("Index", "Countries"), message = message });
             }

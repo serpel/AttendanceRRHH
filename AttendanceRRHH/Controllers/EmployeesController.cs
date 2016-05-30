@@ -6,6 +6,7 @@ using System.Net;
 using System.Web.Mvc;
 using AttendanceRRHH.Models;
 using AttendanceRRHH.DAL.Security;
+using AttendanceRRHH.BLL;
 
 namespace AttendanceRRHH.Controllers
 {
@@ -67,6 +68,8 @@ namespace AttendanceRRHH.Controllers
                     message = e.Message;
                     success = false;
                 }
+
+                MyLogger.GetInstance.Info("Employee was created, Name: " + employee.FullName + ", Code: " + employee.EmployeeCode);
 
                 return Json(new { success = success, message = message });
             }
@@ -163,6 +166,9 @@ namespace AttendanceRRHH.Controllers
                 Employee employee = db.Employees.Find(id);
                 db.Employees.Remove(employee);
                 db.SaveChanges();
+
+                MyLogger.GetInstance.Info("Employee was deleted, Name: " + employee.FullName + ", Code: " + employee.EmployeeCode);
+
             }
             catch (Exception e)
             {

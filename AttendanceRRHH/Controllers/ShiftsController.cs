@@ -79,6 +79,9 @@ namespace AttendanceRRHH.Controllers
 
                 try {
                     db.SaveChanges();
+
+                    MyLogger.GetInstance.Info("Shift was edited successfull, Id: " + shift.ShiftId);
+
                     success = true;
                 } catch(Exception e)
                 {
@@ -130,6 +133,8 @@ namespace AttendanceRRHH.Controllers
                 {
                     db.ShiftTimes.AddRange(obj.TimeList);
                     db.SaveChanges();
+
+                    MyLogger.GetInstance.Info("Shift was edited successfull, Id: " + obj.ShiftId);
                 }
                 catch (Exception e)
                 {
@@ -309,6 +314,9 @@ namespace AttendanceRRHH.Controllers
             Shift shift = db.Shifts.Find(id);
             db.Shifts.Remove(shift);
             db.SaveChanges();
+
+            MyLogger.GetInstance.Info("Shift was deleted successfull, Id: " + id);
+
             return RedirectToAction("Index");
         }
 

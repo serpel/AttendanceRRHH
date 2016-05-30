@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using AttendanceRRHH.Models;
 using AttendanceRRHH.DAL.Security;
+using AttendanceRRHH.BLL;
 
 namespace AttendanceRRHH.Controllers
 {
@@ -104,6 +105,8 @@ namespace AttendanceRRHH.Controllers
                             
                 db.SaveChanges();
 
+                MyLogger.GetInstance.Info("Daily record was edited successfull, RecordId: " + timeSheet.ShiftTimeId+", EmployeeId: "+timeSheet.EmployeeId);
+
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
             ViewBag.EmployeeId = new SelectList(db.Employees, "EmployeeId", "EmployeeCode", timeSheet.EmployeeId);
@@ -118,10 +121,12 @@ namespace AttendanceRRHH.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             TimeSheet timeSheet = db.TimeSheets.Find(id);
+
             if (timeSheet == null)
             {
                 return HttpNotFound();
             }
+           
             return PartialView("_Delete", timeSheet);
         }
 
@@ -133,6 +138,9 @@ namespace AttendanceRRHH.Controllers
             TimeSheet timeSheet = db.TimeSheets.Find(id);
             db.TimeSheets.Remove(timeSheet);
             db.SaveChanges();
+
+            MyLogger.GetInstance.Info("Daily record was deleted successfull, RecordId: " + timeSheet.ShiftTimeId + ", EmployeeId: " + timeSheet.EmployeeId);
+
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }
 

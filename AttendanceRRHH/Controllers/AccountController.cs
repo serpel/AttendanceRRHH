@@ -77,7 +77,7 @@ namespace AttendanceRRHH.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    MyLogger.GetInstance.Info("Login Success");
+                    MyLogger.GetInstance.Info("Login Success for user: "+model.Email);
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -388,6 +388,9 @@ namespace AttendanceRRHH.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+
+            MyLogger.GetInstance.Info("User logoff successfull: "+AuthenticationManager.User.Identity.Name);
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -395,6 +398,9 @@ namespace AttendanceRRHH.Controllers
         public ActionResult LogOut()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+
+            MyLogger.GetInstance.Info("User logoff successfull: " + AuthenticationManager.User.Identity.Name);
+
             return RedirectToAction("Login", "Account");
         }
 

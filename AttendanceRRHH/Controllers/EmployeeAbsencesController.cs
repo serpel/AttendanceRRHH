@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using AttendanceRRHH.Models;
 using AttendanceRRHH.DAL.Security;
+using AttendanceRRHH.BLL;
 
 namespace AttendanceRRHH.Controllers
 {
@@ -88,6 +89,8 @@ namespace AttendanceRRHH.Controllers
                 db.Absences.Add(absence);
                 db.SaveChanges();
 
+                MyLogger.GetInstance.Info("Absence was created successfull, Name: " + absence.Name);
+
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
 
@@ -119,6 +122,9 @@ namespace AttendanceRRHH.Controllers
             {
                 db.EmployeeAbsences.Add(employeeAbsence);
                 db.SaveChanges();
+
+                MyLogger.GetInstance.Info("Employee absence was created successfull, Employee: " + employeeAbsence.Employee.CodeAndFullName+" Absence: " + employeeAbsence.Absence.Name);
+
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
 
@@ -155,6 +161,8 @@ namespace AttendanceRRHH.Controllers
                 db.Entry(employeeAbsence).State = EntityState.Modified;
                 db.SaveChanges();
 
+                MyLogger.GetInstance.Info("Employee absence was edited successfull, Employee: " + employeeAbsence.Employee.CodeAndFullName + " Absence: " + employeeAbsence.Absence.Name);
+
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
             ViewBag.AbsenceId = new SelectList(db.Absences, "AbsenceId", "Name", employeeAbsence.AbsenceId);
@@ -184,6 +192,8 @@ namespace AttendanceRRHH.Controllers
             EmployeeAbsence employeeAbsence = db.EmployeeAbsences.Find(id);
             db.EmployeeAbsences.Remove(employeeAbsence);
             db.SaveChanges();
+
+            MyLogger.GetInstance.Info("Employee absence was deleted successfull, Employee: " + employeeAbsence.Employee.CodeAndFullName + " Absence: " + employeeAbsence.Absence.Name);
 
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }
