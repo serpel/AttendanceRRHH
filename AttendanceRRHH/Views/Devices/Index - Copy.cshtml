@@ -1,0 +1,128 @@
+﻿@model IList<AttendanceRRHH.Models.Device>
+    
+@{
+    ViewBag.Title = "Home";
+    double runningDevisesPorcent = Math.Round(((double)ViewBag.countAvailable / ((double)ViewBag.countAvailable + (double)ViewBag.countUnavailable + (double)ViewBag.countUnknown)) * 100, 0);
+}
+
+    <!-- BEGIN PAGE TITLE -->
+    <div class="page-title">
+    </div>
+    <!-- END PAGE TITLE -->
+    <!-- BEGIN PlACE PAGE CONTENT HERE -->
+    <div class="row">
+        <div class="col-md-4 col-vlg-3 col-sm-6">
+            <div class="tiles green m-b-10">
+                <div class="tiles-body">
+                    <div class="controller"> <a href="@Url.Action("refresh")" class="reload"></a> <a href="javascript:;" class="remove"></a> </div>
+                    <div class="tiles-title text-black">Biometric devises availability</div>
+                    <div class="widget-stats">
+                        <div class="wrapper transparent">
+                            <span class="item-title">Actives</span> <span class="item-count animate-number semi-bold" data-value="@ViewBag.countAvailable" data-animation-duration="700">0</span>
+                        </div>
+                    </div>
+                    <div class="widget-stats ">
+                        <div class="wrapper last">
+                            <span class="item-title">Inactives</span> <span class="item-count animate-number semi-bold" data-value="@ViewBag.countUnavailable" data-animation-duration="700">0</span>
+                        </div>
+                    </div>
+                    <div class="widget-stats ">
+                        <div class="wrapper last">
+                            <span class="item-title">Unknown</span> <span class="item-count animate-number semi-bold" data-value="@ViewBag.countUnknown" data-animation-duration="700">0</span>
+                        </div>
+                    </div>
+                    <div class="progress transparent progress-small no-radius m-t-20" style="width:90%">
+                        <div class="progress-bar progress-bar-white animate-progress-bar" data-percentage="@runningDevisesPorcent%"></div>
+                    </div>
+                    <div class="description"> <span class="text-white mini-description ">@runningDevisesPorcent% of devises are running</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="grid simple ">
+                <div class="grid-title no-border">
+                    <div class="tools">
+                        <a href="javascript:;" class="collapse"></a>
+                        <a href="#grid-config" data-toggle="modal" class="config"></a>
+                        <a href="@Url.Action("refresh")" class="reload"></a>
+                        <a href="javascript:;" class="remove"></a>
+                    </div>
+                </div>
+                <div class="grid-body no-border">
+                    <h3>Biometric  <span class="semi-bold">Devices</span></h3>
+                    @if (TempData["Message"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <button data-dismiss="alert" class="close"></button>
+                            @TempData["Message"]
+                        </div>
+                    }
+
+                    <br />
+                    @Html.ActionLink("Add Device", "Create", new { }, new { @class = "btn btn-primary" })
+                    <br />
+
+                    <table class="table no-more-tables">
+                        <thead>
+                            <tr>
+                                <th style="width:1%">
+                                    <div class="checkbox check-default">
+                                        <input id="checkbox10" type="checkbox" value="1" class="checkall">
+                                        <label for="checkbox10"></label>
+                                    </div>
+                                </th>
+                                <th style="width:9%">Devise</th>
+                                <th style="width:22%">Location</th>
+                                <th style="width:12%">IP</th>
+                                <th style="width:20%">Time</th>
+                                <th style="width:10%">Status</th>
+                                <th style="width:26%">Options</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var item in Model){
+                                <tr>
+                                    <td class="v-align-middle">
+                                        <div class="checkbox check-default">
+                                            <input id="checkbox11" type="checkbox" value="1">
+                                            <label for="checkbox11"></label>
+                                        </div>
+                                    </td>
+                                    <td class="v-align-middle">@item.Description</td>
+                                    <td class="v-align-middle">
+                                        <span class="muted">@item.Location</span>
+                                    </td>
+                                    <td>
+                                        <span class="muted">@item.IP</span>
+                                    </td>
+                                    <td>
+                                        @*<span class="muted">@item.Time</span>*@
+                                    </td>
+                                    <td>
+                                        @*@switch (item.Status){
+                                                case BiometricMonitor.Domain.Status.Available:
+                                                    <span class="label label-success">@item.Status</span>
+                                                break;
+                                                case BiometricMonitor.Domain.Status.Unavailable:
+                                                    <span class="label label-important">@item.Status</span>
+                                                break;
+                                                default:
+                                                    <span class="label label-important">@item.Status</span>
+                                                break;
+                                        }*@
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Sync Time", "SyncTime", new { @id = item.DeviceId }, new { @class= "btn btn-white btn-xs btn-mini" })
+                                        @Html.ActionLink("Transfer Records", "TransferRecords", new { @id = item.DeviceId }, new { @class = "btn btn-default btn-xs btn-mini" })
+                                    </td>
+                                </tr>
+                            }                                             
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END PLACE PAGE CONTENT HERE -->

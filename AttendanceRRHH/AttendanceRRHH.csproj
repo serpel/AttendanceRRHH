@@ -1767,6 +1767,7 @@
     <Content Include="Views\Account\Login - Copy.cshtml" />
     <Content Include="Views\Users\_Edit.cshtml" />
     <Content Include="Views\Error\AccessDenied.cshtml" />
+    <Content Include="Views\Devices\Index - Copy.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />

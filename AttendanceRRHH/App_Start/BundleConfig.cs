@@ -18,14 +18,14 @@ namespace AttendanceRRHH
                 "~/Content/assets/plugins/jquery-unveil/jquery.unveil.min.js",
                 "~/Content/assets/plugins/jquery-block-ui/jqueryblockui.js",
                 "~/Content/assets/plugins/jquery-scrollbar/jquery.scrollbar.min.js",
-                "~/Content/assets/plugins/pace/pace.min.js",
+                //"~/Content/assets/plugins/pace/pace.min.js",
                 "~/Content/assets/plugins/jquery-numberAnimate/jquery.animateNumbers.js",
                 "~/Content/assets/js/core.js",
-                "~/Content/assets/js/chat.js",
+                //"~/Content/assets/js/chat.js",
                 "~/Content/assets/js/demo.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                "~/Content/assets/plugins/pace/pace-theme-flash.css",
+                // "~/Content/assets/plugins/pace/pace-theme-flash.css",
                 "~/Content/assets/plugins/jquery-scrollbar/jquery.scrollbar.css",
                 "~/Content/assets/plugins/boostrapv3/css/bootstrap.min.css",
                 "~/Content/assets/plugins/boostrapv3/css/bootstrap-theme.min.css",

@@ -363,4 +363,40 @@
   <data name="Security" xml:space="preserve">
     <value>Security</value>
   </data>
+  <data name="IP" xml:space="preserve">
+    <value>IP</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="IsSSR" xml:space="preserve">
+    <value>Is SSR?</value>
+  </data>
+  <data name="OpenDoors" xml:space="preserve">
+    <value>OpenDoors</value>
+  </data>
+  <data name="Port" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="DeleteText" xml:space="preserve">
+    <value>Are you sure ?</value>
+  </data>
+  <data name="Sync" xml:space="preserve">
+    <value>Sync</value>
+  </data>
+  <data name="Transfer" xml:space="preserve">
+    <value>Transfer</value>
+  </data>
+  <data name="PingTest" xml:space="preserve">
+    <value>Ping Test</value>
+  </data>
 </root>

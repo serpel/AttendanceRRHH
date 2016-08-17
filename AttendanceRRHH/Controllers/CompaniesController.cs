@@ -126,7 +126,6 @@ namespace AttendanceRRHH.Controllers
             db.SaveChanges();
 
             MyLogger.GetInstance.Info("The Company was deleted succesfull, Id: " + id);
-
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }
 

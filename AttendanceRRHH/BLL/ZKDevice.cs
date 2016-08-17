@@ -8,7 +8,7 @@ using log4net;
 
 namespace AttendanceRRHH.BLL
 {
-    public class ZKDevice : IDevice
+    public class ZKDevice : IDevice, IDisposable
     {
         private ApplicationDbContext context = new ApplicationDbContext();
 
@@ -58,19 +58,24 @@ namespace AttendanceRRHH.BLL
             }
             int idwErrorCode = 0;
 
-            bIsConnected = axCZKEM1.Connect_Net(this.Ip, this.Port);
-            if (bIsConnected)
+            try {
+                bIsConnected = axCZKEM1.Connect_Net(this.Ip, this.Port);
+                if (bIsConnected)
+                {
+                    this.Status = Status.Available;
+                    iMachineNumber = 1;//In fact,when you are using the tcp/ip communication,this parameter will be ignored,that is any integer will all right.Here we use 1.
+                    axCZKEM1.RegEvent(iMachineNumber, 65535);//Here you can register the realtime events that you want to be triggered(the parameters 65535 means registering all)
+                    logger.Info("ZKDevice.ConnectDevice() - The device is connected successull "+this.Ip);
+                }
+                else
+                {
+                    this.Status = Status.Unavailable;
+                    axCZKEM1.GetLastError(ref idwErrorCode);
+                    logger.Error("ZKDevice.ConnectDevice() - Unable to connect the device, ErrorCode=" + idwErrorCode.ToString());
+                }
+            }catch(Exception e)
             {
-                this.Status = Status.Available;
-                iMachineNumber = 1;//In fact,when you are using the tcp/ip communication,this parameter will be ignored,that is any integer will all right.Here we use 1.
-                axCZKEM1.RegEvent(iMachineNumber, 65535);//Here you can register the realtime events that you want to be triggered(the parameters 65535 means registering all)
-                logger.Info("ZKDevice.ConnectDevice() - The device is connected successull "+this.Ip);
-            }
-            else
-            {
-                this.Status = Status.Unavailable;
-                axCZKEM1.GetLastError(ref idwErrorCode);
-                logger.Error("ZKDevice.ConnectDevice() - Unable to connect the device, ErrorCode=" + idwErrorCode.ToString());
+                logger.Error(e.Message);
             }
         }
 
@@ -394,6 +399,11 @@ namespace AttendanceRRHH.BLL
             axCZKEM1.EnableDevice(iMachineNumber, true);//enable the device
 
             return result;
+        }
+
+        public void Dispose()
+        {
+            ((IDisposable)context).Dispose();
         }
     }
 }

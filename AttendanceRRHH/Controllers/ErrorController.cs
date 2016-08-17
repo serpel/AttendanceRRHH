@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using AttendanceRRHH.BLL;
+using System.Web.Mvc;
 
 namespace AttendanceRRHH.Controllers
 {

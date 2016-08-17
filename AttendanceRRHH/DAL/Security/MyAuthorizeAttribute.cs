@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AttendanceRRHH.BLL;
+using System;
 using System.Web.Mvc;
 using System.Web.Routing;
 
@@ -28,6 +29,8 @@ namespace AttendanceRRHH.DAL.Security
 
                 if (!isInRole)
                 {
+                    MyLogger.GetInstance.Info("Access denied on controller "+filterContext.Controller);
+
                     filterContext.Result = new RedirectToRouteResult(new
                         RouteValueDictionary(new { controller = "Error", action = "AccessDenied" }));
                 }

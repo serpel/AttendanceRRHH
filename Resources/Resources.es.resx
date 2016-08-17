@@ -289,7 +289,7 @@
     <value>Id</value>
   </data>
   <data name="Absence" xml:space="preserve">
-    <value>Absence</value>
+    <value>Ausencia</value>
   </data>
   <data name="Comment" xml:space="preserve">
     <value>Comment</value>
@@ -362,5 +362,41 @@
   </data>
   <data name="Security" xml:space="preserve">
     <value>Seguridad</value>
+  </data>
+  <data name="IP" xml:space="preserve">
+    <value>IP</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Ubicacion</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Estado</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Tiempo</value>
+  </data>
+  <data name="IsSSR" xml:space="preserve">
+    <value>Es SSR?</value>
+  </data>
+  <data name="OpenDoors" xml:space="preserve">
+    <value>Abre Puerta?</value>
+  </data>
+  <data name="Port" xml:space="preserve">
+    <value>Puerto</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="DeleteText" xml:space="preserve">
+    <value>Desea eliminar este Registro ?</value>
+  </data>
+  <data name="Sync" xml:space="preserve">
+    <value>Sincronizar</value>
+  </data>
+  <data name="Transfer" xml:space="preserve">
+    <value>Transferencia</value>
+  </data>
+  <data name="PingTest" xml:space="preserve">
+    <value>Prueba Conexion</value>
   </data>
 </root>

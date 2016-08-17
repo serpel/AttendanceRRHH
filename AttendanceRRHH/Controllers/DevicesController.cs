@@ -36,26 +36,23 @@ namespace AttendanceRRHH.Controllers
             return View(devices.ToList());
         }
 
-        // GET: Devices/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult GetDevices()
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Device device = db.Devices.Find(id);
-            if (device == null)
-            {
-                return HttpNotFound();
-            }
-            return View(device);
+            var result = db.Devices
+                .ToList()
+                .Select(s => new { s.DeviceId, s.IP, s.Description, s.IsActive, s.IsSSR, s.Location, s.Port, s.OpenDoors, Type = s.DeviceType.Name });
+
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
+
 
         // GET: Devices/Create
         public ActionResult Create()
         {
             ViewBag.DeviceTypeId = new SelectList(db.DeviceTypes, "DeviceTypeId", "Name");
-            return View();
+
+            var device = new Device() { Port = 4370, IsActive = true };
+            return PartialView("Create", device);
         }
 
         // POST: Devices/Create
@@ -63,7 +60,7 @@ namespace AttendanceRRHH.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "DeviceId,DeviceTypeId,Description,Location,IP,Port,IsSSR,OpenDoors")] Device device)
+        public ActionResult Create([Bind(Include = "DeviceId,DeviceTypeId,Description,Location,IP,Port,IsSSR,IsActive,OpenDoors")] Device device)
         {
             if (ModelState.IsValid)
             {
@@ -72,11 +69,11 @@ namespace AttendanceRRHH.Controllers
 
                 MyLogger.GetInstance.Info("Device was created succesfull, Id: " + device.DeviceId + ", Name: " + device.Description);
 
-                return RedirectToAction("Index");
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
 
             ViewBag.DeviceTypeId = new SelectList(db.DeviceTypes, "DeviceTypeId", "Name", device.DeviceTypeId);
-            return View(device);
+            return PartialView("Device", device);
         }
 
         // GET: Devices/Edit/5
@@ -92,7 +89,7 @@ namespace AttendanceRRHH.Controllers
                 return HttpNotFound();
             }
             ViewBag.DeviceTypeId = new SelectList(db.DeviceTypes, "DeviceTypeId", "Name", device.DeviceTypeId);
-            return View(device);
+            return PartialView("Edit", device);
         }
 
         // POST: Devices/Edit/5
@@ -100,16 +97,16 @@ namespace AttendanceRRHH.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "DeviceId,DeviceTypeId,Description,Location,IP,Port,IsSSR,OpenDoors")] Device device)
+        public ActionResult Edit([Bind(Include = "DeviceId,DeviceTypeId,Description,Location,IP,Port,IsSSR,IsActive,OpenDoors")] Device device)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(device).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
             ViewBag.DeviceTypeId = new SelectList(db.DeviceTypes, "DeviceTypeId", "Name", device.DeviceTypeId);
-            return View(device);
+            return PartialView("Edit", device);
         }
 
         // GET: Devices/Delete/5
@@ -124,7 +121,7 @@ namespace AttendanceRRHH.Controllers
             {
                 return HttpNotFound();
             }
-            return View(device);
+            return PartialView("Delete", device);
         }
 
         // POST: Devices/Delete/5
@@ -138,7 +135,7 @@ namespace AttendanceRRHH.Controllers
 
             MyLogger.GetInstance.Info("Device was delete succesfull, Id: " + id);
 
-            return RedirectToAction("Index");
+            return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Refresh()
@@ -332,6 +329,7 @@ namespace AttendanceRRHH.Controllers
 
             List<IDevice> deviceList = db.Devices.Include(d => d.DeviceType)
                 .Where(w => w.IsActive == true)
+                .ToList()
                 .Select(s => factory.CreateIntance(s.IP, s.Port, s.DeviceType.Name, s.Description, s.Location, s.IsSSR))
                 .ToList();
 
