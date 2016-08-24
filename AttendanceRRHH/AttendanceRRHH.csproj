@@ -224,6 +224,7 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="BLL\DailyEmails.cs" />
     <Compile Include="BLL\DailyProcess.cs" />
     <Compile Include="BLL\DateHelper.cs" />
     <Compile Include="BLL\DeviceFactory.cs" />
@@ -311,6 +312,26 @@
     <Compile Include="Migrations\201605301812552_RemovedApplicationFieldFromLogEntry.Designer.cs">
       <DependentUpon>201605301812552_RemovedApplicationFieldFromLogEntry.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201608191618512_DeviceStatusAndSyncCronExpressionAndSyncDateFieldsOnDevicesModel.cs" />
+    <Compile Include="Migrations\201608191618512_DeviceStatusAndSyncCronExpressionAndSyncDateFieldsOnDevicesModel.Designer.cs">
+      <DependentUpon>201608191618512_DeviceStatusAndSyncCronExpressionAndSyncDateFieldsOnDevicesModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608221658140_SyncTimeExprAndTransferCronExprFieldsOnDevicesModel.cs" />
+    <Compile Include="Migrations\201608221658140_SyncTimeExprAndTransferCronExprFieldsOnDevicesModel.Designer.cs">
+      <DependentUpon>201608221658140_SyncTimeExprAndTransferCronExprFieldsOnDevicesModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608221721225_RequiredOverSyncTimeExprAndTransferCronExprFieldsOnDevicesModel.cs" />
+    <Compile Include="Migrations\201608221721225_RequiredOverSyncTimeExprAndTransferCronExprFieldsOnDevicesModel.Designer.cs">
+      <DependentUpon>201608221721225_RequiredOverSyncTimeExprAndTransferCronExprFieldsOnDevicesModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608232147169_EmailSendCronExpressionFieldOnCompanyModel.cs" />
+    <Compile Include="Migrations\201608232147169_EmailSendCronExpressionFieldOnCompanyModel.Designer.cs">
+      <DependentUpon>201608232147169_EmailSendCronExpressionFieldOnCompanyModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608232328466_UserDeparmentModel.cs" />
+    <Compile Include="Migrations\201608232328466_UserDeparmentModel.Designer.cs">
+      <DependentUpon>201608232328466_UserDeparmentModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Absence.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -336,6 +357,7 @@
     <Compile Include="Models\TimeSheet.cs" />
     <Compile Include="Models\TimeSheetViewModel.cs" />
     <Compile Include="Models\UserCompany.cs" />
+    <Compile Include="Models\UserDepartment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -1915,6 +1937,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605301812552_RemovedApplicationFieldFromLogEntry.resx">
       <DependentUpon>201605301812552_RemovedApplicationFieldFromLogEntry.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608191618512_DeviceStatusAndSyncCronExpressionAndSyncDateFieldsOnDevicesModel.resx">
+      <DependentUpon>201608191618512_DeviceStatusAndSyncCronExpressionAndSyncDateFieldsOnDevicesModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608221658140_SyncTimeExprAndTransferCronExprFieldsOnDevicesModel.resx">
+      <DependentUpon>201608221658140_SyncTimeExprAndTransferCronExprFieldsOnDevicesModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608221721225_RequiredOverSyncTimeExprAndTransferCronExprFieldsOnDevicesModel.resx">
+      <DependentUpon>201608221721225_RequiredOverSyncTimeExprAndTransferCronExprFieldsOnDevicesModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608232147169_EmailSendCronExpressionFieldOnCompanyModel.resx">
+      <DependentUpon>201608232147169_EmailSendCronExpressionFieldOnCompanyModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608232328466_UserDeparmentModel.resx">
+      <DependentUpon>201608232328466_UserDeparmentModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

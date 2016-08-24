@@ -17,10 +17,17 @@ namespace AttendanceRRHH.Models
         public Int32? CountryId { get; set; }
         public Int32? CityId { get; set; }
         public bool IsActive { get; set; }
+        public string EmailSendCronExpression { get; set; }
 
         public virtual Country Country { get; set; }
         public virtual City City { get; set; }
         public virtual ICollection<Department> Departments { get; set; }
         public virtual ICollection<Shift> Shifts { get; set; }
+
+        public Company()
+        {
+            IsActive = true;
+            EmailSendCronExpression = "30 8 * * *";
+        }
     }
 }

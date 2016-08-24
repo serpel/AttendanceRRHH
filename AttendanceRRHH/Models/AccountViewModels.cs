@@ -98,6 +98,7 @@ namespace AttendanceRRHH.Models
 
         //[Range(1, int.MaxValue, ErrorMessage = "Field can't be empty")]
         public ICollection<int> Companies { get; set; }
+        public ICollection<int> Deparments { get; set; }
     }
 
     public class ResetPasswordViewModel

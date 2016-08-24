@@ -108,7 +108,12 @@ namespace AttendanceRRHH.Controllers
         {
             ViewBag.EmployeeId = new SelectList(db.Employees, "EmployeeId", "CodeAndFullName");
             ViewBag.AbsenceId = new SelectList(db.Absences, "AbsenceId", "Name");
-            return PartialView("_Create", new EmployeeAbsence());
+
+            var employeeAbsence = new EmployeeAbsence();
+            employeeAbsence.StartDate = DateTime.Now;
+            employeeAbsence.EndDate = DateTime.Now;
+
+            return PartialView("_Create", employeeAbsence);
         }
 
         // POST: EmployeeAbsences/Create
@@ -123,7 +128,7 @@ namespace AttendanceRRHH.Controllers
                 db.EmployeeAbsences.Add(employeeAbsence);
                 db.SaveChanges();
 
-                MyLogger.GetInstance.Info("Employee absence was created successfull, Employee: " + employeeAbsence.Employee.CodeAndFullName+" Absence: " + employeeAbsence.Absence.Name);
+                MyLogger.GetInstance.Info("Employee absence was created successfull, Employee: " + employeeAbsence.EmployeeId +" Absence: " + employeeAbsence.AbsenceId);
 
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
@@ -161,7 +166,7 @@ namespace AttendanceRRHH.Controllers
                 db.Entry(employeeAbsence).State = EntityState.Modified;
                 db.SaveChanges();
 
-                MyLogger.GetInstance.Info("Employee absence was edited successfull, Employee: " + employeeAbsence.Employee.CodeAndFullName + " Absence: " + employeeAbsence.Absence.Name);
+                MyLogger.GetInstance.Info("Employee absence was edited successfull, Employee: " + employeeAbsence.EmployeeId + " Absence: " + employeeAbsence.AbsenceId);
 
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
@@ -193,7 +198,7 @@ namespace AttendanceRRHH.Controllers
             db.EmployeeAbsences.Remove(employeeAbsence);
             db.SaveChanges();
 
-            MyLogger.GetInstance.Info("Employee absence was deleted successfull, Employee: " + employeeAbsence.Employee.CodeAndFullName + " Absence: " + employeeAbsence.Absence.Name);
+            MyLogger.GetInstance.Info("Employee absence was deleted successfull, Employee: " + employeeAbsence.EmployeeId + " Absence: " + employeeAbsence.AbsenceId);
 
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }

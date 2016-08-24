@@ -8,7 +8,7 @@
 </div>
 
 
-@using (Html.BeginForm())
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "CreateForm" }))
 {
     <div class="modal-body">
         @Html.AntiForgeryToken()
@@ -36,3 +36,13 @@
         <input class="btn btn-primary" type="submit" value="Save" />
     </div>
 }
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+      
+        $('#CreateForm').submit(function () {
+            $('input[type=submit]', this).attr('disabled', 'disabled');
+        });
+    });
+</script>

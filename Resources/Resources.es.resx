@@ -399,4 +399,40 @@
   <data name="PingTest" xml:space="preserve">
     <value>Prueba Conexion</value>
   </data>
+  <data name="SyncTimeAllDevicesText" xml:space="preserve">
+    <value>Sincronizar todos los dispositivos</value>
+  </data>
+  <data name="SyncCronExpression" xml:space="preserve">
+    <value>Frecuencia de Syncronizacion</value>
+  </data>
+  <data name="Available" xml:space="preserve">
+    <value>Disponible</value>
+  </data>
+  <data name="Unavailable" xml:space="preserve">
+    <value>No disponible</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Desconicido</value>
+  </data>
+  <data name="Execution" xml:space="preserve">
+    <value>Dispositivo se encuentra en ejecución</value>
+  </data>
+  <data name="PingTestAll" xml:space="preserve">
+    <value>Probar todos</value>
+  </data>
+  <data name="SyncAll" xml:space="preserve">
+    <value>Sincronizar todos</value>
+  </data>
+  <data name="TransferAll" xml:space="preserve">
+    <value>Transferir todos</value>
+  </data>
+  <data name="TransferCronExpression" xml:space="preserve">
+    <value>Transfer Cron Expression</value>
+  </data>
+  <data name="Logo" xml:space="preserve">
+    <value>Logo</value>
+  </data>
+  <data name="EmailSendCronExpression" xml:space="preserve">
+    <value>Envio de Correos</value>
+  </data>
 </root>

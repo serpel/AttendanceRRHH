@@ -24,7 +24,7 @@ namespace AttendanceRRHH.Controllers
         {
             get
             {
-                if(_userManager == null)
+                if (_userManager == null)
                 {
                     _userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
                 }
@@ -42,7 +42,8 @@ namespace AttendanceRRHH.Controllers
             return View();
         }
 
-        public ActionResult GetUsers() {
+        public ActionResult GetUsers()
+        {
 
             var result = db.Users
                         .Select(s => new { s.Id, s.UserName, s.Email, s.EmailConfirmed });
@@ -64,8 +65,16 @@ namespace AttendanceRRHH.Controllers
                 .Distinct()
                 .ToArray();
 
+            Int32[] selectedDeparments = db.UserDepartments
+               .Where(w => w.User.Id == user.Id)
+               .ToList()
+               .Select(s => s.DepartmentId)
+               .Distinct()
+               .ToArray();
+
             ViewBag.Roles = new MultiSelectList(db.Roles.ToList(), "Id", "Name", null, selectedRoles);
             ViewBag.Companies = new MultiSelectList(db.Companies.ToList(), "CompanyId", "Name", selectedCompanies);
+            ViewBag.Departments = new MultiSelectList(db.Departments.ToList(), "DepartmentId", "Name", selectedDeparments);
 
             UserViewModel userV = new UserViewModel() { Id = user.Id, Email = user.Email };
 
@@ -79,67 +88,112 @@ namespace AttendanceRRHH.Controllers
             //TODO: Fix error when delete all companies
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindByIdAsync(model.Id);
-
-                var roleStore = new RoleStore<IdentityRole>(db);
-                var roleManager = new RoleManager<IdentityRole>(roleStore);
-
-                var rolesToDelete = user.Roles.Select(s => s.RoleId).Except(model.Roles).ToList();
-                var rolesToAdd = model.Roles.Except(user.Roles.Select(s => s.RoleId)).ToList();
-
-                if (rolesToDelete.Count > 0)
+                try
                 {
-                    string[] roles = db.Roles
-                        .Where(w => rolesToDelete.Contains(w.Id))
-                        .Select(s => s.Name)
-                        .ToArray();
+                    var user = await UserManager.FindByIdAsync(model.Id);
 
-                    await UserManager.RemoveFromRolesAsync(user.Id, roles);
-                }
+                    var roleStore = new RoleStore<IdentityRole>(db);
+                    var roleManager = new RoleManager<IdentityRole>(roleStore);
 
-                if (rolesToAdd.Count > 0)
-                {
-                    string[] newRoles = db.Roles
-                        .Where(w => rolesToAdd.Contains(w.Id))
-                        .Select(s => s.Name)
-                        .ToArray();
+                    var rolesToDelete = user.Roles.Select(s => s.RoleId).Except(model.Roles).ToList();
+                    var rolesToAdd = model.Roles.Except(user.Roles.Select(s => s.RoleId)).ToList();
 
-                    await UserManager.AddToRolesAsync(user.Id, newRoles);
-                }
-
-                var companiesToDelete = db.UserCompanies.Where(w => w.User.Id == user.Id).Select(s => s.CompanyId).Except(model.Companies).ToList();
-                var companiesToAdd = model.Companies.Except(db.UserCompanies.Where(w => w.Id == user.Id).Select(s => s.CompanyId).Distinct()).ToList();
-
-                if (companiesToDelete.Count > 0)
-                {
-                    foreach (var item in companiesToDelete)
+                    if (rolesToDelete.Count > 0)
                     {
-                        UserCompany userCompany = db.UserCompanies
-                            .Where(w => w.CompanyId == item)
-                            .Distinct()
-                            .FirstOrDefault();
+                        string[] roles = db.Roles
+                            .Where(w => rolesToDelete.Contains(w.Id))
+                            .Select(s => s.Name)
+                            .ToArray();
 
-                        if(userCompany != null)
-                            db.UserCompanies.Remove(userCompany);
+                        await UserManager.RemoveFromRolesAsync(user.Id, roles);
                     }
 
-                    await db.SaveChangesAsync();
-                }
-
-                if (companiesToAdd.Count > 0)
-                {
-                    foreach (var item in companiesToAdd)
+                    if (rolesToAdd.Count > 0)
                     {
-                        Company company = db.Companies.Find(item);
+                        string[] newRoles = db.Roles
+                            .Where(w => rolesToAdd.Contains(w.Id))
+                            .Select(s => s.Name)
+                            .ToArray();
 
-                        if(company != null)
-                            db.UserCompanies.Add(new UserCompany() { CompanyId = company.CompanyId, Id = user.Id });
+                        await UserManager.AddToRolesAsync(user.Id, newRoles);
                     }
 
-                    await db.SaveChangesAsync();
-                }
+                    var companiesToDelete = db.UserCompanies.Where(w => w.User.Id == user.Id).Select(s => s.CompanyId).Except(model.Companies).ToList();
+                    var companiesToAdd = model.Companies.Except(db.UserCompanies.Where(w => w.Id == user.Id).Select(s => s.CompanyId).Distinct()).ToList();
 
-                MyLogger.GetInstance.Info("User was edited Succesfull, userId: " + user.Id + " Email: " + user.Email);
+                    if (companiesToDelete.Count > 0)
+                    {
+                        foreach (var item in companiesToDelete)
+                        {
+                            UserCompany userCompany = db.UserCompanies
+                                .Where(w => w.CompanyId == item)
+                                .Distinct()
+                                .FirstOrDefault();
+
+                            if (userCompany != null)
+                                db.UserCompanies.Remove(userCompany);
+                        }
+
+                        await db.SaveChangesAsync();
+                    }
+
+                    if (companiesToAdd.Count > 0)
+                    {
+                        foreach (var item in companiesToAdd)
+                        {
+                            Company company = db.Companies.Find(item);
+
+                            if (company != null)
+                                db.UserCompanies.Add(new UserCompany() { CompanyId = company.CompanyId, Id = user.Id });
+                        }
+
+                        await db.SaveChangesAsync();
+                    }
+
+                    if (model.Deparments != null)
+                    {
+                        var departmentsToDelete = db.UserDepartments.Where(w => w.User.Id == user.Id).Select(s => s.DepartmentId).Except(model.Deparments).ToList();
+
+                        if (departmentsToDelete.Count > 0)
+                        {
+                            foreach (var item in departmentsToDelete)
+                            {
+                                UserDepartment userDeparment = db.UserDepartments
+                                    .Where(w => w.UserDepartmentId == item)
+                                    .Distinct()
+                                    .FirstOrDefault();
+
+                                if (userDeparment != null)
+                                    db.UserDepartments.Remove(userDeparment);
+                            }
+
+                            await db.SaveChangesAsync();
+                        }
+                    }
+
+                    var departmentsToAdd = model.Deparments.Except(db.UserDepartments.Where(w => w.Id == user.Id).Select(s => s.DepartmentId).Distinct()).ToList();
+
+                    if (departmentsToAdd.Count > 0)
+                    {
+                        foreach (var item in departmentsToAdd)
+                        {
+                            Department deparment = db.Departments.Find(item);
+
+                            if (deparment != null)
+                                db.UserDepartments.Add(new UserDepartment() { DepartmentId = deparment.DepartmentId, Id = user.Id });
+                        }
+
+                        await db.SaveChangesAsync();
+
+                        MyLogger.GetInstance.Info("User was edited Succesfull, userId: " + user.Id + " Email: " + user.Email);
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    MyLogger.GetInstance.Error("Error ", e);
+
+                }
 
                 //TODO: save company user
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
@@ -190,6 +244,11 @@ namespace AttendanceRRHH.Controllers
             if (userCompanies != null)
                 db.UserCompanies.RemoveRange(userCompanies);
 
+            var userDeparments = db.UserDepartments.Where(w => w.Id == user.Id);
+
+            if (userDeparments != null)
+                db.UserDepartments.RemoveRange(userDeparments);
+
             var result = await UserManager.DeleteAsync(user);
 
             MyLogger.GetInstance.Info("User was delted Succesfull, userId: " + user.Id + " Email: " + user.Email);
@@ -230,7 +289,7 @@ namespace AttendanceRRHH.Controllers
                     var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    MyLogger.GetInstance.Info("User was created Succesfull, userId: "+user.Id+" Email: "+user.Email);
+                    MyLogger.GetInstance.Info("User was created Succesfull, userId: " + user.Id + " Email: " + user.Email);
 
                     return Json(new { success = true }, JsonRequestBehavior.AllowGet);
                 }

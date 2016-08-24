@@ -2,10 +2,13 @@
 @using Resources
 
 @section Styles{
-    <link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
-    <link href="~/Content/assets/plugins/bootstrap-datepicker/css/datepicker.css" rel="stylesheet" type="text/css" />
+    @*<link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />*@
     <link href="~/Content/assets/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
-    <link href="~/Content/css/select2.min.css" rel="stylesheet" />
+    <link href="~/Content/assets/plugins/bootstrap-datepicker/css/datepicker.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/plugins/boostrap-clockpicker/bootstrap-clockpicker.min.css" rel="stylesheet" />
+    <link href="~/Content/assets/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    @*<link href="~/Content/css/select2.min.css" rel="stylesheet" />*@
+    <link href="~/Content/assets/plugins/bootstrap-select2/select2.min.css" rel="stylesheet" />
 }
 
 <div class="page-title">
@@ -74,10 +77,12 @@
 
 @section Scripts{
     <script src="~/Scripts/moment.min.js"></script>
-    <script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+    @*<script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>*@
+    <script src="~/Content/assets/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
     <script src="~/Content/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js" type="text/javascript"></script>
-    <script src="~/Content/assets/plugins/boostrap-clockpicker/js/bootstrap-clockpicker.min.js" type="text/javascript"></script>
-    <script src="~/Scripts/select2.min.js"></script>
+    <script src="~/Content/assets/plugins/boostrap-clockpicker/bootstrap-clockpicker.min.js"></script>
+    <script src="~/Content/assets/plugins/bootstrap-select2/select2.min.js"></script>
+    @*<script src="~/Scripts/select2.min.js"></script>*@
     <script type="text/javascript">
         $(document).ready(function () {
 
@@ -156,20 +161,20 @@
                                 if (val.In != null)
                                 {
                                     if (val.IsManualIn) {
-                                        items += "<td class='danger'>" + date_in.format('YYYY/MM/DD HH:mm') + "</td>";
+                                        items += "<td class='danger'>" + date_in.format('YY/MM/DD HH:mm') + "</td>";
                                     } else {
-                                        items += '<td>' + date_in.format('YYYY/MM/DD HH:mm') + '</td>';
+                                        items += '<td>' + date_in.format('YY/MM/DD HH:mm') + '</td>';
                                     }
                                 } else {
                                     items += '<td></td>';
                                 }
 
-                                if (val.In != null) {
+                                if (val.Out != null) {
 
                                     if (val.IsManualOut) {
-                                        items += "<td class='danger'>" + date_out.format('YYYY/MM/DD HH:mm') + "</td>";
+                                        items += "<td class='danger'>" + date_out.format('YY/MM/DD HH:mm') + "</td>";
                                     } else {
-                                        items += '<td>' + date_out.format('YYYY/MM/DD HH:mm') + '</td>';
+                                        items += '<td>' + date_out.format('YY/MM/DD HH:mm') + '</td>';
                                     }
                                 }
                                 else {
@@ -197,7 +202,7 @@
                                 items += '<td>' + early.toFixed(2) + '</td>';
 
                                 var controller = 'TimeSheets'
-                                var editUrl = '/' + controller + '/edit/' + val.TimeSheetId;
+                                var editUrl = '@Url.Action("Edit")' + '/' + val.TimeSheetId;
                                 //var deleteUrl = '/' + controller + '/delete/' + data;
                                 var txt = "<div class='pull-right'>" +
                                     "<a class='btn btn-default' data-modal='' href='" + editUrl + "' title='Edit'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;" +

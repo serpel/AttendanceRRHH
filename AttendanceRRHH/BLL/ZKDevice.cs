@@ -4,34 +4,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AttendanceRRHH.Models;
-using log4net;
+using NLog;
+using System.Data.Entity;
 
 namespace AttendanceRRHH.BLL
 {
     public class ZKDevice : IDevice, IDisposable
     {
-        private ApplicationDbContext context = new ApplicationDbContext();
+        private Device _device;
 
-        public string Description { get; set;  }
+        private ApplicationDbContext context;
 
-        public string Ip { get; set; }
+        public Device Device
+        {
+            get
+            {
+                return this._device;
+            }
 
-        public string Location { get; set; }
+            set
+            {
+                this._device = value;
 
-        public int Port { get; set; }
+            }
+        }
 
-        public Status Status { get; set; }
-
-        public DateTime Time { get; set; }
-
-        public IList<AttendanceRecord> RecordList { get; set; }
-
-        public bool IsSSR { get; set; }
-
-        public string Type { get; set; }
-
-        public int Id{ get; set; }
-        private readonly ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #region ZKLibrary definitions
         private zkemkeeper.CZKEM axCZKEM1 = new zkemkeeper.CZKEM();
         private bool bIsConnected = false;
@@ -40,42 +37,51 @@ namespace AttendanceRRHH.BLL
 
         public ZKDevice()
         {
-            RecordList = new List<AttendanceRecord>();
+            context = new ApplicationDbContext();
+        }
+
+        public ZKDevice(ApplicationDbContext context)
+        {
+            this.context = context;
+        }
+
+        public ZKDevice(int device, ApplicationDbContext context)
+        {
+            this.Device = context.Devices.Find(device);
+            this.context = context;
         }
 
         private void ConnectDevice()
         {
-            if (bIsConnected) {
-                this.Status = Status.Available;
+            if (bIsConnected)
                 return;
-            }
 
-            if (this.Ip == null || this.Port < 0 || this.bIsConnected)
-            {
-                this.Status = Status.Unknown;
-                logger.Error("ZKDevice.ConnectDevice() - IP and Port cannot be null");
-                return;
-            }
             int idwErrorCode = 0;
 
-            try {
-                bIsConnected = axCZKEM1.Connect_Net(this.Ip, this.Port);
+            try
+            {
+                bIsConnected = axCZKEM1.Connect_Net(this._device.IP, this._device.Port);
                 if (bIsConnected)
                 {
-                    this.Status = Status.Available;
+                    //this.Device.DeviceStatus = DeviceStatus.Available;
                     iMachineNumber = 1;//In fact,when you are using the tcp/ip communication,this parameter will be ignored,that is any integer will all right.Here we use 1.
                     axCZKEM1.RegEvent(iMachineNumber, 65535);//Here you can register the realtime events that you want to be triggered(the parameters 65535 means registering all)
-                    logger.Info("ZKDevice.ConnectDevice() - The device is connected successull "+this.Ip);
+                    MyLogger.GetInstance.Info("ZKDevice.ConnectDevice() - The device is connected successull " + this.Device.IP);
                 }
                 else
                 {
-                    this.Status = Status.Unavailable;
+                    //this.Device.DeviceStatus = DeviceStatus.Unavailable;
                     axCZKEM1.GetLastError(ref idwErrorCode);
-                    logger.Error("ZKDevice.ConnectDevice() - Unable to connect the device, ErrorCode=" + idwErrorCode.ToString());
+                    MyLogger.GetInstance.Error("ZKDevice.ConnectDevice() - Unable to connect the device, ErrorCode=" + idwErrorCode.ToString());
                 }
-            }catch(Exception e)
+
+                // var device = context.Devices.Find(Device.DeviceId);
+                //context.Entry(Device).State = EntityState.Modified;
+                //context.SaveChanges();
+            }
+            catch (Exception e)
             {
-                logger.Error(e.Message);
+                MyLogger.GetInstance.Error(e.Message);
             }
         }
 
@@ -83,7 +89,7 @@ namespace AttendanceRRHH.BLL
         {
             this.axCZKEM1.Disconnect();
             this.bIsConnected = false;
-            logger.Info("ZKDevice.DisconnectDevice() - Device Disconnected: " + this.Ip);
+            MyLogger.GetInstance.Info("ZKDevice.DisconnectDevice() - Device Disconnected: " + this.Device.IP);
         }
 
         private bool CompareDates(DateTime date1, DateTime date2)
@@ -97,8 +103,9 @@ namespace AttendanceRRHH.BLL
             return false;
         }  
 
-        private void SSRDownloadLogData()
+        private bool SSRDownloadLogData()
         {
+            bool result = true;
             String idwEnrollNumber = "";
             int idwVerifyMode = 0;
             int idwInOutMode = 0;
@@ -129,45 +136,59 @@ namespace AttendanceRRHH.BLL
                             .Where(w => w.EmployeeCode == idwEnrollNumber).FirstOrDefault();
 
                         var device = context.Devices
-                            .Where(w => w.Description == this.Description).FirstOrDefault();
+                            .Where(w => w.Description == this.Device.Description).FirstOrDefault();
 
-                        AttendanceRecord record = new AttendanceRecord()
+                        if(employee == null && device != null)
                         {
-                            EmployeeId = employee.EmployeeId,
-                            Date = recordDate,
-                            DeviceId = device.DeviceId,
-                            InsertedAt = DateTime.Now
-                        };
+                            AttendanceRecord record = new AttendanceRecord()
+                            {
+                                EmployeeId = employee.EmployeeId,
+                                Date = recordDate,
+                                DeviceId = device.DeviceId,
+                                InsertedAt = DateTime.Now
+                            };
 
-                        this.RecordList.Add(record);
+                            context.AttendanceRecords.Add(record);
+                            context.SaveChanges();
 
-                        logger.Info("ZKDevice.SSRDownloadLogData() - bio_Marcaciones2(" + idwEnrollNumber.ToString() + ", " + recordDate.ToString() + ", " + this.Location + " )");
+                            MyLogger.GetInstance.Info("ZKDevice.SSRDownloadLogData() - AttendanceRecord(" + idwEnrollNumber.ToString() + ", " + recordDate.ToString() + ", " + this.Device.Location + " )");
+                        }
+                        else
+                        {
+                            MyLogger.GetInstance.Info("ZKDevice.SSRDownloadLogData() - Record not inserted at AttendanceRecord(" + idwEnrollNumber.ToString() + ", " + recordDate.ToString() + ", " + this.Device.Location + " )");
+                        }
+                       
                     }
                     catch (Exception e)
                     {
-                        logger.Error("ZKDevice.SSRDownloadLogData() - Error ", e);
+                        MyLogger.GetInstance.Error("ZKDevice.SSRDownloadLogData() - Error ", e);                      
                     }
                 }
-                logger.Debug("ZKDevice.SSRDownloadLogData() - Download: "+iGLCount+" records");
+
+                MyLogger.GetInstance.Debug("ZKDevice.SSRDownloadLogData() - Download: "+iGLCount+" records");
             }
             else
             {
                 axCZKEM1.GetLastError(ref idwErrorCode);
+                result = false;
 
                 if (idwErrorCode != 0)
                 {
-                    logger.Error("ZKDevice.SSRDownloadLogData() - Reading data from terminal failed,ErrorCode: " + idwErrorCode.ToString());
+                    MyLogger.GetInstance.Error("ZKDevice.SSRDownloadLogData() - Reading data from terminal failed,ErrorCode: " + idwErrorCode.ToString());
                 }
                 else
                 {
-                    logger.Error("ZKDevice.SSRDownloadLogData() - No data from terminal returns!");
+                    MyLogger.GetInstance.Error("ZKDevice.SSRDownloadLogData() - No data from terminal returns!");
                 }
             }
             axCZKEM1.EnableDevice(iMachineNumber, true); //enable the device
+
+            return result;
         }
 
-        private void DownloadLogData()
+        private bool DownloadLogData()
         {
+            bool result = true;
             int idwTMachineNumber = 0;
             int idwEnrollNumber = 0;
             int idwEMachineNumber = 0;
@@ -191,76 +212,91 @@ namespace AttendanceRRHH.BLL
                     try { 
                         iGLCount++;
                         DateTime recordDate = DateTime.Parse(idwYear.ToString() + '-' + idwMonth.ToString() + '-' + idwDay.ToString() + ' ' + idwHour.ToString() + ':' + idwMinute.ToString());
-                        //DateTime LocalDate = DateTime.Now;
-
 
                         var employee = context.Employees
                             .Where(w => w.EmployeeCode == idwEnrollNumber.ToString()).FirstOrDefault();
 
                         var device = context.Devices
-                            .Where(w => w.Description == this.Description).FirstOrDefault();
+                            .Where(w => w.Description == this.Device.Description).FirstOrDefault();
 
-                        AttendanceRecord record = new AttendanceRecord()
+                        if (employee != null && device != null)
                         {
-                            EmployeeId = employee.EmployeeId,
-                            Date = recordDate,
-                            DeviceId = device.DeviceId,
-                            InsertedAt = DateTime.Now
-                        };
+                            AttendanceRecord record = new AttendanceRecord()
+                            {
+                                EmployeeId = employee.EmployeeId,
+                                Date = recordDate,
+                                DeviceId = device.DeviceId,
+                                InsertedAt = DateTime.Now
+                            };
 
-                        RecordList.Add(record);
+                            context.AttendanceRecords.Add(record);
+                            context.SaveChanges();
 
-                        logger.Info("ZKDevice.DownloadLogData() - bio_Marcaciones2(" + idwEnrollNumber.ToString() + ", " + recordDate.ToString() + ", "+ this.Location +" )");
+                            MyLogger.GetInstance.Info("ZKDevice.SSRDownloadLogData() - AttendanceRecord(" + idwEnrollNumber.ToString() + ", " + recordDate.ToString() + ", " + this.Device.Location + " )");
+                        }
+                        else
+                        {
+                            MyLogger.GetInstance.Info("ZKDevice.SSRDownloadLogData() - Record not inserted at AttendanceRecord(" + idwEnrollNumber.ToString() + ", " + recordDate.ToString() + ", " + this.Device.Location + " )");
+                        }                       
                     }
                     catch(Exception e)
                     {
-                        logger.Error("ZKDevice.DownloadLogData() - Error ", e);
+                        MyLogger.GetInstance.Error("ZKDevice.DownloadLogData() - Error ", e);
                     }
+
+                    //context.SaveChanges();
                 }
-                logger.Debug("ZKDevice.DownloadLogData() - Download: " + iGLCount + " records");
+                MyLogger.GetInstance.Debug("ZKDevice.DownloadLogData() - Download: " + iGLCount + " records");
             }
             else
             {
                 axCZKEM1.GetLastError(ref idwErrorCode);
+                result = false;
 
                 if (idwErrorCode != 0)
                 {
-                    logger.Error("ZKDevice.DownloadLogData() - Reading data from terminal failed,ErrorCode: " + idwErrorCode.ToString());
+                    MyLogger.GetInstance.Error("ZKDevice.DownloadLogData() - Reading data from terminal failed,ErrorCode: " + idwErrorCode.ToString());
                 }
                 else
                 {
-                    logger.Error("ZKDevice.DownloadLogData() - No data from terminal returns!");
+                    MyLogger.GetInstance.Error("ZKDevice.DownloadLogData() - No data from terminal returns!");
                 }
             }
             axCZKEM1.EnableDevice(iMachineNumber, true);//enable the device
+
+            return result;
         }
 
-        private void LoadRegisters()
+        private bool LoadRegisters()
         {
-            logger.Info("ZKDevice.LoadRegisters() - The process for download records is currently running");
+            bool result = false;
+
+            MyLogger.GetInstance.Info("ZKDevice.LoadRegisters() - The process for download records is currently running");
 
             ConnectDevice();
 
             if (bIsConnected)
             {
-                if(IsSSR)
+                if(this.Device.IsSSR)
                 {
-                    SSRDownloadLogData();
+                    result = SSRDownloadLogData();
                 }
                 else
                 {
-                    DownloadLogData();
+                    result = DownloadLogData();
                 }
+
+                DisconnectDevice();
             }
 
-            DisconnectDevice();
+            return result;
         }
 
         public bool SyncTime()
         {
             bool result = false;
 
-            logger.Info("ZKDevice.SyncTime() - The process for Sync devices is currently running");
+            MyLogger.GetInstance.Info("ZKDevice.SyncTime() - The process for Sync devices is currently running");
 
             ConnectDevice();
 
@@ -271,10 +307,10 @@ namespace AttendanceRRHH.BLL
                 //this line get the local time and update the biometric device 
                 if (axCZKEM1.SetDeviceTime(iMachineNumber))
                 {
-                    logger.Debug("ZKDevice.SyncTime() - Syncing ZK devices at " + DateTime.Now);
+                    MyLogger.GetInstance.Debug("ZKDevice.SyncTime() - Syncing ZK devices at " + DateTime.Now);
 
                     if (axCZKEM1.RefreshData(iMachineNumber)) //the data in the device should be refreshed
-                        logger.Debug("ZKDevice.SyncTime() - Successfully set the time of the machine and the terminal to sync PC! ");
+                        MyLogger.GetInstance.Debug("ZKDevice.SyncTime() - Successfully set the time of the machine and the terminal to sync PC! ");
 
                     int idwYear = 0;
                     int idwMonth = 0;
@@ -288,17 +324,23 @@ namespace AttendanceRRHH.BLL
                     try { 
                         if (axCZKEM1.GetDeviceTime(iMachineNumber, ref idwYear, ref idwMonth, ref idwDay, ref idwHour, ref idwMinute, ref idwSecond))//show the time
                         {
-                            this.Time = DateTime.Parse(idwYear.ToString() + "-" + idwMonth.ToString() + "-" + idwDay.ToString() + " " + idwHour.ToString() + ":" + idwMinute.ToString() + ":" + idwSecond.ToString());
+                            var device = context.Devices.Find(Device.DeviceId);
+
+                            device.SyncDate = DateTime.Parse(idwYear.ToString() + "-" + idwMonth.ToString() + "-" + idwDay.ToString() + " " + idwHour.ToString() + ":" + idwMinute.ToString() + ":" + idwSecond.ToString());
+
+                            //var device = context.Devices.Find(de)
+                            context.Entry(device).State = EntityState.Modified;
+                            context.SaveChanges();
                         }
                     }catch(Exception e)
                     {
-                        logger.Error("ZKDevice.SyncTime() - Sync operation failed ", e);
+                        MyLogger.GetInstance.Error("ZKDevice.SyncTime() - Sync operation failed ", e);
                     }
                 }
                 else
                 {
                     axCZKEM1.GetLastError(ref idwErrorCode);
-                    logger.Error("ZKDevice.SyncTime() - Sync operation failed, ErrorCode=" + idwErrorCode.ToString());
+                    MyLogger.GetInstance.Error("ZKDevice.SyncTime() - Sync operation failed, ErrorCode=" + idwErrorCode.ToString());
                 }
             }
 
@@ -311,36 +353,28 @@ namespace AttendanceRRHH.BLL
         {
             bool result = false;
 
-            logger.Info("ZKDevice.TransferRecords() - The process for Transfer Records is currently running");
+            MyLogger.GetInstance.Info("ZKDevice.TransferRecords() - The process for Transfer Records is currently running");
 
-            LoadRegisters();
-
-            if(this.RecordList != null)
-            {
-                try {
-                    context.AttendanceRecords.AddRange(this.RecordList);
-                    context.SaveChanges();
-                    result = true;
-
-                    logger.Debug("ZKDevice.TransferRecords() - " + this.RecordList.Count + " will be saved on database");
-                }catch(Exception e)
-                {
-                    logger.Error("ZKDevice.TransferRecords() - Unable to transfer records", e);
-                }
-            }
+            result = LoadRegisters();
 
             return result;
         }
 
         public void GetStatus()
         {
-            logger.Info("ZKDevice.GetStatus() - get device status and time ");
+            MyLogger.GetInstance.Info("ZKDevice.GetStatus() - get device status and time ");
 
             try {
-                 
-                if (axCZKEM1.Connect_Net(this.Ip, this.Port))
+
+                var device = context.Devices.Find(this._device.DeviceId);
+
+                if (device == null)
+                    return;
+
+                if (axCZKEM1.Connect_Net(this.Device.IP, this.Device.Port))
                 {
-                    this.Status = Status.Available;
+                    device.DeviceStatus = DeviceStatus.Available;
+
                     iMachineNumber = 1;//In fact,when you are using the tcp/ip communication,this parameter will be ignored,that is any integer will all right.Here we use 1.
                     axCZKEM1.RegEvent(iMachineNumber, 65535);//Here you can register the realtime events that you want to be triggered(the parameters 65535 means registering all)
 
@@ -353,16 +387,20 @@ namespace AttendanceRRHH.BLL
 
                     if (axCZKEM1.GetDeviceTime(iMachineNumber, ref idwYear, ref idwMonth, ref idwDay, ref idwHour, ref idwMinute, ref idwSecond))//show the time
                     {
-                        this.Time = DateTime.Parse(idwYear.ToString() + "-" + idwMonth.ToString() + "-" + idwDay.ToString() + " " + idwHour.ToString() + ":" + idwMinute.ToString() + ":" + idwSecond.ToString());
+                        device.SyncDate = DateTime.Parse(idwYear.ToString() + "-" + idwMonth.ToString() + "-" + idwDay.ToString() + " " + idwHour.ToString() + ":" + idwMinute.ToString() + ":" + idwSecond.ToString());
                     }
                 }
                 else
                 {
-                    this.Status = Status.Unavailable;
+                    device.DeviceStatus = DeviceStatus.Unavailable;
                 }
+
+                context.Entry(device).State = EntityState.Modified;
+                context.SaveChanges();
+
             }catch(Exception e)
             {
-                logger.Error("ZKDevice.GetStatus() - Error to get status ", e);
+                MyLogger.GetInstance.Error("ZKDevice.GetStatus() - Error to get status ", e);
             }
 
             DisconnectDevice();
@@ -370,7 +408,7 @@ namespace AttendanceRRHH.BLL
 
         public bool ClearDevice()
         {
-            logger.Info("ZKDevice.ClearDevice() - Clear Device");
+            MyLogger.GetInstance.Info("ZKDevice.ClearDevice() - Clear Device");
 
             bool result = false;
 
@@ -388,13 +426,13 @@ namespace AttendanceRRHH.BLL
                 {
                     //the data in the device should be refreshed
                     result = true;
-                    logger.Debug("ZKDevice.ClearDevice() - All att Logs have been cleared from teiminal!.");
+                    MyLogger.GetInstance.Debug("ZKDevice.ClearDevice() - All att Logs have been cleared from teiminal!.");
                 }
             }
             else
             {
                 axCZKEM1.GetLastError(ref idwErrorCode);
-                logger.Debug("ZKDevice.ClearDevice() - Operation failed,ErrorCode=" + idwErrorCode.ToString());
+                MyLogger.GetInstance.Debug("ZKDevice.ClearDevice() - Operation failed,ErrorCode=" + idwErrorCode.ToString());
             }
             axCZKEM1.EnableDevice(iMachineNumber, true);//enable the device
 

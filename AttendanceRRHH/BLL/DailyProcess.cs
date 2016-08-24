@@ -9,7 +9,7 @@ using AttendanceRRHH.DAL;
 
 namespace AttendanceRRHH.BLL
 {
-    public class DailyProcess
+    public class DailyProcess: IDisposable
     {
         private ApplicationDbContext context;
         private EmployeeRepository eRepository;
@@ -22,10 +22,10 @@ namespace AttendanceRRHH.BLL
         public DailyProcess(ApplicationDbContext context)
         {
             this.context = context;
-            eRepository = new EmployeeRepository(context);
-            sRepository = new ShiftTimeRepository(context);
-            aRepository = new AttendanceRecordsRepository(context);
-            tRepository = new TimeSheetRepository(context);
+            //eRepository = new EmployeeRepository(context);
+            //sRepository = new ShiftTimeRepository(context);
+            //aRepository = new AttendanceRecordsRepository(context);
+            //tRepository = new TimeSheetRepository(context);
         }
 
         public void GenerateEmployeeTimeSheetByDate(DateTime date)
@@ -220,8 +220,10 @@ namespace AttendanceRRHH.BLL
             context.SaveChanges();
         }
 
-        public void GenerateEmployeeTimeSheetByDayAndCompany(DateTime date, int companyId)
+        public bool GenerateEmployeeTimeSheetByDayAndCompany(DateTime date, int companyId)
         {
+            bool success = true;
+
             //borrar data vieja
             Func<TimeSheet, bool> filter = f => f.Date.Year == date.Year
             && f.Date.Month == date.Month
@@ -229,7 +231,8 @@ namespace AttendanceRRHH.BLL
             && f.Employee.Department.CompanyId == companyId;
 
             var timesheets = context.TimeSheets.Where(filter);
-            context.TimeSheets.RemoveRange(timesheets);
+            if (timesheets != null) 
+                context.TimeSheets.RemoveRange(timesheets);
 
             var employees = context.Employees.Include(i => i.Shift).Include(i => i.Schedules).Include(i => i.AttendanceRecords)
                 .Where(w => w.IsActive == true 
@@ -333,6 +336,8 @@ namespace AttendanceRRHH.BLL
                 }
             }
             context.SaveChanges();
+
+            return success;
         }
 
         public void UpdateTimeSheetByEmployee(int employeeId)
@@ -395,6 +400,10 @@ namespace AttendanceRRHH.BLL
 
             return result;
         }
-       
+
+        public void Dispose()
+        {
+            ((IDisposable)context).Dispose();
+        }
     }
 }

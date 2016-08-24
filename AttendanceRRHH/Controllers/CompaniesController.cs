@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using AttendanceRRHH.Models;
 using AttendanceRRHH.DAL.Security;
 using AttendanceRRHH.BLL;
+using Hangfire;
 
 namespace AttendanceRRHH.Controllers
 {
@@ -45,12 +46,15 @@ namespace AttendanceRRHH.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "CompanyId,Name,Address,LogoUrl,CountryId,CityId,IsActive")] Company company)
+        public ActionResult Create([Bind(Include = "CompanyId,Name,Address,LogoUrl,CountryId,CityId,IsActive,EmailSendCronExpression")] Company company)
         {
             if (ModelState.IsValid)
             {
                 db.Companies.Add(company);
                 db.SaveChanges();
+
+                RecurringJob.AddOrUpdate("e" + company.CompanyId, 
+                    () => ProcessRecordsAndEmailSendByCompany(company.CompanyId), company.EmailSendCronExpression);
 
                 MyLogger.GetInstance.Info("The Company was created succesfull, Name: "+company.Name);
 
@@ -85,13 +89,16 @@ namespace AttendanceRRHH.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "CompanyId,Name,Address,LogoUrl,CountryId,CityId,IsActive")] Company company)
+        public ActionResult Edit([Bind(Include = "CompanyId,Name,Address,LogoUrl,CountryId,CityId,IsActive,EmailSendCronExpression")] Company company)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(company).State = EntityState.Modified;
                 db.SaveChanges();
-                
+
+                RecurringJob.AddOrUpdate("e" + company.CompanyId,
+                    () => ProcessRecordsAndEmailSendByCompany(company.CompanyId), company.EmailSendCronExpression);
+
                 MyLogger.GetInstance.Info("The Company was edited succesfull, Id: " + company.CompanyId);
 
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
@@ -127,6 +134,17 @@ namespace AttendanceRRHH.Controllers
 
             MyLogger.GetInstance.Info("The Company was deleted succesfull, Id: " + id);
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+        }
+
+        [AutomaticRetry(Attempts = 0)]
+        public void ProcessRecordsAndEmailSendByCompany(int company)
+        {
+            DailyProcess pr = new DailyProcess(db);
+
+            if(pr.GenerateEmployeeTimeSheetByDayAndCompany(DateTime.Now, company))
+            {
+
+            }
         }
 
         protected override void Dispose(bool disposing)

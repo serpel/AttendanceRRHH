@@ -22,9 +22,10 @@ namespace AttendanceRRHH.Controllers
             return View();
         }
 
+        [AutomaticRetry(Attempts = 0)]
         public void Process(int companyId, DateTime date)
         {
-            DailyProcess process = new DailyProcess();
+            DailyProcess process = new DailyProcess(db);
             process.GenerateEmployeeTimeSheetByDayAndCompany(date, companyId);
         }
 

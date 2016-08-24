@@ -100,9 +100,9 @@ namespace AttendanceRRHH.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(timeSheet).State = EntityState.Modified;
                 timeSheet.UpdatedAt = DateTime.Now;
-                            
+
+                db.Entry(timeSheet).State = EntityState.Modified;                          
                 db.SaveChanges();
 
                 MyLogger.GetInstance.Info("Daily record was edited successfull, RecordId: " + timeSheet.ShiftTimeId+", EmployeeId: "+timeSheet.EmployeeId);

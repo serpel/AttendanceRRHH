@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AttendanceRRHH.Models
 {
+    public enum DeviceStatus { Unavailable = 0, Available = 1, Unknown = 2 }
     public class Device
     {
         [Key]
@@ -24,7 +25,24 @@ namespace AttendanceRRHH.Models
         public bool OpenDoors { get; set; }
         public bool IsActive { get; set; }
 
+        [Required]
+        public string SyncTimeCronExpression { get; set; }
+        [Required]
+        public string TransferCronExpression { get; set; }
+        public DeviceStatus DeviceStatus { get; set; }
+        public DateTime SyncDate { get; set; }
+
         public virtual DeviceType DeviceType { get; set; }
         public virtual ICollection<AttendanceRecord> AttendanceRecords { get; set; }
+
+        public Device()
+        {
+            SyncDate = DateTime.Now;
+            IsActive = true;
+            Port = 4370;
+            DeviceStatus = DeviceStatus.Unknown;
+            SyncTimeCronExpression = "0 8 * * *";
+            TransferCronExpression = "30 8 * * *";
+        }
     }
 }

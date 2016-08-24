@@ -40,7 +40,11 @@ namespace AttendanceRRHH.Controllers
         {
             var result = db.Devices
                 .ToList()
-                .Select(s => new { s.DeviceId, s.IP, s.Description, s.IsActive, s.IsSSR, s.Location, s.Port, s.OpenDoors, Type = s.DeviceType.Name });
+                .Select(s => new { s.DeviceId, s.IP, s.Description, s.IsActive, s.IsSSR, s.Location, s.Port, s.OpenDoors, Type = s.DeviceType.Name,
+                    SyncDate = s.SyncDate.ToString("yyyy/MM/dd hh:mm"),
+                    DeviceStatus = s.DeviceStatus == DeviceStatus.Available ? Resources.Resources.Available
+                                    : s.DeviceStatus == DeviceStatus.Unavailable ? Resources.Resources.Unavailable
+                                    : s.DeviceStatus == DeviceStatus.Unknown ? Resources.Resources.Unknown : "" });
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }
@@ -51,7 +55,7 @@ namespace AttendanceRRHH.Controllers
         {
             ViewBag.DeviceTypeId = new SelectList(db.DeviceTypes, "DeviceTypeId", "Name");
 
-            var device = new Device() { Port = 4370, IsActive = true };
+            var device = new Device();
             return PartialView("Create", device);
         }
 
@@ -60,12 +64,15 @@ namespace AttendanceRRHH.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "DeviceId,DeviceTypeId,Description,Location,IP,Port,IsSSR,IsActive,OpenDoors")] Device device)
+        public ActionResult Create([Bind(Include = "DeviceId,DeviceTypeId,Description,Location,IP,Port,IsSSR,IsActive,OpenDoors,SyncTimeCronExpression,TransferCronExpression,SyncDate")] Device device)
         {
             if (ModelState.IsValid)
             {
                 db.Devices.Add(device);
                 db.SaveChanges();
+
+                RecurringJob.AddOrUpdate("s" + device.DeviceId.ToString(), () => SyncTimeAndTransferByDevice(device.DeviceId), device.SyncTimeCronExpression);
+                //RecurringJob.AddOrUpdate("t" + device.DeviceId.ToString(), () => TransferRecordsByDevice(device.DeviceId), device.TransferCronExpression);
 
                 MyLogger.GetInstance.Info("Device was created succesfull, Id: " + device.DeviceId + ", Name: " + device.Description);
 
@@ -103,6 +110,8 @@ namespace AttendanceRRHH.Controllers
             {
                 db.Entry(device).State = EntityState.Modified;
                 db.SaveChanges();
+
+                RecurringJob.AddOrUpdate("s" + device.DeviceId.ToString(), () => SyncTimeAndTransferByDevice(device.DeviceId), device.SyncTimeCronExpression);
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
             ViewBag.DeviceTypeId = new SelectList(db.DeviceTypes, "DeviceTypeId", "Name", device.DeviceTypeId);
@@ -133,101 +142,13 @@ namespace AttendanceRRHH.Controllers
             db.Devices.Remove(device);
             db.SaveChanges();
 
+            RecurringJob.RemoveIfExists("s" + device.DeviceId);
+            //RecurringJob.RemoveIfExists("t" + device.DeviceId);
+
             MyLogger.GetInstance.Info("Device was delete succesfull, Id: " + id);
 
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }
-
-        public ActionResult Refresh()
-        {
-
-            var deviseList = db.Devices
-                .Where(w => w.IsActive == true)
-                .Select(s => new ZKDevice()
-                {
-                    Id = s.DeviceId,
-                    Description = s.Description,
-                    Location = s.Location,
-                    Ip = s.IP,
-                    Port = s.Port,
-                    IsSSR = s.IsSSR,
-                    Status = Status.Unavailable,
-                    Type = "ZK"
-                });
-
-            foreach (IDevice device in deviseList)
-            {
-                BackgroundJob.Enqueue(
-                    () => getStatusbyDevise(device.Id));
-            }
-
-            return RedirectToAction("Index");
-        }
-
-        public void getStatusbyDevise(int id)
-        {
-            IDevice devise = db.Devices
-                .Where(w => w.DeviceId == id)
-                .Select(s => new ZKDevice()
-                {
-                    Id = s.DeviceId,
-                    Description = s.Description,
-                    Location = s.Location,
-                    Ip = s.IP,
-                    Port = s.Port,
-                    IsSSR = s.IsSSR,
-                    Status = Status.Unavailable,
-                    Type = "ZK"
-                }).Single();
-
-            devise.GetStatus();
-        }
-
-        public void getStatus()
-        {
-            var deviseList = db.Devices
-                .Where(w => w.IsActive == true)
-                .Select(s => new ZKDevice()
-                {
-                    Id = s.DeviceId,
-                    Description = s.Description,
-                    Location = s.Location,
-                    Ip = s.IP,
-                    Port = s.Port,
-                    IsSSR = s.IsSSR,
-                    Status = Status.Unavailable,
-                    Type = "ZK"
-                });
-
-            foreach (IDevice device in deviseList)
-            {
-                device.GetStatus();
-            }
-        }
-
-        //public ActionResult Index()
-        //{
-        //    var deviseList = db.Devices
-        //        .Where(w => w.IsActive == true)
-        //        .Select(s => new ZKDevice()
-        //        {
-        //            Id = s.DeviceId,
-        //            Description = s.Description,
-        //            Location = s.Location,
-        //            Ip = s.IP,
-        //            Port = s.Port,
-        //            IsSSR = s.IsSSR,
-        //            Status = Status.Unavailable,
-        //            Type = "ZK"
-        //        });
-
-        //    ViewBag.countAvailable = deviseList.Count(r => r.Status == Status.Available);
-        //    ViewBag.countUnavailable = deviseList.Count(r => r.Status == Status.Unavailable);
-        //    ViewBag.countUnknown = deviseList.Count(r => r.Status == Status.Unknown);
-
-        //    return View(deviseList);
-        //}
-     
 
         public ActionResult RemoveDevice(int id)
         {
@@ -247,50 +168,70 @@ namespace AttendanceRRHH.Controllers
         }
 
 
-        public ActionResult SyncTime(int id)
+        public ActionResult PingAllDevices()
         {
-            DeviceFactory factory = new DeviceFactory();
+            TempData["Message"] = Resources.Resources.PingTestAll;
 
-            IDevice device = db.Devices
-                .Include(d => d.DeviceType)
-                .ToList()
-                .Where(w => w.IsActive == true
-                       && w.DeviceId == id)
-                .Select(s => factory.CreateIntance(s.IP, (int)s.Port, s.DeviceType.Name, s.Description, s.Location, s.IsSSR))
-                .FirstOrDefault();
+            var devices = db.Devices.Where(w => w.IsActive == true).ToList();
 
-            if (device == null)
-                return Redirect("~/error404.html");
-
-            if (device.SyncTime())
+            foreach(var device in devices)
             {
-                TempData["Message"] = "Successful to Sync Time";
+                BackgroundJob.Enqueue(
+                        () => GetStatus(device.DeviceId));              
             }
-            else { TempData["Message"] = "Error at sync Time, contact to admin "; }
 
+            //return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             return RedirectToAction("Index");
         }
 
+
+        public ActionResult Ping(int id)
+        {             
+            BackgroundJob.Enqueue(
+                        () => GetStatus(id));
+
+            return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+        }
+
+        [AutomaticRetry(Attempts = 0)]
+        public void GetStatus(int id)
+        {
+            DeviceFactory factory = new DeviceFactory();
+
+            var device = db.Devices.Include(i => i.DeviceType).Where(w => w.DeviceId == id).FirstOrDefault();
+            if (device != null)
+            {
+                IDevice iDevice = factory.CreateIntance(device);
+                iDevice.GetStatus();
+            }
+        }
+
+
+        public ActionResult SyncTime(int id)
+        {
+            TempData["Message"] = Resources.Resources.Execution;
+
+            BackgroundJob.Enqueue(
+                        () => SyncTimeByDevice(id));
+
+            return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+        }
+
+        [AutomaticRetry(Attempts = 0)]
         public bool TranferRecordsByDevise(int deviceId)
         {
             bool result = false;
 
+            var device = db.Devices.Include(d => d.DeviceType).Where(w => w.DeviceId == deviceId).FirstOrDefault();
+
             DeviceFactory factory = new DeviceFactory();
 
-            IDevice device = db.Devices.Include(d => d.DeviceType)
-                .Where(w => w.IsActive == true
-                       && w.DeviceId == deviceId)
-                .Select(s => factory.CreateIntance(s.IP, s.Port, s.DeviceType.Name, s.Description, s.Location, s.IsSSR))
-                .Single();
+            IDevice iDevice = factory.CreateIntance(device);
 
-            if (device != null)
+            if (iDevice.TransferRecords())
             {
-                result = device.TransferRecords();
-
-                if (result)
-                {
-                    device.ClearDevice();
-                }
+                if (iDevice.ClearDevice())
+                    result = true;
             }
 
             return result;
@@ -303,57 +244,84 @@ namespace AttendanceRRHH.Controllers
             BackgroundJob.Enqueue(
                    () => TranferRecordsByDevise(id));
 
+            return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+        }
+
+
+        public ActionResult SyncTimeAllDevices()
+        {
+            TempData["Message"] = Resources.Resources.SyncTimeAllDevicesText;
+
+            var deviceList = db.Devices.Where(w => w.IsActive == true).ToList();
+
+            foreach (var device in deviceList)
+            {
+                BackgroundJob.Enqueue(
+                       () => SyncTimeByDevice(device.DeviceId));
+            }
+
+            return RedirectToAction("Index");
+
+            //return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+        }
+
+        [AutomaticRetry(Attempts = 0)]
+        public void SyncTimeAndTransferByDevice(int deviceId)
+        {
+            MyLogger.GetInstance.Info("SyncTimeAndTransferByDevice");
+
+            var device = db.Devices.Include(d => d.DeviceType).Where(w => w.DeviceId == deviceId).FirstOrDefault();
+
+            DeviceFactory factory = new DeviceFactory();
+
+            IDevice iDevice = factory.CreateIntance(device);
+
+            if(iDevice.SyncTime())
+            {
+                if(iDevice.TransferRecords())
+                    iDevice.ClearDevice();
+            }
+        }
+
+        [AutomaticRetry(Attempts = 0)]
+        public void SyncTimeByDevice(int deviceId)
+        {
+            var device = db.Devices.Include(d => d.DeviceType).Where(w => w.DeviceId == deviceId).FirstOrDefault();
+
+            DeviceFactory factory = new DeviceFactory();
+
+            IDevice iDevice = factory.CreateIntance(device);
+            
+            iDevice.SyncTime();
+        }
+
+        public ActionResult ReadRecordsAllDevices()
+        {
+            TempData["Message"] = Resources.Resources.TransferAll;
+
+            var deviceList = db.Devices.Where(w => w.IsActive == true).ToList();
+
+            foreach (var device in deviceList)
+            {
+                BackgroundJob.Enqueue(
+                       () => TransferRecordsByDevice(device.DeviceId));
+            }
+
             return RedirectToAction("Index");
         }
 
-        public ActionResult StartJob(string syncTimeExpression, string tranferRecordsExpression, string emailTimeExpression)
+        [AutomaticRetry(Attempts = 0)]
+        public void TransferRecordsByDevice(int deviceId)
         {
-            try
-            {
-                RecurringJob.AddOrUpdate(() => SyncTimeAllDevices(), syncTimeExpression, TimeZoneInfo.Local);
-                RecurringJob.AddOrUpdate(() => ReadRecordsAllDevices(), tranferRecordsExpression, TimeZoneInfo.Local);
+            var device = db.Devices.Include(d => d.DeviceType).Where(w => w.DeviceId == deviceId).FirstOrDefault();
 
-                TempData["Message"] = "Task Created successful";
-            }
-            catch (Exception e)
-            {
-                TempData["Message"] = "Error at create task: " + e.Message;
-            }
-
-            return RedirectToAction("Settings");
-        }
-
-        public void SyncTimeAllDevices()
-        {
             DeviceFactory factory = new DeviceFactory();
 
-            List<IDevice> deviceList = db.Devices.Include(d => d.DeviceType)
-                .Where(w => w.IsActive == true)
-                .ToList()
-                .Select(s => factory.CreateIntance(s.IP, s.Port, s.DeviceType.Name, s.Description, s.Location, s.IsSSR))
-                .ToList();
+            IDevice iDevice = factory.CreateIntance(device);
 
-            foreach (IDevice device in deviceList)
+            if (iDevice.TransferRecords())
             {
-                device.SyncTime();
-            }
-        }
-
-        public void ReadRecordsAllDevices()
-        {
-            DeviceFactory factory = new DeviceFactory();
-
-            List<IDevice> deviceList = db.Devices.Include(d => d.DeviceType)
-                .Where(w => w.IsActive == true)
-                .Select(s => factory.CreateIntance(s.IP, s.Port, s.DeviceType.Name, s.Description, s.Location, s.IsSSR))
-                .ToList();
-
-            foreach (IDevice device in deviceList)
-            {
-                if (device.TransferRecords())
-                {
-                    device.ClearDevice();
-                }
+                iDevice.ClearDevice();
             }
         }
 

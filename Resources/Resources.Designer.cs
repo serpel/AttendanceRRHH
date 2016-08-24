@@ -88,6 +88,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Available.
+        /// </summary>
+        public static string Available {
+            get {
+                return ResourceManager.GetString("Available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to BirthDate.
         /// </summary>
         public static string BirthDate {
@@ -340,6 +349,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Email Send Cron Expression.
+        /// </summary>
+        public static string EmailSendCronExpression {
+            get {
+                return ResourceManager.GetString("EmailSendCronExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Employee.
         /// </summary>
         public static string Employee {
@@ -363,6 +381,15 @@ namespace Resources {
         public static string EndDate {
             get {
                 return ResourceManager.GetString("EndDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Execution.
+        /// </summary>
+        public static string Execution {
+            get {
+                return ResourceManager.GetString("Execution", resourceCulture);
             }
         }
         
@@ -520,6 +547,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Logo.
+        /// </summary>
+        public static string Logo {
+            get {
+                return ResourceManager.GetString("Logo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Log Off.
         /// </summary>
         public static string LogOff {
@@ -615,6 +651,15 @@ namespace Resources {
         public static string PingTest {
             get {
                 return ResourceManager.GetString("PingTest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ping Test All.
+        /// </summary>
+        public static string PingTestAll {
+            get {
+                return ResourceManager.GetString("PingTestAll", resourceCulture);
             }
         }
         
@@ -826,6 +871,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sync All.
+        /// </summary>
+        public static string SyncAll {
+            get {
+                return ResourceManager.GetString("SyncAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sync Cron Expression.
+        /// </summary>
+        public static string SyncCronExpression {
+            get {
+                return ResourceManager.GetString("SyncCronExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All Devices Sync Time All Devices.
+        /// </summary>
+        public static string SyncTimeAllDevicesText {
+            get {
+                return ResourceManager.GetString("SyncTimeAllDevicesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Thursday.
         /// </summary>
         public static string Thursday {
@@ -853,6 +925,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Transfer All.
+        /// </summary>
+        public static string TransferAll {
+            get {
+                return ResourceManager.GetString("TransferAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transfer Cron Expression.
+        /// </summary>
+        public static string TransferCronExpression {
+            get {
+                return ResourceManager.GetString("TransferCronExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Trouble login in ?.
         /// </summary>
         public static string TroubleLoginIn {
@@ -876,6 +966,24 @@ namespace Resources {
         public static string Type {
             get {
                 return ResourceManager.GetString("Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unavailable.
+        /// </summary>
+        public static string Unavailable {
+            get {
+                return ResourceManager.GetString("Unavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown.
+        /// </summary>
+        public static string Unknown {
+            get {
+                return ResourceManager.GetString("Unknown", resourceCulture);
             }
         }
         

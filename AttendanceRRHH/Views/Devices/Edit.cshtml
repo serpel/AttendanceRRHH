@@ -42,47 +42,47 @@
 
         <div class="row form-row">
             <div class="col-md-6">
+                <label class="form-label">@Resources.SyncCronExpression</label>
+                @Html.EditorFor(model => model.SyncTimeCronExpression, new { htmlAttributes = new { @class = "form-control", @placeholder = Resources.SyncCronExpression } })
+                @Html.ValidationMessageFor(model => model.SyncTimeCronExpression, "", new { @class = "text-danger" })
+            </div>
+            @*<div class="col-md-6">
+                <label class="form-label">@Resources.TransferCronExpression</label>
+                @Html.EditorFor(model => model.TransferCronExpression, new { htmlAttributes = new { @class = "form-control", @placeholder = Resources.SyncCronExpression } })
+                @Html.ValidationMessageFor(model => model.TransferCronExpression, "", new { @class = "text-danger" })
+            </div>*@
+        </div>
+
+        <div class="row form-row">
+            <div class="col-md-6">
                 <label class="form-label">@Resources.Type</label>
                 @Html.DropDownList("DeviceTypeId", null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.IP, "", new { @class = "text-danger" })
             </div>
+            <div class="col-md-6">
+                <label class="form-label">@Resources.IsActive</label>
+                @Html.CheckBoxFor(model => model.IsActive, htmlAttributes: new { @class = "form-control" })
+            </div>
         </div>
+
 
         <div class="row form-row">
             <div class="col-md-6">
-                <div class="form-group">
-                    <div class="checkbox-inline">
-                        <label>
-                            @Html.CheckBox("IsActive") @Resources.IsActive
-                        </label>
-                    </div>
-                </div>
+                <label class="form-label">@Resources.IsActive</label>
+                @Html.CheckBoxFor(model => model.IsActive, htmlAttributes: new { @class = "form-control" })
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">@Resources.IsSSR</label>
+                @Html.CheckBoxFor(model => model.IsActive, htmlAttributes: new { @class = "form-control" })
             </div>
         </div>
 
         <div class="row form-row">
             <div class="col-md-6">
-                <div class="form-group">
-                    <div class="checkbox-inline">
-                        <label>
-                            @Html.CheckBox("IsSSR") @Resources.IsSSR
-                        </label>
-                    </div>
-                </div>
+                <label class="form-label">@Resources.OpenDoors</label>
+                @Html.CheckBoxFor(model => model.OpenDoors, htmlAttributes: new { @class = "form-control" })
             </div>
-        </div>
-
-        <div class="row form-row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <div class="checkbox-inline">
-                        <label>
-                            @Html.CheckBox("OpenDoors") @Resources.OpenDoors
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </div>     
     </div>
 
     <div class="modal-footer">
