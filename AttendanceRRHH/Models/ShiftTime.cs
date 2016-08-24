@@ -38,5 +38,10 @@ namespace AttendanceRRHH.Models
 
         public virtual Shift Shift { get; set; }
         public virtual ExtraHour ExtraHour { get; set; }
+
+        public ShiftTime()
+        {
+            IsActive = true;
+        }
     }
 }

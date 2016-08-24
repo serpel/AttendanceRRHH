@@ -74,7 +74,7 @@ namespace AttendanceRRHH.Controllers
 
             ViewBag.Roles = new MultiSelectList(db.Roles.ToList(), "Id", "Name", null, selectedRoles);
             ViewBag.Companies = new MultiSelectList(db.Companies.ToList(), "CompanyId", "Name", selectedCompanies);
-            ViewBag.Departments = new MultiSelectList(db.Departments.ToList(), "DepartmentId", "Name", selectedDeparments);
+            ViewBag.Departments = new MultiSelectList(db.Departments.Where(w => w.IsActive == true).ToList().Select(s => new { s.DepartmentId, Name = s.Company.Name.Substring(0,3).ToUpper() + " " +  s.Name }), "DepartmentId", "Name", selectedDeparments);
 
             UserViewModel userV = new UserViewModel() { Id = user.Id, Email = user.Email };
 
@@ -150,9 +150,9 @@ namespace AttendanceRRHH.Controllers
                         await db.SaveChangesAsync();
                     }
 
-                    if (model.Deparments != null)
+                    if (model.Departments != null)
                     {
-                        var departmentsToDelete = db.UserDepartments.Where(w => w.User.Id == user.Id).Select(s => s.DepartmentId).Except(model.Deparments).ToList();
+                        var departmentsToDelete = db.UserDepartments.Where(w => w.User.Id == user.Id).Select(s => s.DepartmentId).Except(model.Departments).ToList();
 
                         if (departmentsToDelete.Count > 0)
                         {
@@ -171,7 +171,7 @@ namespace AttendanceRRHH.Controllers
                         }
                     }
 
-                    var departmentsToAdd = model.Deparments.Except(db.UserDepartments.Where(w => w.Id == user.Id).Select(s => s.DepartmentId).Distinct()).ToList();
+                    var departmentsToAdd = model.Departments.Except(db.UserDepartments.Where(w => w.Id == user.Id).Select(s => s.DepartmentId).Distinct()).ToList();
 
                     if (departmentsToAdd.Count > 0)
                     {
@@ -201,6 +201,7 @@ namespace AttendanceRRHH.Controllers
 
             ViewBag.Roles = new SelectList(db.Roles.ToList(), "Id", "Name");
             ViewBag.Companies = new SelectList(db.Companies.ToList(), "CompanyId", "Name");
+            ViewBag.Departments = new MultiSelectList(db.Departments.Where(w => w.IsActive == true).ToList().Select(s => new { s.DepartmentId, Name = s.Company.Name.Substring(0, 3).ToUpper() + " - " + s.Name }), "DepartmentId", "Name");
 
             return PartialView("_Edit", model);
         }

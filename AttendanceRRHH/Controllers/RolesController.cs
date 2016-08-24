@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity.EntityFramework;
 using AttendanceRRHH.DAL.Security;
 using AttendanceRRHH.BLL;
+using System.Net;
 
 namespace AttendanceRRHH.Controllers
 {
@@ -29,7 +30,7 @@ namespace AttendanceRRHH.Controllers
         public ActionResult Create()
         {
             var role = new IdentityRole();
-            return PartialView("_Create", role);
+            return PartialView("Create", role);
         }
 
         [HttpPost]
@@ -46,13 +47,13 @@ namespace AttendanceRRHH.Controllers
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
 
-            return PartialView("_Create", role);
+            return PartialView("Create", role);
         }
 
-        public ActionResult Edit(int id)
+        public ActionResult Edit(string id)
         {
             var role = db.Roles.Find(id);
-            return PartialView("_Edit", role);
+            return PartialView("Edit", role);
         }
 
         [HttpPost]
@@ -69,7 +70,43 @@ namespace AttendanceRRHH.Controllers
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
 
-            return PartialView("_Edit", role);
+            return PartialView("Edit", role);
+        }
+
+        // GET: ShiftTimes/Delete/5
+        public ActionResult Delete(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            IdentityRole role = db.Roles.Find(id);
+
+            if (role == null)
+            {
+                return HttpNotFound();
+            }
+            return PartialView("Delete", role);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(string id)
+        {
+            IdentityRole role = db.Roles.Find(id);
+            db.Roles.Remove(role);
+            db.SaveChanges();
+
+            return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

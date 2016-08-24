@@ -56,6 +56,8 @@ namespace AttendanceRRHH.Controllers
                     shiftedit.Name = shift.ShiftName;
                     shiftedit.Description = shift.ShiftDescription;
                     shiftedit.UpdatedAt = DateTime.Now;
+                    shiftedit.IsActive = shift.IsActive;
+
                     db.Entry(shiftedit).State = EntityState.Modified;
                 }
 
@@ -83,9 +85,11 @@ namespace AttendanceRRHH.Controllers
                     MyLogger.GetInstance.Info("Shift was edited successfull, Id: " + shift.ShiftId);
 
                     success = true;
-                } catch(Exception e)
+                }
+                catch (Exception e)
                 {
                     message = e.Message;
+                    MyLogger.GetInstance.Error("Error", e);
                 }
             }
             return Json(new { success = success, message = message });
@@ -270,6 +274,7 @@ namespace AttendanceRRHH.Controllers
                 ShiftId = shift.ShiftId, 
                 ShiftName = shift.Name, 
                 ShiftDescription = shift.Description,
+                IsActive =  shift.IsActive,
                 TimeList = shift.ShiftTimes.ToList()
             });
         }

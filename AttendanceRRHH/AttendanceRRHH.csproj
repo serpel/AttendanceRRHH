@@ -1856,7 +1856,7 @@
     <Content Include="Views\JobPositions\Index.cshtml" />
     <Content Include="Views\Manage\ShowProfile.cshtml" />
     <Content Include="Views\Process\Index.cshtml" />
-    <Content Include="Views\Roles\_Create.cshtml" />
+    <Content Include="Views\Roles\Create.cshtml" />
     <Content Include="Views\Roles\Index.cshtml" />
     <Content Include="Views\Schedules\Index3.cshtml" />
     <Content Include="Views\Schedules\_CalendarLeftPanel.cshtml" />
@@ -1888,8 +1888,8 @@
     <Content Include="Views\Schedules\Index.cshtml" />
     <Content Include="Views\Users\Index.cshtml" />
     <Content Include="Views\Shared\_LayoutLogin.cshtml" />
-    <Content Include="Views\Roles\_Edit.cshtml" />
-    <Content Include="Views\Roles\_Delete.cshtml" />
+    <Content Include="Views\Roles\Edit.cshtml" />
+    <Content Include="Views\Roles\Delete.cshtml" />
     <Content Include="Views\Users\_Delete.cshtml" />
     <Content Include="Views\Users\_Create.cshtml" />
     <Content Include="Views\Shared\_LayoutError.cshtml" />

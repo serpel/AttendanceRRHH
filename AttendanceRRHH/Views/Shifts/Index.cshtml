@@ -1,20 +1,19 @@
 ﻿@model PagedList.IPagedList<AttendanceRRHH.Models.Shift>
-@using PagedList.Mvc;
+@using AttendanceRRHH.Helpers
+@using PagedList.Mvc
 @using Resources
-<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
-@{
-    ViewBag.Title = "Index";
-}
+@*<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />*@
 
 <!-- BEGIN PAGE TITLE -->
 <div class="page-title">
 </div>
 
-<div class="row">
+<div class="row-fluid">
     <div class="col-md-12">
         <div class="grid simple ">
-            <div class="grid-title no-border">
+            <div class="grid-title">
+                <h4>@Resources.Shifts</h4>
                 <div class="tools">
                     <a href="javascript:;" class="collapse"></a>
                     <a href="#grid-config" data-toggle="modal" class="config"></a>
@@ -22,8 +21,7 @@
                     <a href="javascript:;" class="remove"></a>
                 </div>
             </div>
-            <div class="grid-body no-border">
-                <h3>Shifts  <span class="semi-bold">List</span></h3>
+            <div class="grid-body ">              
                 @if (TempData["Message"] != null)
                 {
                     <div class="alert alert-success">
@@ -31,44 +29,30 @@
                         @TempData["Message"]
                     </div>
                 }
-
-                <div>
-                    @Html.ActionLink("Create New", "Create", new { }, new { @class = "btn btn-primary" })
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="pull-left">
+                            @using (Html.BeginForm("Index", "Shifts", FormMethod.Get))
+                            {
+                                <p>
+                                    @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @placeholder = @Resources.Search })
+                                    <input type="submit" value="@Resources.Search" placeholder="@Resources.Search" class="btn btn-success" />
+                                </p>
+                            }
+                        </div>
+                    </div>                  
                 </div>
-                <br>
-
-                <div>
-                    @using (Html.BeginForm("Index", "Shifts", FormMethod.Get))
-                    {
-                        <p>
-                            Search: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
-                            <input type="submit" value="Search" placeholder="Search" class="btn btn-primary" />
-                        </p>
-                    }
-                </div>
-                <br>
-
                 <table class="table table-striped table-flip-scroll cf">
                     <thead class="cf">
                         <tr>
-                            <th>
-                               @Resources.Company
-                            </th>
-                            <th>
-                                @Resources.Name
-                            </th>
-                            <th>
-                                @Resources.Description
-                            </th>
-                            <th>
-                                @Resources.IsRotativeShift
-                            </th>
-                            <th>
-                                @Resources.IsActive
-                            </th>
-                            <th></th>
+                            <th>@Resources.Company</th>
+                            <th>@Resources.Name</th>
+                            <th>@Resources.Description</th>
+                            @*<th>@Resources.IsRotativeShift</th>*@
+                            <th>@Resources.IsActive</th>
+                            <th>@Html.NoEncodeActionLink("<span class='glyphicon glyphicon-plus'></span>", Resources.CreateNew, "Create", "Shifts", routeValues: null, htmlAttributes: new { data_modal = "", @class = "btn btn-primary pull-right" })</th>
                         </tr>
-                        </thead>
+                    </thead>
                     <tbody>
                         @foreach (var item in Model)
                         {
@@ -82,19 +66,21 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Description)
                                 </td>
-                                <td>
+                                @*<td>
                                     @Html.DisplayFor(modelItem => item.IsSpecialShift)
-                                </td>
+                                </td>*@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.IsActive)
                                 </td>
                                 <td>
-                                    @Html.ActionLink("Edit", "Edit", new { id = item.ShiftId }, new { @class = "btn btn-white btn-xs btn-mini" }) 
-                                    @Html.ActionLink("Delete", "Delete", new { id = item.ShiftId }, new { @class = "btn btn-white btn-xs btn-mini" })
+                                    <div class="pull-right">
+                                        @Html.NoEncodeActionLink("<span class='glyphicon glyphicon-pencil'></span>", Resources.Edit, "Edit", "Shifts", routeValues: new { id = item.ShiftId }, htmlAttributes: new { @class = "btn btn-default" })
+                                        @Html.NoEncodeActionLink("<span class='glyphicon glyphicon-trash'></span>", Resources.Edit, "Delete", "Shifts", routeValues: new { id = item.ShiftId }, htmlAttributes: new { @class = "btn btn-danger" })
+                                    </div>                      
                                 </td>
                             </tr>
                         }
-                        </tbody>
+                    </tbody>
                 </table>
                 <br />
                 Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
