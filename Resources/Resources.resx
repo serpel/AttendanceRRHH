@@ -435,4 +435,25 @@
   <data name="EmailSendCronExpression" xml:space="preserve">
     <value>Email Send Cron Expression</value>
   </data>
+  <data name="Day" xml:space="preserve">
+    <value>Day</value>
+  </data>
+  <data name="EndTime" xml:space="preserve">
+    <value>EndTime</value>
+  </data>
+  <data name="HasLunchTime" xml:space="preserve">
+    <value>Has Lunch Time?</value>
+  </data>
+  <data name="IsLaborDay" xml:space="preserve">
+    <value>Is Labor Day?</value>
+  </data>
+  <data name="LunchEndTime" xml:space="preserve">
+    <value>Lunch End Time</value>
+  </data>
+  <data name="LunchStartTime" xml:space="preserve">
+    <value>Lunch Start Time</value>
+  </data>
+  <data name="StartTime" xml:space="preserve">
+    <value>StartTime</value>
+  </data>
 </root>

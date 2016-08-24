@@ -268,6 +268,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Day.
+        /// </summary>
+        public static string Day {
+            get {
+                return ResourceManager.GetString("Day", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delay Time.
         /// </summary>
         public static string DelayTime {
@@ -385,6 +394,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to EndTime.
+        /// </summary>
+        public static string EndTime {
+            get {
+                return ResourceManager.GetString("EndTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Execution.
         /// </summary>
         public static string Execution {
@@ -439,6 +457,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Has Lunch Time?.
+        /// </summary>
+        public static string HasLunchTime {
+            get {
+                return ResourceManager.GetString("HasLunchTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to HireDate.
         /// </summary>
         public static string HireDate {
@@ -471,6 +498,15 @@ namespace Resources {
         public static string IsActive {
             get {
                 return ResourceManager.GetString("IsActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Is Labor Day?.
+        /// </summary>
+        public static string IsLaborDay {
+            get {
+                return ResourceManager.GetString("IsLaborDay", resourceCulture);
             }
         }
         
@@ -570,6 +606,24 @@ namespace Resources {
         public static string LogOn {
             get {
                 return ResourceManager.GetString("LogOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lunch End Time.
+        /// </summary>
+        public static string LunchEndTime {
+            get {
+                return ResourceManager.GetString("LunchEndTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lunch Start Time.
+        /// </summary>
+        public static string LunchStartTime {
+            get {
+                return ResourceManager.GetString("LunchStartTime", resourceCulture);
             }
         }
         
@@ -840,6 +894,15 @@ namespace Resources {
         public static string StartDate {
             get {
                 return ResourceManager.GetString("StartDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to StartTime.
+        /// </summary>
+        public static string StartTime {
+            get {
+                return ResourceManager.GetString("StartTime", resourceCulture);
             }
         }
         
