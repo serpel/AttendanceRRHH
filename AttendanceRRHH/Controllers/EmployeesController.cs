@@ -104,6 +104,27 @@ namespace AttendanceRRHH.Controllers
             return PartialView("_Edit", employee);
         }
 
+        public ActionResult Edit2(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Employee employee = db.Employees.Find(id);
+            if (employee == null)
+            {
+                return HttpNotFound();
+            }
+
+            ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name", employee.CityId);
+            ViewBag.CountryId = new SelectList(db.Countries, "CountryId", "Name", employee.CountryId);
+            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name", employee.DepartmentId);
+            ViewBag.JobPositionId = new SelectList(db.Jobs, "JobPositionId", "JobTitle", employee.JobPositionId);
+            ViewBag.ShiftId = new SelectList(db.Shifts, "ShiftId", "Name", employee.ShiftId);
+
+            return PartialView("_Edit", employee);
+        }
+
         //POST: Employees/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.

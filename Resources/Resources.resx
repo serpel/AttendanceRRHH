@@ -456,4 +456,10 @@
   <data name="StartTime" xml:space="preserve">
     <value>StartTime</value>
   </data>
+  <data name="Config" xml:space="preserve">
+    <value>Config</value>
+  </data>
+  <data name="Information" xml:space="preserve">
+    <value>Information</value>
+  </data>
 </root>

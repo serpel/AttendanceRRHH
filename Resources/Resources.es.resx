@@ -247,7 +247,7 @@
     <value>Perfil</value>
   </data>
   <data name="ProfileUrl" xml:space="preserve">
-    <value>Url</value>
+    <value>Url Perfil</value>
   </data>
   <data name="Register" xml:space="preserve">
     <value>Registro</value>
@@ -434,5 +434,11 @@
   </data>
   <data name="EmailSendCronExpression" xml:space="preserve">
     <value>Envio de Correos</value>
+  </data>
+  <data name="Config" xml:space="preserve">
+    <value>Configuracion</value>
+  </data>
+  <data name="Information" xml:space="preserve">
+    <value>Informacion</value>
   </data>
 </root>
