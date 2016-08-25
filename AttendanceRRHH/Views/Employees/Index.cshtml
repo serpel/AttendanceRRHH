@@ -1,6 +1,11 @@
 ﻿@using Resources
 @using AttendanceRRHH.Helpers
 
+@section Styles{
+   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/zf/jszip-2.5.0/pdfmake-0.1.18/dt-1.10.12/b-1.2.2/b-colvis-1.2.2/b-html5-1.2.2/b-print-1.2.2/cr-1.3.2/r-2.1.0/datatables.min.css" />
+   <link href="~/Content/assets/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+}
+
 <div class="page-title">
     <i class="icon-custom-left"></i>
     <h3>@Resources.Employees</h3>
@@ -43,10 +48,11 @@
     </div>
 </div>
 
-@section scripts {
-    <script src="~/Scripts/DataTables-1.10.11/media/js/jquery.dataTables.min.js"></script>
-    <script src="~/Scripts/DataTables-1.10.11/media/js/dataTables.bootstrap.min.js"></script>
-    <script src="~/Scripts/modal.js"></script>
+@section scripts { 
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs/jszip-2.5.0/pdfmake-0.1.18/dt-1.10.12/b-1.2.2/b-colvis-1.2.2/b-html5-1.2.2/b-print-1.2.2/cr-1.3.2/r-2.1.0/datatables.min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>  
+    <script src="~/Scripts/modal.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function () {
 
@@ -57,7 +63,7 @@
             var url = '@Url.Action("GetEmployees")';
 
             var columns =
-           [
+            [
                { data: 'Company' },
                { data: 'EmployeeCode' },
                //{ data: 'NationalCardId' },
@@ -67,7 +73,7 @@
                { data: 'IsActive' },
                { data: 'IsExtraHourPay' },
                { data: 'EmployeeId' }
-           ];
+            ];
 
             var table = CreateTable(id, columns, url, controller);
 

@@ -441,4 +441,10 @@
   <data name="Information" xml:space="preserve">
     <value>Informacion</value>
   </data>
+  <data name="CompanyInfo" xml:space="preserve">
+    <value>Información de la Compañia</value>
+  </data>
+  <data name="PersonalInfo" xml:space="preserve">
+    <value>Información Personal</value>
+  </data>
 </root>

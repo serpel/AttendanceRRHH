@@ -3,10 +3,13 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Mvc;
 using AttendanceRRHH.Models;
 using AttendanceRRHH.DAL.Security;
 using AttendanceRRHH.BLL;
+using System.IO;
+using System.Configuration;
 
 namespace AttendanceRRHH.Controllers
 {
@@ -104,33 +107,12 @@ namespace AttendanceRRHH.Controllers
             return PartialView("_Edit", employee);
         }
 
-        public ActionResult Edit2(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Employee employee = db.Employees.Find(id);
-            if (employee == null)
-            {
-                return HttpNotFound();
-            }
-
-            ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name", employee.CityId);
-            ViewBag.CountryId = new SelectList(db.Countries, "CountryId", "Name", employee.CountryId);
-            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name", employee.DepartmentId);
-            ViewBag.JobPositionId = new SelectList(db.Jobs, "JobPositionId", "JobTitle", employee.JobPositionId);
-            ViewBag.ShiftId = new SelectList(db.Shifts, "ShiftId", "Name", employee.ShiftId);
-
-            return PartialView("_Edit", employee);
-        }
-
         //POST: Employees/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "EmployeeId,EmployeeCode,NationalCardId,FirstName,LastName,Address,Bithdate,Gender,PhoneNumber,ProfileUrl,HireDate,DepartmentId,ShiftId,JobPositionId,CountryId,CityId,IsActive")] Employee employee)
+        public ActionResult Edit(Employee employee, HttpPostedFileBase file)
         {
             string message = "";
             bool success = false;
@@ -139,6 +121,19 @@ namespace AttendanceRRHH.Controllers
             {
                 try
                 {
+                    if(Request.Files.Count > 0)
+                    {
+                        var nfile = Request.Files[0];
+
+                        if (nfile.ContentLength > 0)
+                        {
+                            var filename = Path.GetFileName(nfile.FileName);
+                            var path = Path.Combine(Server.MapPath(ConfigurationManager.AppSettings["EmployeeImagesPath"]), filename);
+                            file.SaveAs(path);
+                            employee.ProfileUrl = path;
+                        }
+                    }                  
+                       
                     db.Entry(employee).State = EntityState.Modified;
                     db.SaveChanges();
                     success = true;
