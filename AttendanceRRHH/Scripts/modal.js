@@ -1,5 +1,10 @@
 ﻿function CreateTable(id, columns, source, controller) {
     var table = $(id).DataTable({
+        info: true,
+        print: true,
+        //autoWidth: true,
+        responsive: true,
+        stateSave: true,
         ajax: {
             url: source,
             dataSrc: '',
@@ -10,17 +15,19 @@
             render: function (data, type, row) {
                 var editUrl = '/' + controller + '/edit/' + data;
                 var deleteUrl = '/' + controller + '/delete/' + data;
-                var txt = "<div class='pull-right'>" +
+
+                var options = "<div class='pull-right'>" +
                     "<a class='btn btn-default' data-modal='' href='" + editUrl + "' title='Edit'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;" +
                     "<a class='btn btn-danger' data-modal='' href='" + deleteUrl + "' title='Delete'><span class='glyphicon glyphicon-trash'></span></a>" +
                     "</div>";
 
-                return txt;
+                return options;
             },
             targets: -1,
             orderable: false,
             searchable: false
-        }]
+        }],
+        order: [0, "desc"]
     });
 
     return table;
@@ -45,22 +52,30 @@ function LoadModal(id, columns, source, controller) {
 };
 
 function bindForm(dialog, id, columns, source, controller) {
-    $('form', dialog).submit(function () {
+    $('form', dialog).submit(function (e) {
         $.ajax({
             url: this.action,
             type: this.method,
-            data: $(this).serialize(),
+            data: new FormData( this ),
+            processData: false,
+            contentType: false,
             success: function (result) {
                 if (result.success) {
                     $('#myModal').modal('hide');
-                    ReloadTable(id, columns, source, controller);
-
+                    $(id).DataTable().ajax.reload();
+                    //ReloadTable(id, columns, source, controller);
                 } else {
-                    $('#myModalContent').html(result);
-                    bindForm(dialog, id, columns, source, controller);
+                    $('#myModal').modal('hide');
+                    Messenger().post({
+                        message: result.message,
+                        type: 'error',
+                        showCloseButton: true
+                    });
+                    //bindForm(dialog, id, columns, source, controller);
                 }
             }
         });
-        return false;
+        e.preventDefault();
+        //return false;
     });
 };

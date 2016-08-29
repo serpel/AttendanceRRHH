@@ -25,11 +25,10 @@
                 <table class="table table-hover table-condensed" id="datatable">
                     <thead>
                         <tr>
+                            <th>@Resources.Image</th>
                             <th>@Resources.Company</th>
                             <th>@Resources.Code</th>
-                            @*<th>@Resources.NationalCardId</th>*@
                             <th>@Resources.Name</th>
-                            <th>@Resources.PhoneNumber</th>
                             <th>@Resources.Department</th>
                             <th>@Resources.IsActive</th>
                             <th>@Resources.ExtraHour</th>
@@ -58,18 +57,66 @@
 
             var columns =
            [
+
+                {
+                    "render": function (data, type, full, meta) {
+                        var image = "";
+                        debugger;
+                        if (full.ProfileUrl == null) {
+                            image = "<img src='@Url.Content("~/Content/assets/img/profiles/default-50.png")' style='width:35px;height:35px' />";
+                        }else{
+                            image = "<img src='" + full.ProfileUrl + "' class='avatar' alt='avatar' style='width:35px;height:35px' />";
+                        }
+
+                        return image;
+                    }
+                },
                { data: 'Company' },
                { data: 'EmployeeCode' },
-               //{ data: 'NationalCardId' },
                { data: 'Name' },
-               { data: 'PhoneNumber' },
                { data: 'Department' },
                { data: 'IsActive' },
                { data: 'IsExtraHourPay' },
                { data: 'EmployeeId' }
            ];
 
-            var table = CreateTable(id, columns, url, controller);
+            var table = $(id).DataTable({
+                info: true,
+                print: true,
+                responsive: true,
+                stateSave: true,
+                ajax: {
+                    url: url,
+                    dataSrc: ''
+                },
+                columns: columns,
+                columnDefs: [{
+                    render: function (data, type, row) {
+                        var editUrl = '/' + controller + '/edit/' + data;
+                        var deleteUrl = '/' + controller + '/delete/' + data;
+
+                        var options = "<div class='pull-right'>" +
+                            "<a class='btn btn-default' data-modal='' href='" + editUrl + "' title='Edit'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;" +
+                            "<a class='btn btn-danger' data-modal='' href='" + deleteUrl + "' title='Delete'><span class='glyphicon glyphicon-trash'></span></a>" +
+                            "</div>";
+
+                        return options;
+                    },
+                    targets: -1,
+                    orderable: false,
+                    searchable: false
+                }],
+                @*createdRow: function (row, data, dataIndex) {
+                    debugger;
+                    if (data.ProfileUrl == null) {
+                        $(row).find("td").eq(0).replaceWith("<img src='@Url.Content("~/Content/assets/img/profiles/default-50.png")' class='avatar img-circle' alt='avatar' />");
+                    } else {
+                        $(row).find("td").eq(0).replaceWith("<img src='" + data.ProfileUrl + "' class='avatar img-circle' alt='avatar' style='width:50px;height:50px' />");
+                    }
+
+                },*@
+                order: [0, "desc"]
+            });
 
             $(id).on('draw.dt', function () {
                 LoadModal(id, columns, url, controller);

@@ -19,6 +19,8 @@ namespace AttendanceRRHH
               "~/Content/assets/plugins/jquery-block-ui/jqueryblockui.min.js",
               "~/Content/assets/plugins/jquery-scrollbar/jquery.scrollbar.min.js",
               "~/Content/assets/plugins/jquery-numberAnimate/jquery.animateNumbers.js",
+              "~/Content/assets/plugins/jquery-notifications/js/messenger.min.js",
+              "~/Content/assets/plugins/jquery-notifications/js/messenger-theme-future.min.js",
               "~/Content/assets/plugins/bootstrap-tag/bootstrap-tagsinput.min.js",
               "~/Content/assets/js/core.js",
               "~/Content/assets/js/demo.js"));
@@ -31,6 +33,9 @@ namespace AttendanceRRHH
                "~/Content/assets/plugins/font-awesome/css/font-awesome.css",
                "~/Content/assets/css/animate.min.css",
                "~/Content/assets/plugins/jquery-scrollbar/jquery.scrollbar.css",
+               "~/Content/assets/plugins/jquery-notifications/css/messenger.min.css",
+               "~/Content/assets/plugins/jquery-notifications/css/messenger-theme-future.min.css",
+               "~/Content/assets/plugins/jquery-notifications/css/location-sel.min.css",
                "~/Content/assets/css/style.css",
                "~/Content/assets/css/responsive.css",
                "~/Content/assets/css/custom-icon-set.css"));

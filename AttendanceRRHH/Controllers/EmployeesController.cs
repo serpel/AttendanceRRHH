@@ -7,6 +7,9 @@ using System.Web.Mvc;
 using AttendanceRRHH.Models;
 using AttendanceRRHH.DAL.Security;
 using AttendanceRRHH.BLL;
+using System.Web;
+using System.IO;
+using System.Configuration;
 
 namespace AttendanceRRHH.Controllers
 {
@@ -30,7 +33,7 @@ namespace AttendanceRRHH.Controllers
         {
             var employees = db.Employees.Include(i => i.Department)
                 .ToList()
-                .Select(s => new { s.EmployeeId, s.EmployeeCode, Company = s.Department.Company.Name, s.NationalCardId, Name = s.FullName, s.PhoneNumber, Department = s.Department.Name, s.IsActive, s.IsExtraHourPay});
+                .Select(s => new { s.EmployeeId, s.EmployeeCode, Company = s.Department.Company.Name, s.NationalCardId, Name = s.FullName, Department = s.Department.Name, s.IsActive, s.IsExtraHourPay, s.ProfileUrl});
 
             return Json(employees, JsonRequestBehavior.AllowGet);
         }
@@ -51,7 +54,7 @@ namespace AttendanceRRHH.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "EmployeeId,EmployeeCode,NationalCardId,FirstName,LastName,Address,Bithdate,Gender,PhoneNumber,ProfileUrl,HireDate,DepartmentId,ShiftId,JobPositionId,CountryId,CityId,IsActive")] Employee employee)
+        public ActionResult Create([Bind(Include = "EmployeeId,EmployeeCode,NationalCardId,FirstName,LastName,Address,Bithdate,Gender,PhoneNumber,ProfileUrl,HireDate,DepartmentId,ShiftId,JobPositionId,CountryId,CityId,IsActive,IsExtraHourPay")] Employee employee, HttpPostedFileBase file)
         {
             string message = "";
             bool success = true;
@@ -60,6 +63,13 @@ namespace AttendanceRRHH.Controllers
             {
                 try
                 {
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        string baseUrl = Url.Content(Path.Combine(@ConfigurationManager.AppSettings["ProfileImagePath"], employee.EmployeeId.ToString()));
+                        string path = Uploader.GetInstance.GenerateUrlPath(Server.MapPath(baseUrl), baseUrl, file);
+                        employee.ProfileUrl = Url.Content(path);
+                    }
+
                     db.Employees.Add(employee);
                     db.SaveChanges();
                 }
@@ -104,33 +114,12 @@ namespace AttendanceRRHH.Controllers
             return PartialView("_Edit", employee);
         }
 
-        public ActionResult Edit2(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Employee employee = db.Employees.Find(id);
-            if (employee == null)
-            {
-                return HttpNotFound();
-            }
-
-            ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name", employee.CityId);
-            ViewBag.CountryId = new SelectList(db.Countries, "CountryId", "Name", employee.CountryId);
-            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name", employee.DepartmentId);
-            ViewBag.JobPositionId = new SelectList(db.Jobs, "JobPositionId", "JobTitle", employee.JobPositionId);
-            ViewBag.ShiftId = new SelectList(db.Shifts, "ShiftId", "Name", employee.ShiftId);
-
-            return PartialView("_Edit", employee);
-        }
-
         //POST: Employees/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "EmployeeId,EmployeeCode,NationalCardId,FirstName,LastName,Address,Bithdate,Gender,PhoneNumber,ProfileUrl,HireDate,DepartmentId,ShiftId,JobPositionId,CountryId,CityId,IsActive")] Employee employee)
+        public ActionResult Edit([Bind(Include = "EmployeeId,EmployeeCode,NationalCardId,FirstName,LastName,Address,Bithdate,Gender,PhoneNumber,ProfileUrl,HireDate,DepartmentId,ShiftId,JobPositionId,CountryId,CityId,IsActive,IsExtraHourPay")] Employee employee, HttpPostedFileBase file)
         {
             string message = "";
             bool success = false;
@@ -138,14 +127,23 @@ namespace AttendanceRRHH.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {
+                {                 
+                    if(file != null && file.ContentLength > 0)
+                    {
+                        string baseUrl = Url.Content(Path.Combine(@ConfigurationManager.AppSettings["ProfileImagePath"], employee.EmployeeId.ToString()));
+                        string path = Uploader.GetInstance.GenerateUrlPath(Server.MapPath(baseUrl), baseUrl, file);
+                        employee.ProfileUrl = Url.Content(path);
+                    }
+
                     db.Entry(employee).State = EntityState.Modified;
                     db.SaveChanges();
+
                     success = true;
                 }
                 catch (Exception e)
                 {
                     message = e.Message;
+                    success = false;
                 }
 
                 return Json(new { success = success, message = message });

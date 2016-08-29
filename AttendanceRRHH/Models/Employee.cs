@@ -63,5 +63,15 @@ namespace AttendanceRRHH.Models
         public virtual ICollection<AttendanceRecord> AttendanceRecords { get; set; }
         public virtual ICollection<TimeSheet> Timesheets { get; set; }
         public virtual ICollection<EmployeeAbsence> EmployeeAbsences { get; set; }
+
+
+        public Employee()
+        {
+            IsActive = true;
+            Birthdate = DateTime.Now;
+            HireDate = DateTime.Now;
+            IsExtraHourPay = false;
+        }
+
     }
 }
