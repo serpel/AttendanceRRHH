@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Address" xml:space="preserve">
-    <value>Adress</value>
+    <value>Address</value>
   </data>
   <data name="BirthDate" xml:space="preserve">
     <value>BirthDate</value>
@@ -160,7 +160,7 @@
     <value>Country</value>
   </data>
   <data name="CreateNew" xml:space="preserve">
-    <value>Crear Nuevo</value>
+    <value>Create New</value>
   </data>
   <data name="Dashboard" xml:space="preserve">
     <value>Dashboard</value>
@@ -202,10 +202,10 @@
     <value>Groups</value>
   </data>
   <data name="HireDate" xml:space="preserve">
-    <value>HireDate</value>
+    <value>Hire Date</value>
   </data>
   <data name="IsActive" xml:space="preserve">
-    <value>Activo?</value>
+    <value>Active?</value>
   </data>
   <data name="IsRotativeShift" xml:space="preserve">
     <value>IsRotativeShift?</value>
@@ -235,7 +235,7 @@
     <value>Permissions</value>
   </data>
   <data name="PhoneNumber" xml:space="preserve">
-    <value>Telefono</value>
+    <value>Phone</value>
   </data>
   <data name="Positions" xml:space="preserve">
     <value>Positions</value>
@@ -292,7 +292,7 @@
     <value>EndDate</value>
   </data>
   <data name="ExtraHour" xml:space="preserve">
-    <value>ExtraHour?</value>
+    <value>Extra Hour?</value>
   </data>
   <data name="Id" xml:space="preserve">
     <value>Id</value>
@@ -461,5 +461,11 @@
   </data>
   <data name="Information" xml:space="preserve">
     <value>Information</value>
+  </data>
+  <data name="Image" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="PersonalInfo" xml:space="preserve">
+    <value>Personal Info</value>
   </data>
 </root>

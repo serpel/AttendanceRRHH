@@ -268,7 +268,7 @@
     <value>Buscar</value>
   </data>
   <data name="Settings" xml:space="preserve">
-    <value>Configuracion</value>
+    <value>Configuración</value>
   </data>
   <data name="Shift" xml:space="preserve">
     <value>Turno</value>
@@ -292,13 +292,13 @@
     <value>Ausencia</value>
   </data>
   <data name="Comment" xml:space="preserve">
-    <value>Comment</value>
+    <value>Comentario</value>
   </data>
   <data name="EndDate" xml:space="preserve">
-    <value>EndDate</value>
+    <value>Final</value>
   </data>
   <data name="StartDate" xml:space="preserve">
-    <value>StartDate</value>
+    <value>Inicio</value>
   </data>
   <data name="All" xml:space="preserve">
     <value>Todos</value>
@@ -427,7 +427,7 @@
     <value>Transferir todos</value>
   </data>
   <data name="TransferCronExpression" xml:space="preserve">
-    <value>Transfer Cron Expression</value>
+    <value>Expresion de transferencia</value>
   </data>
   <data name="Logo" xml:space="preserve">
     <value>Logo</value>
@@ -436,9 +436,15 @@
     <value>Envio de Correos</value>
   </data>
   <data name="Config" xml:space="preserve">
-    <value>Configuracion</value>
+    <value>Configuración</value>
   </data>
   <data name="Information" xml:space="preserve">
     <value>Informacion</value>
+  </data>
+  <data name="Image" xml:space="preserve">
+    <value>Imagen</value>
+  </data>
+  <data name="PersonalInfo" xml:space="preserve">
+    <value>Datos personales</value>
   </data>
 </root>

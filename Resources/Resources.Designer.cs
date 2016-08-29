@@ -70,7 +70,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Adress.
+        ///   Looks up a localized string similar to Address.
         /// </summary>
         public static string Address {
             get {
@@ -250,7 +250,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Crear Nuevo.
+        ///   Looks up a localized string similar to Create New.
         /// </summary>
         public static string CreateNew {
             get {
@@ -421,7 +421,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ExtraHour?.
+        ///   Looks up a localized string similar to Extra Hour?.
         /// </summary>
         public static string ExtraHour {
             get {
@@ -475,7 +475,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to HireDate.
+        ///   Looks up a localized string similar to Hire Date.
         /// </summary>
         public static string HireDate {
             get {
@@ -489,6 +489,15 @@ namespace Resources {
         public static string Id {
             get {
                 return ResourceManager.GetString("Id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image.
+        /// </summary>
+        public static string Image {
+            get {
+                return ResourceManager.GetString("Image", resourceCulture);
             }
         }
         
@@ -511,7 +520,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Activo?.
+        ///   Looks up a localized string similar to Active?.
         /// </summary>
         public static string IsActive {
             get {
@@ -709,7 +718,16 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Telefono.
+        ///   Looks up a localized string similar to Personal Info.
+        /// </summary>
+        public static string PersonalInfo {
+            get {
+                return ResourceManager.GetString("PersonalInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone.
         /// </summary>
         public static string PhoneNumber {
             get {
