@@ -11,6 +11,7 @@ namespace AttendanceRRHH.DAL
     {
         DbSet<T> GetDbSet();
         IEnumerable<T> GetAll();
+        IEnumerable<T> GetAll(Func<T, bool> predicate);
         T SelectById(object id);
         void Insert(T obj);
         void Update(T obj);
@@ -18,3 +19,4 @@ namespace AttendanceRRHH.DAL
         void Save();
     }
 }
+

@@ -12,6 +12,7 @@ namespace AttendanceRRHH.DAL
 
         private ApplicationDbContext context;
         private DbSet<T> table;
+        private string user;
 
         public GenericRepository():this(new ApplicationDbContext()){ }
 
@@ -19,6 +20,13 @@ namespace AttendanceRRHH.DAL
         {
             this.table = context.Set<T>();
             this.context = context;
+        }
+
+        public GenericRepository(ApplicationDbContext context, string user)
+        {
+            this.table = context.Set<T>();
+            this.context = context;
+            this.user = user;
         }
 
         public void Delete(object id)
@@ -30,6 +38,11 @@ namespace AttendanceRRHH.DAL
         public IEnumerable<T> GetAll()
         {
             return table.ToList();
+        }
+
+        public IEnumerable<T> GetAll(Func<T, bool> predicate)
+        {
+            return table.Where(predicate);
         }
 
         public DbSet<T> GetDbSet()

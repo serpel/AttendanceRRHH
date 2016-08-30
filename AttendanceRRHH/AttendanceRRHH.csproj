@@ -333,6 +333,10 @@
     <Compile Include="Migrations\201608232328466_UserDeparmentModel.Designer.cs">
       <DependentUpon>201608232328466_UserDeparmentModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201608301553138_AddCompanyIdFieldToJobPositionModel.cs" />
+    <Compile Include="Migrations\201608301553138_AddCompanyIdFieldToJobPositionModel.Designer.cs">
+      <DependentUpon>201608301553138_AddCompanyIdFieldToJobPositionModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Absence.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -1956,6 +1960,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201608232328466_UserDeparmentModel.resx">
       <DependentUpon>201608232328466_UserDeparmentModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608301553138_AddCompanyIdFieldToJobPositionModel.resx">
+      <DependentUpon>201608301553138_AddCompanyIdFieldToJobPositionModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
