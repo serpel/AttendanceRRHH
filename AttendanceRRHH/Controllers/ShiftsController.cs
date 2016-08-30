@@ -22,7 +22,6 @@ namespace AttendanceRRHH.Controllers
     public class ShiftsController : BaseController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-        private GenericRepository<Shift> sRepository = new GenericRepository<Shift>();
 
         public ActionResult ShiftTimeList()
         {
@@ -89,6 +88,7 @@ namespace AttendanceRRHH.Controllers
                 catch (Exception e)
                 {
                     message = e.Message;
+                    success = false;
                     MyLogger.GetInstance.Error("Error", e);
                 }
             }
@@ -143,6 +143,7 @@ namespace AttendanceRRHH.Controllers
                 catch (Exception e)
                 {
                     message = e.Message;
+                    success = false;
                 }
             }
 
@@ -168,7 +169,9 @@ namespace AttendanceRRHH.Controllers
 
             ViewBag.CurrentFilter = searchString;
 
-            var shifts = sRepository.GetDbSet().Include(s => s.Company);
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+
+            var shifts = db.Shifts.Include(i => i.Company).Where(w => companies.Contains((int)w.CompanyId));
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -213,48 +216,13 @@ namespace AttendanceRRHH.Controllers
         // GET: Shifts/Create
         public ActionResult Create()
         {
-            ViewBag.ShiftId = new SelectList(sRepository.GetAll(), "ShiftId", "Name");
-            ViewBag.CompanyId = new SelectList(db.Companies, "CompanyId", "Name");
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+
+            ViewBag.ShiftId = new SelectList(db.Shifts.Where(w => companies.Contains((int)w.CompanyId)).Select(s => new { s.ShiftId, Name = s.Company.Name.Substring(0, 3).ToUpper() + " - "+ s.Name }), "ShiftId", "Name");
+            ViewBag.CompanyId = new SelectList(db.Companies.Where(w => companies.Contains((int)w.CompanyId)), "CompanyId", "Name");
 
             return View();
         }
-
-        //POST: Shifts/Create
-        //To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create(ShiftViewModel shift)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        Shift s = new Shift()
-        //        {
-        //            CompanyId = shift.CompanyId,
-        //            Name = shift.ShiftName,
-        //            Description = shift.ShiftDescription,
-        //            InsertedAt = DateTime.Now,
-        //            UpdatedAt = DateTime.Now,
-        //            IsActive = true                    
-        //        };
-
-        //        db.Shifts.Add(s);
-        //        db.SaveChanges();
-
-        //        Shift f = db.Shifts.Find(s.ShiftId);
-        //        foreach(ShiftTime t in f.ShiftTimes)
-        //        {
-        //            t.ShiftId = f.ShiftId;
-        //        }
-        //        db.ShiftTime.AddRange(s.ShiftTimes);
-        //        db.SaveChanges();
-
-        //        return RedirectToAction("Index");
-        //    }
-
-        //    ViewBag.CompanyId = new SelectList(db.Companies, "CompanyId", "Name", shift.CompanyId);
-        //    return View(shift);
-        //}
 
         // GET: Shifts/Edit/5
         public ActionResult Edit(int? id)
@@ -268,7 +236,9 @@ namespace AttendanceRRHH.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.CompanyId = new SelectList(db.Companies, "CompanyId", "Name", shift.CompanyId);
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+
+            ViewBag.CompanyId = new SelectList(db.Companies.Where(w => companies.Contains((int)w.CompanyId)), "CompanyId", "Name", shift.CompanyId);
             return View(new ShiftViewModel()
             {
                 ShiftId = shift.ShiftId, 
@@ -278,23 +248,6 @@ namespace AttendanceRRHH.Controllers
                 TimeList = shift.ShiftTimes.ToList()
             });
         }
-
-        // POST: Shifts/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit([Bind(Include = "ShiftId,CompanyId,Name,Description,IsSpecialShift,InsertedAt,UpdatedAt,IsActive")] Shift shift)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.Entry(shift).State = EntityState.Modified;
-        //        db.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
-        //    ViewBag.CompanyId = new SelectList(db.Companies, "CompanyId", "Name", shift.CompanyId);
-        //    return View(shift);
-        //}
 
         // GET: Shifts/Delete/5
         public ActionResult Delete(int? id)
