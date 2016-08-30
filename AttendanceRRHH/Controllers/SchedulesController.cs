@@ -182,10 +182,12 @@ namespace AttendanceRRHH.Controllers
 
         public ActionResult CalendarLeftPanel()
         {
-            var shifts = db.Shifts.
-                Where(w => w.IsActive == true);
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
 
-            ViewBag.EmployeeId = new SelectList(db.Employees, "EmployeeId", "CodeAndFullName");
+            var shifts = db.Shifts.
+                Where(w => w.IsActive == true && companies.Contains((int)w.CompanyId));
+
+            ViewBag.EmployeeId = new SelectList(db.Employees.Where(w => companies.Contains(w.Department.CompanyId)), "EmployeeId", "CodeAndFullName");
 
             return PartialView("_CalendarLeftPanel", shifts.ToList());
         }
