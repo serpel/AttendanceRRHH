@@ -19,11 +19,14 @@ namespace AttendanceRRHH.Controllers
 
         public ActionResult GetEmployeeAbsences()
         {
-            var employeeAbsences = db.EmployeeAbsences
-                .ToList()
-                .Select(s => new { s.EmployeeAbsenceId, Absence = s.Absence.Name, Employee = s.Employee.FullName, StartDate = s.StartDate.ToShortDateString(), EndDate = s.EndDate.ToShortDateString(), s.Comment });
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
 
-            return Json(employeeAbsences, JsonRequestBehavior.AllowGet);
+            var employeeAbsences = from s in db.EmployeeAbsences
+                                   join e in db.Employees on s.EmployeeId equals e.EmployeeId
+                                   where companies.Contains(e.Department.CompanyId)
+                                   select new { s.EmployeeAbsenceId, Absence = s.Absence.Name, Employee = e.FirstName + " " + e.LastName, s.StartDate, s.EndDate, s.Comment };
+
+            return Json(employeeAbsences.ToList().Select(s => new { s.EmployeeAbsenceId, s.Absence, s.Employee, StartDate = s.StartDate.ToShortDateString(), EndDate = s.EndDate.ToShortDateString(), s.Comment }), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetAbsences()
@@ -106,7 +109,9 @@ namespace AttendanceRRHH.Controllers
         // GET: EmployeeAbsences/Create
         public ActionResult Create()
         {
-            ViewBag.EmployeeId = new SelectList(db.Employees, "EmployeeId", "CodeAndFullName");
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+
+            ViewBag.EmployeeId = new SelectList(db.Employees.Where(w => companies.Contains(w.Department.CompanyId)), "EmployeeId", "CodeAndFullName");
             ViewBag.AbsenceId = new SelectList(db.Absences, "AbsenceId", "Name");
 
             var employeeAbsence = new EmployeeAbsence();
@@ -133,7 +138,8 @@ namespace AttendanceRRHH.Controllers
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
 
-            ViewBag.EmployeeId = new SelectList(db.Employees, "EmployeeId", "CodeAndFullName", employeeAbsence.EmployeeId);
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+            ViewBag.EmployeeId = new SelectList(db.Employees.Where(w => companies.Contains(w.Department.CompanyId)), "EmployeeId", "CodeAndFullName");
             ViewBag.AbsenceId = new SelectList(db.Absences, "AbsenceId", "Name", employeeAbsence.AbsenceId);
             return PartialView("_Create", employeeAbsence);
         }

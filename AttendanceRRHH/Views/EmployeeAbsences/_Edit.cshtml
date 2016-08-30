@@ -17,14 +17,11 @@
 
 
         <div class="row form-row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <label class="form-label">@Resources.Employee</label>
                 @Html.EditorFor(model => model.Employee.FullName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
             </div>
-        </div>
-
-        <div class="row form-row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <label class="form-label">@Resources.Absence</label>
                 @Html.DropDownList("AbsenceId", null, htmlAttributes: new { @class = "select-drop", @style = "width:100%" })
                 @Html.ValidationMessageFor(model => model.AbsenceId, "", new { @class = "text-danger" })
@@ -48,7 +45,7 @@
         <div class="row form-row">
             <div class="col-md-12">
                 <label class="form-label">@Resources.Comment</label>
-                @Html.EditorFor(model => model.Comment, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.TextAreaFor(model => model.Comment, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Comment, "", new { @class = "text-danger" })
             </div>
         </div>

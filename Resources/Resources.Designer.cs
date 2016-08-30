@@ -682,6 +682,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Not Records Found.
+        /// </summary>
+        public static string NotRecordsFound {
+            get {
+                return ResourceManager.GetString("NotRecordsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OpenDoors.
         /// </summary>
         public static string OpenDoors {

@@ -447,4 +447,7 @@
   <data name="PersonalInfo" xml:space="preserve">
     <value>Datos personales</value>
   </data>
+  <data name="NotRecordsFound" xml:space="preserve">
+    <value>No existen registros</value>
+  </data>
 </root>

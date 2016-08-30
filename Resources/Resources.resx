@@ -468,4 +468,7 @@
   <data name="PersonalInfo" xml:space="preserve">
     <value>Personal Info</value>
   </data>
+  <data name="NotRecordsFound" xml:space="preserve">
+    <value>Not Records Found</value>
+  </data>
 </root>

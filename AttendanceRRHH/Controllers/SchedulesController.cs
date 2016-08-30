@@ -25,7 +25,7 @@ namespace AttendanceRRHH.Controllers
         public JsonResult Search(string employee)
         {
             bool success = false;
-            string message = "No Records Found";
+            string message = Resources.Resources.NotRecordsFound;
 
             if (!String.IsNullOrEmpty(employee))
             {
