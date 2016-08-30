@@ -3,6 +3,13 @@
 @using Resources
 
 <div class="row-fluid">
+    <ul class="breadcrumb">
+        <li><a href="@Url.Action("Index","Employees")" class="active">@Resources.Employees</a> </li>
+        <li><a href="@Url.Action("Index","Departments")" class="active">@Resources.Department</a> </li>
+    </ul>
+</div>
+
+<div class="row-fluid">
     <div class="span12">
         <div class="grid simple ">
             <div class="grid-title">
@@ -13,9 +20,10 @@
                 <table class="table table-hover table-condensed" id="datatable">
                     <thead>
                         <tr>
+                            <th>@Resources.Company</th>
                             <th>@Resources.JobPosition</th>
                             <th>@Resources.IsActive</th>
-                            <th>@Html.NoEncodeActionLink("<span class='glyphicon glyphicon-plus'></span>", Resources.CreateNew, "Create", "Cities", routeValues: null, htmlAttributes: new { data_modal = "", @class = "btn btn-primary pull-right" })</th>
+                            <th>@Html.NoEncodeActionLink("<span class='glyphicon glyphicon-plus'></span>", Resources.CreateNew, "Create", "JobPositions", routeValues: null, htmlAttributes: new { data_modal = "", @class = "btn btn-primary pull-right" })</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -38,6 +46,7 @@
 
             var columns =
             [
+                        { data: 'Company' },
                         { data: 'JobTitle' },
                         { data: 'IsActive' },
                         { data: 'JobPositionId' }

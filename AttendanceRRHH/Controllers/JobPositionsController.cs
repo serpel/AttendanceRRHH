@@ -14,9 +14,13 @@ namespace AttendanceRRHH.Controllers
 
         public ActionResult GetJobPositions()
         {
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+
             var jobs = db.Jobs
+                .Include(i => i.Company)
+                .Where(w => companies.Contains((int)w.CompanyId))
                 .ToList()
-                .Select(s => new { s.JobPositionId, s.JobTitle, s.IsActive });
+                .Select(s => new { s.JobPositionId, s.JobTitle, s.IsActive, Company = s.Company.Name });
 
             return Json(jobs, JsonRequestBehavior.AllowGet);
         }
@@ -30,6 +34,9 @@ namespace AttendanceRRHH.Controllers
         // GET: JobPositions/Create
         public ActionResult Create()
         {
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+            ViewBag.CompanyId = new SelectList(db.Companies.Where(w => companies.Contains((int)w.CompanyId)), "CompanyId", "Name");
+
             return PartialView("_Create", new JobPosition());
         }
 
@@ -38,7 +45,7 @@ namespace AttendanceRRHH.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "JobPositionId,JobTitle,IsActive")] JobPosition jobPosition)
+        public ActionResult Create([Bind(Include = "JobPositionId,JobTitle,IsActive,CompanyId")] JobPosition jobPosition)
         {
             if (ModelState.IsValid)
             {
@@ -46,6 +53,9 @@ namespace AttendanceRRHH.Controllers
                 db.SaveChanges();
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
+
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+            ViewBag.CompanyId = new SelectList(db.Companies.Where(w => companies.Contains((int)w.CompanyId)), "CompanyId", "Name", jobPosition.CompanyId);
 
             return PartialView("_Create", jobPosition);
         }
@@ -62,6 +72,10 @@ namespace AttendanceRRHH.Controllers
             {
                 return HttpNotFound();
             }
+
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+            ViewBag.CompanyId = new SelectList(db.Companies.Where(w => companies.Contains((int)w.CompanyId)), "CompanyId", "Name", jobPosition.CompanyId);
+
             return PartialView("_Edit", jobPosition);
         }
 
@@ -70,7 +84,7 @@ namespace AttendanceRRHH.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "JobPositionId,JobTitle,IsActive")] JobPosition jobPosition)
+        public ActionResult Edit([Bind(Include = "JobPositionId,JobTitle,IsActive,CompanyId")] JobPosition jobPosition)
         {
             if (ModelState.IsValid)
             {
@@ -104,6 +118,7 @@ namespace AttendanceRRHH.Controllers
             JobPosition jobPosition = db.Jobs.Find(id);
             db.Jobs.Remove(jobPosition);
             db.SaveChanges();
+
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }
 

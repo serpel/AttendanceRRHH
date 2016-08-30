@@ -15,7 +15,12 @@
         @Html.HiddenFor(model => model.JobPositionId)
 
         <div class="row form-row">
-            <div class="col-md-12">
+            <div class="col-md-6">
+                <label class="form-label">@Resources.Company</label>
+                @Html.DropDownList("CompanyId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.CompanyId, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-6">
                 <label class="form-label">@Resources.JobPosition</label>
                 @Html.EditorFor(model => model.JobTitle, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.JobTitle, "", new { @class = "text-danger" })
@@ -24,19 +29,14 @@
 
         <div class="row form-row">
             <div class="col-md-6">
-                <div class="form-group">
-                    <div class="checkbox-inline">
-                        <label>
-                            @Html.CheckBox("IsActive") @Resources.IsActive
-                        </label>
-                    </div>
-                </div>
+                <label class="">@Resources.IsActive</label>
+                @Html.CheckBoxFor(model => model.IsActive, new { @class = "form-control" })
             </div>
         </div>
     </div>
 
     <div class="modal-footer">
-        <button class="btn" type="button" data-dismiss="modal">Cancel</button>
-        <input class="btn btn-primary" type="submit" value="Save" />
+        <button class="btn" type="button" data-dismiss="modal">@Resources.Cancel</button>
+        <input class="btn btn-primary" type="submit" value="@Resources.Save" />
     </div>
 }

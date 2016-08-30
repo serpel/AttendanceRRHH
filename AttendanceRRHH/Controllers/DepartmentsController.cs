@@ -18,7 +18,10 @@ namespace AttendanceRRHH.Controllers
 
         public ActionResult GetDepartments()
         {
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+
             var departments = db.Departments
+                .Where(w => companies.Contains((int)w.CompanyId))
                 .ToList()
                 .Select(s => new { s.DepartmentId, Company = s.Company.Name, s.Name, s.IsActive });
 
@@ -34,7 +37,9 @@ namespace AttendanceRRHH.Controllers
         // GET: Departments/Create
         public ActionResult Create()
         {
-            ViewBag.CompanyId = new SelectList(db.Companies, "CompanyId", "Name");
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+
+            ViewBag.CompanyId = new SelectList(db.Companies.Where(w => companies.Contains((int)w.CompanyId)), "CompanyId", "Name");
             return PartialView("_Create", new Department());
         }
 
@@ -53,7 +58,9 @@ namespace AttendanceRRHH.Controllers
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
 
-            ViewBag.CompanyId = new SelectList(db.Companies, "CompanyId", "Name", department.CompanyId);
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+            ViewBag.CompanyId = new SelectList(db.Companies.Where(w => companies.Contains((int)w.CompanyId)), "CompanyId", "Name");
+
             return PartialView("_Create", department);
         }
 
@@ -69,7 +76,9 @@ namespace AttendanceRRHH.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.CompanyId = new SelectList(db.Companies, "CompanyId", "Name", department.CompanyId);
+
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+            ViewBag.CompanyId = new SelectList(db.Companies.Where(w => companies.Contains((int)w.CompanyId)), "CompanyId", "Name", department.CompanyId);
             return PartialView("_Edit", department);
         }
 
@@ -87,7 +96,9 @@ namespace AttendanceRRHH.Controllers
 
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
-            ViewBag.CompanyId = new SelectList(db.Companies, "CompanyId", "Name", department.CompanyId);
+
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+            ViewBag.CompanyId = new SelectList(db.Companies.Where(w => companies.Contains((int)w.CompanyId)), "CompanyId", "Name", department.CompanyId);
             return View(department);
         }
 
