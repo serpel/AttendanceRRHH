@@ -16,5 +16,10 @@ namespace AttendanceRRHH.Models
 
         public virtual Country Country { get; set; }
         public virtual ICollection<Employee> Employees { get; set; }
+
+        public City()
+        {
+            IsActive = true;
+        }
     }
 }

@@ -25,12 +25,14 @@ namespace AttendanceRRHH.Controllers
 
         public JsonResult GetDepartments()
         {
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+
             var departments = db.Departments
-                .Where(w => w.IsActive)
+                .Where(w => w.IsActive && companies.Contains(w.CompanyId))
                 .Select(s => new
                 {
                     s.DepartmentId,
-                    Name = s.Company.Name + " - " + s.Name
+                    Name = s.Company.Name.Substring(0,3).ToUpper() + " - " + s.Name
                 });
 
             return Json(departments.ToList(), JsonRequestBehavior.AllowGet);
@@ -87,7 +89,9 @@ namespace AttendanceRRHH.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.EmployeeId = new SelectList(db.Employees, "EmployeeId", "EmployeeCode", timeSheet.EmployeeId);
+
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+            ViewBag.EmployeeId = new SelectList(db.Employees.Where(w => companies.Contains(w.Department.CompanyId)), "EmployeeId", "EmployeeCode", timeSheet.EmployeeId);
             return PartialView("_Edit", timeSheet);
         }
 
@@ -109,40 +113,42 @@ namespace AttendanceRRHH.Controllers
 
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
-            ViewBag.EmployeeId = new SelectList(db.Employees, "EmployeeId", "EmployeeCode", timeSheet.EmployeeId);
+
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+            ViewBag.EmployeeId = new SelectList(db.Employees.Where(w => companies.Contains(w.Department.CompanyId)), "EmployeeId", "EmployeeCode", timeSheet.EmployeeId);
             return PartialView("_Edit", timeSheet);
         }
 
-        // GET: TimeSheets/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            TimeSheet timeSheet = db.TimeSheets.Find(id);
+        //// GET: TimeSheets/Delete/5
+        //public ActionResult Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    TimeSheet timeSheet = db.TimeSheets.Find(id);
 
-            if (timeSheet == null)
-            {
-                return HttpNotFound();
-            }
+        //    if (timeSheet == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
            
-            return PartialView("_Delete", timeSheet);
-        }
+        //    return PartialView("_Delete", timeSheet);
+        //}
 
-        // POST: TimeSheets/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            TimeSheet timeSheet = db.TimeSheets.Find(id);
-            db.TimeSheets.Remove(timeSheet);
-            db.SaveChanges();
+        //// POST: TimeSheets/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(int id)
+        //{
+        //    TimeSheet timeSheet = db.TimeSheets.Find(id);
+        //    db.TimeSheets.Remove(timeSheet);
+        //    db.SaveChanges();
 
-            MyLogger.GetInstance.Info("Daily record was deleted successfull, RecordId: " + timeSheet.ShiftTimeId + ", EmployeeId: " + timeSheet.EmployeeId);
+        //    MyLogger.GetInstance.Info("Daily record was deleted successfull, RecordId: " + timeSheet.ShiftTimeId + ", EmployeeId: " + timeSheet.EmployeeId);
 
-            return Json(new { success = true }, JsonRequestBehavior.AllowGet);
-        }
+        //    return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+        //}
 
         protected override void Dispose(bool disposing)
         {

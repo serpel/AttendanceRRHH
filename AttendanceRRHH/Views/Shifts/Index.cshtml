@@ -5,8 +5,12 @@
 
 @*<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />*@
 
-<!-- BEGIN PAGE TITLE -->
-<div class="page-title">
+<div class="row-fluid">
+    <ul class="breadcrumb">
+        <li><a href="@Url.Action("Index","Employees")" class="active">@Resources.Employees</a> </li>
+        <li><a href="@Url.Action("Index","Departments")" class="active">@Resources.Department</a> </li>
+        <li><a href="@Url.Action("Index","JobPositions")" class="active">@Resources.JobPosition</a> </li>
+    </ul>
 </div>
 
 <div class="row-fluid">

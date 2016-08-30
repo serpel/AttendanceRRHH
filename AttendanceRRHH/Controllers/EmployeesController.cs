@@ -119,7 +119,7 @@ namespace AttendanceRRHH.Controllers
             ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name", employee.CityId);
             ViewBag.CountryId = new SelectList(db.Countries, "CountryId", "Name", employee.CountryId);
             ViewBag.DepartmentId = new SelectList(db.Departments.Where(w => companies.Contains(w.CompanyId)).Select(s => new { s.DepartmentId, Name = s.Company.Name.Substring(0, 3).ToUpper() + " - " + s.Name }), "DepartmentId", "Name", employee.DepartmentId);
-            ViewBag.JobPositionId = new SelectList(db.Jobs.Where(w => companies.Contains((int)w.CompanyId)).Select(s => new { s.JobPositionId, Name = s.Company.Name.Substring(0, 3).ToUpper() + " - " + s.JobTitle }), "JobPositionId", "JobTitle", employee.JobPositionId);
+            ViewBag.JobPositionId = new SelectList(db.Jobs.Where(w => companies.Contains((int)w.CompanyId)).Select(s => new { s.JobPositionId, JobTitle = s.Company.Name.Substring(0, 3).ToUpper() + " - " + s.JobTitle }), "JobPositionId", "JobTitle", employee.JobPositionId);
             ViewBag.ShiftId = new SelectList(db.Shifts.Where(w => companies.Contains((int)w.CompanyId)).Select(s => new { s.ShiftId, Name = s.Company.Name.Substring(0,3).ToUpper() + " - " + s.Name}), "ShiftId", "Name", employee.ShiftId);
 
             return PartialView("_Edit", employee);

@@ -95,10 +95,13 @@
                         success: function (result) {
                             if (result.success) {
                                 $('#myModal').modal('hide');
-
                             } else {
-                                $('#myModalContent').html(result);
-                                bindForm(dialog, id, columns, source, controller);
+                                $('#myModal').modal('hide');
+                                Messenger().post({
+                                    message: result.message,
+                                    type: 'error',
+                                    showCloseButton: true
+                                });
                             }
                         }
                     });
