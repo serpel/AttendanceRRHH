@@ -80,6 +80,8 @@ namespace AttendanceRRHH.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        public string ProfileUrl { get; set; }
     }
 
     public class UserViewModel
@@ -93,10 +95,14 @@ namespace AttendanceRRHH.Models
         [Display(Name = "Email")]
         public string Email { get; set; }
 
-        //[Range(1, int.MaxValue, ErrorMessage = "Field can't be empty")]
-        public ICollection<string> Roles { get; set; }
+        public string ProfileUrl { get; set; }
 
-        //[Range(1, int.MaxValue, ErrorMessage = "Field can't be empty")]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
+        public string Password { get; set; }
+
+        public ICollection<string> Roles { get; set; }
         public ICollection<int> Companies { get; set; }
         public ICollection<int> Departments { get; set; }
     }

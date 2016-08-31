@@ -232,6 +232,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm your account.
+        /// </summary>
+        public static string ConfirmYourAccount {
+            get {
+                return ResourceManager.GetString("ConfirmYourAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please confirm your account by clicking.
+        /// </summary>
+        public static string ConfirmYourAccountMessage {
+            get {
+                return ResourceManager.GetString("ConfirmYourAccountMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Countries.
         /// </summary>
         public static string Countries {
@@ -471,6 +489,15 @@ namespace Resources {
         public static string HasLunchTime {
             get {
                 return ResourceManager.GetString("HasLunchTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Here.
+        /// </summary>
+        public static string Here {
+            get {
+                return ResourceManager.GetString("Here", resourceCulture);
             }
         }
         

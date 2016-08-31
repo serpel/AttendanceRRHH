@@ -22,10 +22,10 @@ namespace AttendanceRRHH.BLL
         public DailyProcess(ApplicationDbContext context)
         {
             this.context = context;
-            //eRepository = new EmployeeRepository(context);
-            //sRepository = new ShiftTimeRepository(context);
-            //aRepository = new AttendanceRecordsRepository(context);
-            //tRepository = new TimeSheetRepository(context);
+            eRepository = new EmployeeRepository(context);
+            sRepository = new ShiftTimeRepository(context);
+            aRepository = new AttendanceRecordsRepository(context);
+            tRepository = new TimeSheetRepository(context);
         }
 
         public void GenerateEmployeeTimeSheetByDate(DateTime date)

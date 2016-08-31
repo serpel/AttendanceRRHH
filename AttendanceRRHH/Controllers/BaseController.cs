@@ -7,6 +7,9 @@ using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using AttendanceRRHH.BLL;
+using AttendanceRRHH.DAL.Security;
+using Microsoft.AspNet.Identity;
+using AttendanceRRHH.Models;
 
 namespace AttendanceRRHH.Controllers
 {
@@ -52,6 +55,24 @@ namespace AttendanceRRHH.Controllers
         {
             MyLogger.GetInstance.Error(filterContext.Exception.Message, filterContext.Exception);
             base.OnException(filterContext);
+        }
+
+        public ActionResult SetCulture(string culture)
+        {
+            // Validate input
+            culture = CultureHelper.GetImplementedCulture(culture);
+            // Save culture in a cookie
+            HttpCookie cookie = Request.Cookies["_culture"];
+            if (cookie != null)
+                cookie.Value = culture;   // update cookie value
+            else
+            {
+                cookie = new HttpCookie("_culture");
+                cookie.Value = culture;
+                cookie.Expires = DateTime.Now.AddYears(1);
+            }
+            Response.Cookies.Add(cookie);
+            return RedirectToAction("Index", "Profile");
         }
     }
 }

@@ -11,11 +11,13 @@ using System.Web;
 using System.Web.Mvc;
 using AttendanceRRHH.DAL.Security;
 using AttendanceRRHH.BLL;
+using System.IO;
+using System.Configuration;
 
 namespace AttendanceRRHH.Controllers
 {
     [AccessAuthorizeAttribute(Roles = "Admin")]
-    public class UsersController : BaseController
+    public class UsersController: BaseController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private ApplicationUserManager _userManager;
@@ -76,14 +78,14 @@ namespace AttendanceRRHH.Controllers
             ViewBag.Companies = new MultiSelectList(db.Companies.ToList(), "CompanyId", "Name", selectedCompanies);
             ViewBag.Departments = new MultiSelectList(db.Departments.Where(w => w.IsActive == true).ToList().Select(s => new { s.DepartmentId, Name = s.Company.Name.Substring(0,3).ToUpper() + " " +  s.Name }), "DepartmentId", "Name", selectedDeparments);
 
-            UserViewModel userV = new UserViewModel() { Id = user.Id, Email = user.Email };
+            UserViewModel userV = new UserViewModel() { Id = user.Id, Email = user.Email, ProfileUrl = user.ProfileUrl };
 
             return PartialView("_Edit", userV);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(UserViewModel model)
+        public async Task<ActionResult> Edit(UserViewModel model, HttpPostedFileBase file)
         {
             //TODO: Fix error when delete all companies
             if (ModelState.IsValid)
@@ -91,6 +93,21 @@ namespace AttendanceRRHH.Controllers
                 try
                 {
                     var user = await UserManager.FindByIdAsync(model.Id);
+
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        string baseUrl = Url.Content(Path.Combine(@ConfigurationManager.AppSettings["ProfileImagePath"], model.Email));
+                        string path = Uploader.GetInstance.GenerateUrlPath(Server.MapPath(baseUrl), baseUrl, file);
+                        user.ProfileUrl = Url.Content(path);
+                    }
+                    
+                    if(model.Password != null)
+                    {
+                        var token = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                        await UserManager.ResetPasswordAsync(user.Id, token, model.Password);
+                    }
+
+                    await UserManager.UpdateAsync(user);
 
                     var roleStore = new RoleStore<IdentityRole>(db);
                     var roleManager = new RoleManager<IdentityRole>(roleStore);
@@ -269,18 +286,25 @@ namespace AttendanceRRHH.Controllers
         // GET: /Account/Register
         public ActionResult Create()
         {
-            return PartialView("_Create");
+            return PartialView("_Create", new RegisterViewModel());
         }
 
         //
         // POST: /Account/Register
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(RegisterViewModel model)
+        public async Task<ActionResult> Create(RegisterViewModel model, HttpPostedFileBase file)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                if(file != null && file.ContentLength > 0)
+                {
+                    string baseUrl = Url.Content(Path.Combine(@ConfigurationManager.AppSettings["ProfileImagePath"], model.Email));
+                    string path = Uploader.GetInstance.GenerateUrlPath(Server.MapPath(baseUrl), baseUrl, file);
+                    model.ProfileUrl = Url.Content(path);
+                }
+
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, ProfileUrl = model.ProfileUrl };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -288,7 +312,7 @@ namespace AttendanceRRHH.Controllers
                     // Send an email this link
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    await UserManager.SendEmailAsync(user.Id, Resources.Resources.ConfirmYourAccount, Resources.Resources.ConfirmYourAccountMessage + " <a href=\"" + callbackUrl + "\">"+ Resources.Resources.Here +"</a>");
 
                     MyLogger.GetInstance.Info("User was created Succesfull, userId: " + user.Id + " Email: " + user.Email);
 

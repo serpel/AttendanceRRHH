@@ -1,7 +1,7 @@
 ﻿@model AttendanceRRHH.Models.Employee
 @using Resources
 
-@using (Html.BeginForm())
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "EditForm" }))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -147,6 +147,10 @@
         $('#tab-4 a').click(function (e) {
             e.preventDefault();
             $(this).tab('show');
+        });
+
+        $('#EditForm').submit(function () {
+            $('input[type=submit]', this).attr('disabled', 'disabled');
         });
     });
 </script>

@@ -65,12 +65,17 @@ function bindForm(dialog, id, columns, source, controller) {
                     $(id).DataTable().ajax.reload();
                     //ReloadTable(id, columns, source, controller);
                 } else {
-                    $('#myModal').modal('hide');
-                    Messenger().post({
-                        message: result.message,
-                        type: 'error',
-                        showCloseButton: true
-                    });
+
+                    if (result.message != null) {
+                        $('#myModal').modal('hide');
+                        Messenger().post({
+                            message: result.message,
+                            type: 'error',
+                            showCloseButton: true
+                        });
+                    } else {
+                        $('#myModalContent').html(result);
+                    }
                     //bindForm(dialog, id, columns, source, controller);
                 }
             }

@@ -450,4 +450,13 @@
   <data name="NotRecordsFound" xml:space="preserve">
     <value>No existen registros</value>
   </data>
+  <data name="ConfirmYourAccount" xml:space="preserve">
+    <value>Confirmar tu cuenta</value>
+  </data>
+  <data name="ConfirmYourAccountMessage" xml:space="preserve">
+    <value>Por favor confirma tu cuenta haciendo click</value>
+  </data>
+  <data name="Here" xml:space="preserve">
+    <value>Aqui</value>
+  </data>
 </root>

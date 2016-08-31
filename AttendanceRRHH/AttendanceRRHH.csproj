@@ -252,6 +252,7 @@
     <Compile Include="Controllers\JobPositionsController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ProcessController.cs" />
+    <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Controllers\SchedulesController.cs" />
     <Compile Include="Controllers\ShiftsController.cs" />
@@ -336,6 +337,10 @@
     <Compile Include="Migrations\201608301553138_AddCompanyIdFieldToJobPositionModel.cs" />
     <Compile Include="Migrations\201608301553138_AddCompanyIdFieldToJobPositionModel.Designer.cs">
       <DependentUpon>201608301553138_AddCompanyIdFieldToJobPositionModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608312009171_UserSettingsFieldsOnUserModel.cs" />
+    <Compile Include="Migrations\201608312009171_UserSettingsFieldsOnUserModel.Designer.cs">
+      <DependentUpon>201608312009171_UserSettingsFieldsOnUserModel.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Absence.cs" />
@@ -1646,6 +1651,7 @@
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\PublishProfiles\172.20.11.7.pubxml" />
     <None Include="Scripts\jquery-2.2.2.intellisense.js" />
     <Content Include="Scripts\DataTables-1.10.11\media\js\dataTables.bootstrap.js" />
     <Content Include="Scripts\DataTables-1.10.11\media\js\dataTables.bootstrap.min.js" />
@@ -1818,9 +1824,7 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\AttendanceRecords\Create.cshtml" />
     <Content Include="Views\AttendanceRecords\Delete.cshtml" />
-    <Content Include="Views\AttendanceRecords\Details.cshtml" />
     <Content Include="Views\AttendanceRecords\Edit.cshtml" />
     <Content Include="Views\AttendanceRecords\Index.cshtml" />
     <Content Include="Views\Cities\_Create.cshtml" />
@@ -1900,6 +1904,8 @@
     <Content Include="Views\Users\_Delete.cshtml" />
     <Content Include="Views\Users\_Create.cshtml" />
     <Content Include="Views\Shared\_LayoutError.cshtml" />
+    <Content Include="Views\Users\UserProfile.cshtml" />
+    <Content Include="Views\Profile\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1963,6 +1969,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201608301553138_AddCompanyIdFieldToJobPositionModel.resx">
       <DependentUpon>201608301553138_AddCompanyIdFieldToJobPositionModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608312009171_UserSettingsFieldsOnUserModel.resx">
+      <DependentUpon>201608312009171_UserSettingsFieldsOnUserModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
