@@ -70,6 +70,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Actives.
+        /// </summary>
+        public static string Actives {
+            get {
+                return ResourceManager.GetString("Actives", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Address.
         /// </summary>
         public static string Address {
@@ -525,6 +534,15 @@ namespace Resources {
         public static string Image {
             get {
                 return ResourceManager.GetString("Image", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inactives.
+        /// </summary>
+        public static string Inactives {
+            get {
+                return ResourceManager.GetString("Inactives", resourceCulture);
             }
         }
         

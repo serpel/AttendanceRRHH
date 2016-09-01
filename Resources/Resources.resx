@@ -480,4 +480,10 @@
   <data name="Here" xml:space="preserve">
     <value>Here</value>
   </data>
+  <data name="Actives" xml:space="preserve">
+    <value>Actives</value>
+  </data>
+  <data name="Inactives" xml:space="preserve">
+    <value>Inactives</value>
+  </data>
 </root>

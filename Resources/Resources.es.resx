@@ -459,4 +459,10 @@
   <data name="Here" xml:space="preserve">
     <value>Aqui</value>
   </data>
+  <data name="Actives" xml:space="preserve">
+    <value>Activos</value>
+  </data>
+  <data name="Inactives" xml:space="preserve">
+    <value>Inactivos</value>
+  </data>
 </root>
