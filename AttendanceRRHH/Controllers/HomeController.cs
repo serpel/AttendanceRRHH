@@ -26,12 +26,18 @@ namespace AttendanceRRHH.Controllers
 
         public ActionResult Index()
         {
-            int totalActives = (db.Employees
-                .Where(w => w.IsActive == true)).Count();
-            
-            int totalInactives = (db.Employees
-                .Where(w => w.IsActive == false)).Count();
 
+            int totalActives = 0, totalInactives = 0;
+
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+
+            var employees = db.Employees.Include(i => i.Department).Where(w => companies.Contains(w.Department.CompanyId));
+
+            if(employees != null){
+                totalActives = employees.Where(w => w.IsActive).Count();
+                totalInactives = employees.Where(w => w.IsActive == false).Count();
+            }
+        
             ViewBag.TotalActiveEmployees = totalActives;
             ViewBag.TotalInactiveEmployees = totalInactives;
 

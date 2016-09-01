@@ -13,8 +13,10 @@
         columns: columns,
         columnDefs: [{
             render: function (data, type, row) {
-                var editUrl = '/' + controller + '/edit/' + data;
-                var deleteUrl = '/' + controller + '/delete/' + data;
+                var url = window.location.origin;
+
+                var editUrl = url + '/' + controller + '/edit/' + data;
+                var deleteUrl = url + '/' + controller + '/delete/' + data;
 
                 var options = "<div class='pull-right'>" +
                     "<a class='btn btn-default' data-modal='' href='" + editUrl + "' title='Edit'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;" +
