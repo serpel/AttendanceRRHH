@@ -1,0 +1,28 @@
+﻿@using Resources
+
+<div class="row">
+    <div class="col-md-3 col-sm-6 spacing-bottom-sm spacing-bottom">
+        <div class="tiles blue added-margin">
+            <div class="tiles-body">
+                <div class="controller"> <a href="javascript:;" class="reload"></a> <a href="javascript:;" class="remove"></a> </div>
+                <div class="tiles-title"> @Resources.Employees @Resources.Actives </div>
+                <div class="heading"> <span class="animate-number" data-value="@ViewBag.TotalActiveEmployees" data-animation-duration="1200">@ViewBag.Percent</span> </div>
+                <div class="progress transparent progress-small no-radius">
+                    <div class="progress-bar progress-bar-white animate-progress-bar" data-percentage="@ViewBag.Percent"></div>
+                </div>               
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 spacing-bottom-sm spacing-bottom">
+        <div class="tiles red added-margin">
+            <div class="tiles-body">
+                <div class="controller"> <a href="javascript:;" class="reload"></a> <a href="javascript:;" class="remove"></a> </div>
+                <div class="tiles-title"> @Resources.Employees @Resources.Inactives </div>
+                <div class="heading"> <span class="animate-number" data-value="@ViewBag.TotalInactiveEmployees" data-animation-duration="1200">@ViewBag.Percent</span> </div>
+                <div class="progress transparent progress-small no-radius">
+                    <div class="progress-bar progress-bar-white animate-progress-bar" data-percentage="@ViewBag.Percent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
