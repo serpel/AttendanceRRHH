@@ -42,26 +42,27 @@
     </div>
 </div>
 
-@section scripts {
+@section scripts 
+{
     <script src="~/Scripts/DataTables-1.10.11/media/js/jquery.dataTables.min.js"></script>
     <script src="~/Scripts/DataTables-1.10.11/media/js/dataTables.bootstrap.min.js"></script>
     <script src="~/Scripts/modal.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
 
-            var id = '#datatable';
-
-            var controller = 'Employees';
-
-            var url = '@Url.Action("GetEmployees")';
+            var options = {
+                editUrl: '@Url.Action("Edit")',
+                deleteUrl: '@Url.Action("Delete")',
+                url: '@Url.Action("GetEmployees")',
+                id: '#datatable'
+            };
 
             var columns =
-           [
+            [
 
                 {
                     "render": function (data, type, full, meta) {
                         var image = "";
-                        debugger;
                         if (full.ProfileUrl == null) {
                             image = "<img src='@Url.Content("~/Content/assets/img/profiles/default-50.png")' style='width:35px;height:35px' />";
                         } else {
@@ -80,52 +81,42 @@
                { data: 'EmployeeId' }
            ];
 
-            var table = $(id).DataTable({
+            debugger;
+            var table = $(options.id).DataTable({
                 info: true,
                 print: true,
                 responsive: true,
                 stateSave: true,
                 ajax: {
-                    url: url,
+                    url: options.url,
                     dataSrc: ''
                 },
                 columns: columns,
                 columnDefs: [{
                     render: function (data, type, row) {
-                        var url = window.location.origin;
 
-                        var editUrl = url + '/' + controller +  '/edit/' + data;
-                        var deleteUrl = url + '/' + controller + '/delete/' + data;
+                        var editUrl = options.editUrl + '/' + data;
+                        var deleteUrl = options.deleteUrl + '/' + data;
 
-                        var options = "<div class='pull-right'>" +
+                        var buttons = "<div class='pull-right'>" +
                             "<a class='btn btn-default' data-modal='' href='" + editUrl + "' title='Edit'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;" +
                             "<a class='btn btn-danger' data-modal='' href='" + deleteUrl + "' title='Delete'><span class='glyphicon glyphicon-trash'></span></a>" +
                             "</div>";
 
-                        return options;
+                        return buttons;
                     },
                     targets: -1,
                     orderable: false,
                     searchable: false
                 }],
-                @*createdRow: function (row, data, dataIndex) {
-                    debugger;
-                    if (data.ProfileUrl == null) {
-                        $(row).find("td").eq(0).replaceWith("<img src='@Url.Content("~/Content/assets/img/profiles/default-50.png")' class='avatar img-circle' alt='avatar' />");
-                    } else {
-                        $(row).find("td").eq(0).replaceWith("<img src='" + data.ProfileUrl + "' class='avatar img-circle' alt='avatar' style='width:50px;height:50px' />");
-                    }
-
-                },*@
                 order: [0, "desc"]
             });
 
-            $(id).on('draw.dt', function () {
-                LoadModal(id, columns, url, controller);
+            $(options.id).on('draw.dt', function () {
+                LoadModal(columns, options);
             });
 
         });
     </script>
 }
-
 

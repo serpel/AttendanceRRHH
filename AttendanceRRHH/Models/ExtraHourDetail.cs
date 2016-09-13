@@ -15,6 +15,8 @@ namespace AttendanceRRHH.Models
         public decimal StartHour { get; set; }
         [Required]
         public decimal EndHour { get; set; }
+        [Required]
+        public int Day { get; set; }
 
         public virtual ExtraHour ExtraHour { get; set; }
     }

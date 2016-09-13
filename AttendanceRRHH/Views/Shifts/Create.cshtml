@@ -1,11 +1,7 @@
 ﻿@model AttendanceRRHH.Models.ShiftViewModel
-
-@{
-    ViewBag.Title = "Create";
-}
+@using Resources
 
 @section Styles {
-
     <link href="~/Content/assets/plugins/boostrap-clockpicker/bootstrap-clockpicker.min.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="~/Content/assets/plugins/bootstrap-select2/select2.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="~/Content/assets/plugins/boostrap-checkbox/css/bootstrap-checkbox.min.css" rel="stylesheet" type="text/css" media="screen" />
@@ -20,7 +16,7 @@
     <div class="col-md-12">
         <div class="grid simple">
             <div class="grid-title no-border">
-                <h4>Shift <span class="semi-bold">Creation</span></h4>
+                <h4>@Resources.Shift</h4>
                 <div class="tools"> <a href="javascript:;" class="collapse"></a> <a href="#grid-config" data-toggle="modal" class="config"></a> <a href="javascript:;" class="reload"></a> <a href="javascript:;" class="remove"></a> </div>
             </div>
             <div class="grid-body no-border">
@@ -29,32 +25,36 @@
                     @Html.AntiForgeryToken()
 
                     <div class="row column-seperation">
-                        <div class="col-md-6">
+                        <div class="col-md-2">
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
                             <div class="row form-row">
-                                <div class="col-md-5">
+                                <div class="col-md-12">
                                     <div class="input-with-icon  right">
                                         <i class=""></i>
                                         @Html.DropDownList("CompanyId", null, htmlAttributes: new { @class = "form-control" })
                                     </div>
                                 </div>
-                                <div class="col-md-7">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="row form-row">
+                                <div class="col-md-12">
+                                    <div class="input-with-icon  right">
+                                        <i class=""></i>
+                                        @Html.DropDownList("ExtraHourId", null, htmlAttributes: new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="row form-row">
+                                <div class="col-md-12">
                                     <div class="input-with-icon  right">
                                         <i class=""></i>
                                         @Html.EditorFor(model => model.ShiftName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name" } })
                                     </div>
                                 </div>
                             </div>
-                            @*TODO: fix checkbox*@
-                            @*<div class="row form-row">
-                                    <div class="col-md-5">
-                                        <div class="checkbox check-primary">
-                                            @Html.CheckBoxFor(model => model.IsSpecialShift, new { htmlAttributes = new { @class = "form-control" } })
-                                            @Html.ValidationMessageFor(model => model.IsSpecialShift, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                </div>*@
                         </div>
                         <div class="col-md-6">
                             <div class="row form-row">
@@ -120,25 +120,33 @@
                     parent.removeClass('error-control').addClass('success-control');
                 },
                 submitHandler: function (form) {
+
                     $.ajax({
                         type: "POST",
-                        url: "@Url.Action("AddShift")",
+                        url: "@Url.Action("Create")",
                         async: false,
                         data: $('#shiftform').serialize(),
-                        success: function (data) {
+                        success: function (result) {
 
-                        if (data.success == true) {
-                            alert('Successfully done.');
+                            if (result.success) {
+                                alert('Successfully done.');
+
+                                var url = $("#RedirectTo").val();
+                                location.href = url;
+                            } else {
+                                if (result.message != null) {
+                                    Messenger().post({
+                                        message: result.message,
+                                        type: 'error',
+                                        showCloseButton: true
+                                    });
+                                }
+                            }
+                        },
+                        error: function (message) {
+                            alert(message);
                         }
-
-                        //$('#shiftform').trigger("reset");
-                        var url = $("#RedirectTo").val();
-                        location.href = url;
-                    },
-                    error: function (message) {
-                        alert(message);
-                    }
-                });
+                    });
                 }
             });
 

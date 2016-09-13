@@ -241,12 +241,14 @@
     <Compile Include="Controllers\CitiesController.cs" />
     <Compile Include="Controllers\CompaniesController.cs" />
     <Compile Include="Controllers\CountriesController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DepartmentsController.cs" />
     <Compile Include="Controllers\DevicesController.cs" />
     <Compile Include="Controllers\DeviceTypesController.cs" />
     <Compile Include="Controllers\EmployeeAbsencesController.cs" />
     <Compile Include="Controllers\EmployeesController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\ExtraHoursController.cs" />
     <Compile Include="Controllers\HomeController - Copy.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\JobPositionsController.cs" />
@@ -342,6 +344,18 @@
     <Compile Include="Migrations\201608312009171_UserSettingsFieldsOnUserModel.Designer.cs">
       <DependentUpon>201608312009171_UserSettingsFieldsOnUserModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201609022159441_ExtraHourFieldOnShiftTimeModel.cs" />
+    <Compile Include="Migrations\201609022159441_ExtraHourFieldOnShiftTimeModel.Designer.cs">
+      <DependentUpon>201609022159441_ExtraHourFieldOnShiftTimeModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609082018061_CompanyFieldOnExtraHour.cs" />
+    <Compile Include="Migrations\201609082018061_CompanyFieldOnExtraHour.Designer.cs">
+      <DependentUpon>201609082018061_CompanyFieldOnExtraHour.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609132005495_ExtraHourFieldOnShiftModel.cs" />
+    <Compile Include="Migrations\201609132005495_ExtraHourFieldOnShiftModel.Designer.cs">
+      <DependentUpon>201609132005495_ExtraHourFieldOnShiftModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Absence.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -392,6 +406,9 @@
     <Content Include="Content\assets\css\themes\simple\style.css" />
     <Content Include="Content\assets\fonts\custom-set.dev.svg" />
     <Content Include="Content\assets\fonts\custom-set.svg" />
+    <Content Include="Content\assets\img\abstract-mosaic-background.jpg" />
+    <Content Include="Content\assets\img\abstract-mosaic-background.png" />
+    <Content Include="Content\assets\img\background.png" />
     <Content Include="Content\assets\img\cover_pic.png" />
     <Content Include="Content\assets\img\icon\noti-cross-2x.png" />
     <Content Include="Content\assets\img\icon\noti-cross.png" />
@@ -1802,7 +1819,13 @@
     <Content Include="Views\Account\Login - Copy.cshtml" />
     <Content Include="Views\Users\_Edit.cshtml" />
     <Content Include="Views\Error\AccessDenied.cshtml" />
-    <Content Include="Views\Devices\Index - Copy.cshtml" />
+    <Content Include="Views\Dashboard\Index.cshtml" />
+    <Content Include="Views\ExtraHours\Create.cshtml" />
+    <Content Include="Views\ExtraHours\Delete.cshtml" />
+    <Content Include="Views\ExtraHours\Details.cshtml" />
+    <Content Include="Views\ExtraHours\Edit.cshtml" />
+    <Content Include="Views\ExtraHours\Index.cshtml" />
+    <Content Include="Views\ExtraHours\GetExtraHourDetails.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
@@ -1869,7 +1892,6 @@
     <Content Include="Views\Process\Index.cshtml" />
     <Content Include="Views\Roles\Create.cshtml" />
     <Content Include="Views\Roles\Index.cshtml" />
-    <Content Include="Views\Schedules\Index3.cshtml" />
     <Content Include="Views\Schedules\_CalendarLeftPanel.cshtml" />
     <Content Include="Views\Schedules\_CalendarTopPanel.cshtml" />
     <Content Include="Views\Shared\_LeftNavBar.cshtml" />
@@ -1877,11 +1899,9 @@
     <Content Include="Views\Shifts\Create.cshtml" />
     <Content Include="Views\Shifts\Delete.cshtml" />
     <Content Include="Views\Shifts\Details.cshtml" />
-    <Content Include="Views\Shifts\Edit - Copy.cshtml" />
     <Content Include="Views\Shifts\Edit.cshtml" />
     <Content Include="Views\Shifts\Index.cshtml" />
     <Content Include="Views\Shifts\_ShiftTimeList.cshtml" />
-    <Content Include="Views\Shifts\_ShiftTimes.cshtml" />
     <Content Include="Views\ShiftTimes\Create.cshtml" />
     <Content Include="Views\ShiftTimes\Delete.cshtml" />
     <Content Include="Views\ShiftTimes\Details.cshtml" />
@@ -1895,7 +1915,6 @@
     <Content Include="Views\EmployeeAbsences\_Delete.cshtml" />
     <Content Include="Views\EmployeeAbsences\_Edit.cshtml" />
     <Content Include="Views\EmployeeAbsences\Index.cshtml" />
-    <Content Include="Views\Schedules\Index5.cshtml" />
     <Content Include="Views\Schedules\Index.cshtml" />
     <Content Include="Views\Users\Index.cshtml" />
     <Content Include="Views\Shared\_LayoutLogin.cshtml" />
@@ -1904,7 +1923,6 @@
     <Content Include="Views\Users\_Delete.cshtml" />
     <Content Include="Views\Users\_Create.cshtml" />
     <Content Include="Views\Shared\_LayoutError.cshtml" />
-    <Content Include="Views\Users\UserProfile.cshtml" />
     <Content Include="Views\Profile\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -1973,6 +1991,15 @@
     <EmbeddedResource Include="Migrations\201608312009171_UserSettingsFieldsOnUserModel.resx">
       <DependentUpon>201608312009171_UserSettingsFieldsOnUserModel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609022159441_ExtraHourFieldOnShiftTimeModel.resx">
+      <DependentUpon>201609022159441_ExtraHourFieldOnShiftTimeModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609082018061_CompanyFieldOnExtraHour.resx">
+      <DependentUpon>201609082018061_CompanyFieldOnExtraHour.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609132005495_ExtraHourFieldOnShiftModel.resx">
+      <DependentUpon>201609132005495_ExtraHourFieldOnShiftModel.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -2010,7 +2037,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>55829</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:5582/</IISUrl>
+          <IISUrl>http://localhost:5582/Biometrico</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

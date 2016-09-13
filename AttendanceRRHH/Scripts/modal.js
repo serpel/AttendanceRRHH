@@ -1,27 +1,28 @@
-﻿function CreateTable(id, columns, source, controller) {
-    var table = $(id).DataTable({
+﻿function CreateTable(columns, options) {
+    var table = $(options.id).DataTable({
         info: true,
         print: true,
         //autoWidth: true,
         responsive: true,
         stateSave: true,
         ajax: {
-            url: source,
+            url: options.url,
             dataSrc: '',
             stateSave: true
         },
         columns: columns,
         columnDefs: [{
             render: function (data, type, row) {
-                var url = window.location.origin;
 
-                var editUrl = url + '/' + controller + '/edit/' + data;
-                var deleteUrl = url + '/' + controller + '/delete/' + data;
+                var editUrl = options.editUrl + '/' + data;
+                var deleteUrl = options.deleteUrl + '/' + data;
 
-                var options = "<div class='pull-right'>" +
+                var buttons = "<div class='pull-right'>" +
                     "<a class='btn btn-default' data-modal='' href='" + editUrl + "' title='Edit'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;" +
                     "<a class='btn btn-danger' data-modal='' href='" + deleteUrl + "' title='Delete'><span class='glyphicon glyphicon-trash'></span></a>" +
                     "</div>";
+
+                return buttons;
 
                 return options;
             },
@@ -35,25 +36,25 @@
     return table;
 };
 
-function ReloadTable(id, columns, source, controller) {
+function ReloadTable(columns, options) {
     //table.ajax.reload();
-    d = $(id).DataTable().destroy();
-    d = CreateTable(id, columns, source, controller);
+    d = $(options.id).DataTable().destroy();
+    d = CreateTable(columns, options);
 };
 
-function LoadModal(id, columns, source, controller) {
+function LoadModal(columns, options) {
     $("a[data-modal]").on("click", function (e) {
         $('#myModalContent').load(this.href, function () {
             $('#myModal').modal({
                 keyboard: true
             }, 'show');
-            bindForm(this, id, columns, source, controller);
+            bindForm(this, columns, options);
         });
         return false;
     });
 };
 
-function bindForm(dialog, id, columns, source, controller) {
+function bindForm(dialog, columns, options) {
     $('form', dialog).submit(function (e) {
         $.ajax({
             url: this.action,
@@ -64,7 +65,7 @@ function bindForm(dialog, id, columns, source, controller) {
             success: function (result) {
                 if (result.success) {
                     $('#myModal').modal('hide');
-                    $(id).DataTable().ajax.reload();
+                    $(options.id).DataTable().ajax.reload();
                     //ReloadTable(id, columns, source, controller);
                 } else {
 

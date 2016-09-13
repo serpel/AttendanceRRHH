@@ -1,22 +1,14 @@
-﻿@model AttendanceRRHH.Models.ShiftViewModel
+﻿@model AttendanceRRHH.Models.ExtraHour
 @using Resources
 
 @section Styles {
-    <link href="~/Content/assets/plugins/boostrap-clockpicker/bootstrap-clockpicker.min.css" rel="stylesheet" type="text/css" media="screen" />
-    <link href="~/Content/assets/plugins/boostrap-checkbox/css/bootstrap-checkbox.min.css" rel="stylesheet" type="text/css" media="screen" />
 }
 
-@Html.Hidden("RedirectTo", Url.Action("Index", "Shifts"))
-
-@*<div class="page-title">
-    <i class="icon-custom-left"></i>
-    <h3>@Resources.Shift</h3>
-</div>*@
+@Html.Hidden("RedirectTo", Url.Action("Index", "ExtraHours"))
 
 <div class="row-fluid">
     <ul class="breadcrumb">
-        <li><a href="@Url.Action("Index","Timesheets")" class="active">@Resources.Records</a> </li>
-        <li><a href="@Url.Action("Index","Employees")" class="active">@Resources.Employees</a> </li>
+        <li><a href="@Url.Action("Index","ExtraHours")" class="active">@Resources.ExtraHour</a> </li>
     </ul>
 </div>
 
@@ -24,66 +16,44 @@
     <div class="col-md-12">
         <div class="grid simple">
             <div class="grid-title">
-                <h4>@Resources.Shift</h4>
+                <h4>@Resources.ExtraHour</h4>
                 <div class="tools"> <a href="javascript:;" class="collapse"></a> <a href="#grid-config" data-toggle="modal" class="config"></a> <a href="javascript:;" class="reload"></a> <a href="javascript:;" class="remove"></a> </div>
             </div>
             <div class="grid-body">
-                @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "shiftform" }))
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "extrahourform" }))
                 {
                     @Html.AntiForgeryToken()
-                    @Html.HiddenFor(model => model.ShiftId)
+                    @Html.HiddenFor(model => model.ExtraHourId)
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                    <div class="row column-seperation">   
-                        <div class="col-md-3">
-                            <div class="row form-row">
-                                <div class="col-md-12">
-                                    <div class="input-with-icon  right">
-                                        <i class=""></i>
-                                        <label>@Resources.Name</label>
-                                        @Html.DropDownList("ExtraHourId", null, htmlAttributes: new { @class = "form-control" })
-                                    </div>
-                                </div>
-                            </div>
-                        </div>                    
-                        <div class="col-md-3">
-                            <div class="row form-row">
-                                <div class="col-md-12">
-                                    <div class="input-with-icon  right">
-                                        <i class=""></i>
-                                        <label>@Resources.Name</label>
-                                        @Html.EditorFor(model => model.ShiftName, new { htmlAttributes = new { @class = "form-control", @placeholder = @Resources.Name } })
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-5">
-                            <div class="row form-row">
-                                <div class="col-md-12">
-                                    <div class="input-with-icon  right">
-                                        <i class=""></i>
-                                        <label>@Resources.Description</label>
-                                        @Html.EditorFor(model => model.ShiftDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = @Resources.Description } })
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="row column-seperation">
                         <div class="col-md-1">
                             <div class="row form-row">
                                 <div class="col-md-12">
                                     <div class="input-with-icon  right">
                                         <i class=""></i>
                                         <label>@Resources.IsActive</label>
-                                        @Html.CheckBoxFor(model => model.IsActive, new { @class = "form-control" })
+                                        @Html.EditorFor(model => model.CompanyId, new { @class = "form-control" })
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-4">
+                            <div class="row form-row">
+                                <div class="col-md-12">
+                                    <div class="input-with-icon  right">
+                                        <i class=""></i>
+                                        <label>@Resources.Name</label>
+                                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @placeholder = @Resources.Name } })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                      
                     </div>
 
                     <div class="row">
                         <div class="col-md-12">
-                            @Html.Action("ShiftTimeListEdit", Model)
+                            @Html.Action("GetExtraHourDetails", Model.ExtraHourId)
                         </div>
                     </div>
 
@@ -100,23 +70,18 @@
 </div>
 
 @section Scripts {
-    <script src="~/Content/assets/plugins/boostrap-clockpicker/bootstrap-clockpicker.min.js" type="text/javascript"></script>
-    <script src="~/Content/assets/plugins/boostrap-checkbox/js/bootstrap-checkbox.min.js" type="text/javascript"></script>
     <script src="~/Content/assets/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
     <script type="text/javascript">
 
         $(document).ready(function () {
-            $('#shiftform').validate({
+            $('#extrahourform').validate({
                 errorElement: 'span',
                 errorClass: 'error',
                 focusInvalid: false,
                 ignore: "",
                 rules: {
-                    ShiftName: {
+                    Name: {
                         minlength: 2,
-                        required: true
-                    },
-                    ShiftDescription: {
                         required: true
                     }
                 },
@@ -139,9 +104,9 @@
                 submitHandler: function (form) {
                     $.ajax({
                         type: "POST",
-                        url: "@Url.Action("EditShift")",
+                        url: "@Url.Action("EditExtraHourDetail")",
                         async: false,
-                        data: $('#shiftform').serialize(),
+                        data: $('#extrahourform').serialize(),
                         success: function (data) {
 
                             if (data.success == true) {
@@ -159,10 +124,6 @@
                         }
                     });
                 }
-            });
-
-            $('.clockpicker ').clockpicker({
-                autoclose: true
             });
 
             $('#cancel').click(function () {

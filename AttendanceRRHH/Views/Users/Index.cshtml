@@ -38,9 +38,12 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-            var id = '#datatable';
-
-            var controller = 'Users';
+            var options = {
+                editUrl: '@Url.Action("Edit")',
+                deleteUrl: '@Url.Action("Delete")',
+                url: '@Url.Action("GetUsers")',
+                id: '#datatable'
+            };
 
             var columns =
             [
@@ -50,12 +53,10 @@
                         { data: 'Id' }
             ];
 
-            var url = '@Url.Action("GetUsers")';
+            var datatable = CreateTable(columns, options);
 
-            var datatable = CreateTable(id, columns, url, controller);
-
-            $(id).on('draw.dt', function () {
-                LoadModal(id, columns, url, controller);
+            $(options.id).on('draw.dt', function () {
+                LoadModal(columns, options);
             });
 
         });

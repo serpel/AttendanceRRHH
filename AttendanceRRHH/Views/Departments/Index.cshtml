@@ -44,11 +44,12 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-            var id = '#datatable';
-
-            var controller = 'Departments';
-
-            var url = '@Url.Action("GetDepartments")';
+            var options = {
+                editUrl: '@Url.Action("Edit")',
+                deleteUrl: '@Url.Action("Delete")',
+                url: '@Url.Action("GetDepartments")',
+                id: '#datatable'
+            };
 
             var columns =
             [
@@ -58,10 +59,10 @@
                 { data: 'DepartmentId' }
             ];
 
-            var table = CreateTable(id, columns, url, controller);
+            var table = CreateTable(columns, options);
 
-            $(id).on('draw.dt', function () {
-                LoadModal(id, columns, url, controller);
+            $(options.id).on('draw.dt', function () {
+                LoadModal(columns, options);
             });
         });
     </script>

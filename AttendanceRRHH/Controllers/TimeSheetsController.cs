@@ -70,6 +70,7 @@ namespace AttendanceRRHH.Controllers
                 }
 
                 var list = timesheets
+                    .OrderBy(o => o.EmployeeId)
                     .ToList()
                     .Select(s => new { s.TimeSheetId, FullName = s.Employee.FullName, s.EmployeeId, EmployeeCode = s.Employee.EmployeeCode, s.In, s.Out, s.IsManualIn, s.IsManualOut, DepartmentId = s.Employee.DepartmentId, DepartmentName = s.Employee.Department.Name, ShiftStartTime = s.ShiftTime.StartTime, ShiftEndTime = s.ShiftTime.EndTime });
 

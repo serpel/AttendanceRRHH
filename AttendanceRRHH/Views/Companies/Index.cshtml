@@ -46,9 +46,12 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-            var id = '#datatable';
-
-            var controller = 'Companies';
+            var options = {
+                editUrl: '@Url.Action("Edit")',
+                deleteUrl: '@Url.Action("Delete")',
+                url: '@Url.Action("GetCompanies")',
+                id: '#datatable'
+            };
 
             var columns =
             [
@@ -58,12 +61,10 @@
                         { data: 'CompanyId' }
             ];
 
-            var url = '@Url.Action("GetCompanies")';
+            var datatable = CreateTable(columns, options);
 
-            var datatable = CreateTable(id, columns, url, controller);
-
-            $(id).on('draw.dt', function () {
-                LoadModal(id, columns, url, controller);
+            $(options.id).on('draw.dt', function () {
+                LoadModal(columns, options);
             });
 
         });

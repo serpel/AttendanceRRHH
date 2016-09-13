@@ -41,9 +41,12 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-            var id = '#datatable';
-
-            var controller = 'Cities';
+            var options = {
+                editUrl: '@Url.Action("Edit")',
+                deleteUrl: '@Url.Action("Delete")',
+                url: '@Url.Action("GetCities")',
+                id: '#datatable'
+            };
 
             var columns =
             [
@@ -53,12 +56,10 @@
                         { data: 'CityId' }
             ];
 
-            var url = '@Url.Action("GetCities")';
+            var datatable = CreateTable(columns, options);
 
-            var datatable = CreateTable(id, columns, url, controller);
-
-            $(id).on('draw.dt', function () {
-                LoadModal(id, columns, url, controller);
+            $(options.id).on('draw.dt', function () {
+                LoadModal(columns, options);
             });
 
         });

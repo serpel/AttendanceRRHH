@@ -12,6 +12,7 @@ namespace AttendanceRRHH.Models
         public string Name { get; set; }
         public Int32? CompanyId { get; set; }
 
+        public virtual Company Company { get; set; }
         public virtual ICollection<ExtraHourDetail> ExtraHourDetail { get; set; }
     }
 }

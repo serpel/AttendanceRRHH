@@ -40,9 +40,12 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-            var id = '#datatable';
-
-            var controller = 'JobPositions';
+            var options = {
+                editUrl: '@Url.Action("Edit")',
+                deleteUrl: '@Url.Action("Delete")',
+                url: '@Url.Action("GetJobPositions")',
+                id: '#datatable'
+            };
 
             var columns =
             [
@@ -52,12 +55,10 @@
                         { data: 'JobPositionId' }
             ];
 
-            var url = '@Url.Action("GetJobPositions")';
+            var datatable = CreateTable(columns, options);
 
-            var datatable = CreateTable(id, columns, url, controller);
-
-            $(id).on('draw.dt', function () {
-                LoadModal(id, columns, url, controller);
+            $(options.id).on('draw.dt', function () {
+                LoadModal(columns, options);
             });
 
         });

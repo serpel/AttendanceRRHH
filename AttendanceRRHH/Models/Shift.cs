@@ -21,15 +21,22 @@ namespace AttendanceRRHH.Models
         public DateTime InsertedAt { get; set; }
         [Required]
         public DateTime UpdatedAt { get; set; }
+
+        public Int32? ExtraHourId { get; set; }
+
         public bool IsActive { get; set; }
 
+        public virtual ExtraHour ExtraHour { get; set; }
         public virtual Company Company { get; set; }
         public virtual ICollection<ShiftTime> ShiftTimes { get; set; }
         public virtual ICollection<Schedule> Schedules { get; set; }
 
         public Shift()
         {
+            InsertedAt = DateTime.Now;
+            UpdatedAt = DateTime.Now;
             IsActive = true;
+            IsSpecialShift = false;
         }
     }
 }

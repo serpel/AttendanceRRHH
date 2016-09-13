@@ -55,7 +55,8 @@ namespace AttendanceRRHH.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
-            ViewBag.ReturnUrl = returnUrl;
+            //ViewBag.ReturnUrl = returnUrl;
+            ViewBag.ReturnUrl = Url.Action("Index", "Dashboard");
             return View();
         }
 

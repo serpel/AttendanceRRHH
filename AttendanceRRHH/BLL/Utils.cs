@@ -46,7 +46,7 @@ namespace AttendanceRRHH.BLL
                     LunchEndTime = TimeSpan.Zero,
                     InsertedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
-                    IsActive = true                    
+                    IsActive = true                  
                 };
 
                 list.Add(time);

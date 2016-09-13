@@ -10,8 +10,6 @@ namespace AttendanceRRHH.Models
         [Required]
         public Int32 ShiftId { get; set; }
         [Required]
-        public Int32 ExtraHourId { get; set; }
-        [Required]
         public int DayNumber { get; set; }
         [Required]
         public bool IsLaborDay { get; set; }
@@ -37,11 +35,12 @@ namespace AttendanceRRHH.Models
         public bool IsActive { get; set; }
 
         public virtual Shift Shift { get; set; }
-        public virtual ExtraHour ExtraHour { get; set; }
 
         public ShiftTime()
         {
             IsActive = true;
+            InsertedAt = DateTime.Now;
+            UpdatedAt = DateTime.Now;
         }
     }
 }

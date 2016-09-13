@@ -63,9 +63,12 @@
      <script type="text/javascript">
         $(document).ready(function () {
 
-            var id = '#datatable';
-
-            var controller = 'Devices';
+            var options = {
+                editUrl: '@Url.Action("Edit")',
+                deleteUrl: '@Url.Action("Delete")',
+                url: '@Url.Action("GetDevices")',
+                id: '#datatable'
+            };
 
             var columns =
             [
@@ -78,9 +81,7 @@
                         { data: 'DeviceId' }
             ];
 
-            var url = '@Url.Action("GetDevices")';
-
-            var datatable = $(id).DataTable({
+            var datatable = $(options.id).DataTable({
                 dom: 'Bfrtip',
                 buttons: [
                     'print', 'excel', 'pdf', 'colvis'
@@ -91,7 +92,7 @@
                 autoWidth: true,
                 stateSave: true,
                 ajax: {
-                    url: url,
+                    url: options.url,
                     dataSrc: ''
                 },
                 columns: columns,
@@ -110,9 +111,9 @@
                         var editButton = "<a class='btn btn-default' data-modal='' href='" + editUrl + "' title='Edit'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;";
                         var deleteButton = "<a class='btn btn-danger' data-modal='' href='" + deleteUrl + "' title='Delete'><span class='glyphicon glyphicon-trash'></span></a>";
 
-                        var options = "<div class=''>" + pingButton + transferButton + syncTimeButton + editButton + deleteButton + "</div>";
+                        var buttons = "<div class=''>" + pingButton + transferButton + syncTimeButton + editButton + deleteButton + "</div>";
 
-                        return options;
+                        return buttons;
                     },
                     targets: -1,
                     orderable: false,
@@ -120,8 +121,8 @@
                 }]
             });
 
-            $(id).on('draw.dt', function () {
-                LoadModal(id, columns, url, controller);
+            $(options.id).on('draw.dt', function () {
+                LoadModal(columns, options);
             });
 
         });

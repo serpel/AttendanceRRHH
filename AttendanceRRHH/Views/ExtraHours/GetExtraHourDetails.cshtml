@@ -1,0 +1,45 @@
+﻿@model IEnumerable<AttendanceRRHH.Models.ExtraHourDetail>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ExtraHour.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Code)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StartHour)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EndHour)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ExtraHour.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Code)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StartHour)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EndHour)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ExtraHourDetailId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ExtraHourDetailId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ExtraHourDetailId })
+        </td>
+    </tr>
+}
+
+</table>

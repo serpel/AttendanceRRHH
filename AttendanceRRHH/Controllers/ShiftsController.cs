@@ -24,18 +24,20 @@ namespace AttendanceRRHH.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         public ActionResult ShiftTimeList()
-        {
-
+        {            
             ShiftViewModel shift = new ShiftViewModel()
             {
                 TimeList = (List<ShiftTime>)Utils.Instance.CreateShiftTime(-1, 7)
-
             };
+
             return PartialView("_ShiftTimeList", shift);
         }
 
         public ActionResult ShiftTimeListEdit(ShiftViewModel shift)
         {
+            //var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+            //shift.ShiftList = new SelectList(db.Shifts.Where(w => companies.Contains((int)w.CompanyId)), "ShiftId", "Name");
+
             return PartialView("_ShiftTimeList", shift);
         }
 
@@ -56,6 +58,7 @@ namespace AttendanceRRHH.Controllers
                     shiftedit.Description = shift.ShiftDescription;
                     shiftedit.UpdatedAt = DateTime.Now;
                     shiftedit.IsActive = shift.IsActive;
+                    shiftedit.ExtraHourId = shift.ExtraHourId;
 
                     db.Entry(shiftedit).State = EntityState.Modified;
                 }
@@ -93,63 +96,7 @@ namespace AttendanceRRHH.Controllers
                 }
             }
             return Json(new { success = success, message = message });
-        }
-
-        [HttpPost]
-        public JsonResult AddShift(ShiftViewModel obj)
-        {
-            bool success = false;
-            string message = "";
-
-            if (ModelState.IsValid)
-            {
-                success = true;
-                Shift s = new Shift()
-                {
-                    CompanyId = obj.CompanyId,
-                    Name = obj.ShiftName,
-                    Description = obj.ShiftDescription,
-                    InsertedAt = DateTime.Now,
-                    UpdatedAt = DateTime.Now,
-                    IsActive = true
-                };
-
-                try
-                {
-                    db.Shifts.Add(s);
-                    db.SaveChanges();
-                }
-                catch (Exception e)
-                {
-                    message = e.Message;
-                }
-
-                foreach (ShiftTime t in obj.TimeList)
-                {
-                    t.ShiftId = s.ShiftId;
-                    t.InsertedAt = DateTime.Now;
-                    t.UpdatedAt = DateTime.Now;
-                    t.IsActive = true;
-                    t.IsLaborDay = true;
-                }
-
-                try
-                {
-                    db.ShiftTimes.AddRange(obj.TimeList);
-                    db.SaveChanges();
-
-                    MyLogger.GetInstance.Info("Shift was edited successfull, Id: " + obj.ShiftId);
-                }
-                catch (Exception e)
-                {
-                    message = e.Message;
-                    success = false;
-                }
-            }
-
-            return Json(new { success = success, message = message });
-        }
-
+        }       
 
         // GET: Shifts
         public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
@@ -220,9 +167,52 @@ namespace AttendanceRRHH.Controllers
 
             ViewBag.ShiftId = new SelectList(db.Shifts.Where(w => companies.Contains((int)w.CompanyId)).Select(s => new { s.ShiftId, Name = s.Company.Name.Substring(0, 3).ToUpper() + " - "+ s.Name }), "ShiftId", "Name");
             ViewBag.CompanyId = new SelectList(db.Companies.Where(w => companies.Contains((int)w.CompanyId)), "CompanyId", "Name");
+            ViewBag.ExtraHourId = new SelectList(db.ExtraHours.Where(w => companies.Contains((int)w.CompanyId)), "ExtraHourId", "Name");
 
-            return View();
+            return View(new ShiftViewModel());
         }
+
+        [HttpPost]
+        public JsonResult Create(ShiftViewModel obj)
+        {
+            bool success = true;
+            string message = "";
+
+            if (ModelState.IsValid)
+            {
+                Shift s = new Shift()
+                {
+                    CompanyId = obj.CompanyId,
+                    Name = obj.ShiftName,
+                    Description = obj.ShiftDescription,
+                    ExtraHourId =  obj.ExtraHourId,                   
+                };
+
+                try
+                {
+                    db.Shifts.Add(s);
+                    db.SaveChanges();
+
+                    foreach (ShiftTime t in obj.TimeList)
+                    {
+                        t.ShiftId = s.ShiftId;
+                    }
+
+                    db.ShiftTimes.AddRange(obj.TimeList);
+                    db.SaveChanges();
+
+                    MyLogger.GetInstance.Info("Shift was edited successfull, Id: " + obj.ShiftId);
+                }
+                catch (Exception e)
+                {
+                    success = false;
+                    message = e.Message;
+                }
+            }
+
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+        }
+
 
         // GET: Shifts/Edit/5
         public ActionResult Edit(int? id)
@@ -236,9 +226,10 @@ namespace AttendanceRRHH.Controllers
             {
                 return HttpNotFound();
             }
-            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
 
-            ViewBag.CompanyId = new SelectList(db.Companies.Where(w => companies.Contains((int)w.CompanyId)), "CompanyId", "Name", shift.CompanyId);
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+            ViewBag.ExtraHourId = new SelectList(db.ExtraHours.Where(w => w.CompanyId == shift.CompanyId), "ExtraHourId", "Name", shift.ExtraHourId);
+
             return View(new ShiftViewModel()
             {
                 ShiftId = shift.ShiftId, 
@@ -246,7 +237,7 @@ namespace AttendanceRRHH.Controllers
                 ShiftDescription = shift.Description,
                 IsActive =  shift.IsActive,
                 TimeList = shift.ShiftTimes.ToList()
-            });
+            });     
         }
 
         // GET: Shifts/Delete/5

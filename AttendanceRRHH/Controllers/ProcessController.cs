@@ -29,10 +29,12 @@ namespace AttendanceRRHH.Controllers
             process.GenerateEmployeeTimeSheetByDayAndCompany(date, companyId);
         }
 
-        public JsonResult Run(string company, string date)
+
+        [HttpPost]
+        public JsonResult Run(string company, string date, bool? ReplaceRecords)
         {
-            bool success = false;
-            string message = "";
+            bool success = true;
+            string message = Resources.Resources.Success;
 
             try
             {
@@ -40,15 +42,14 @@ namespace AttendanceRRHH.Controllers
                     () => Process(Int32.Parse(company), DateTime.Parse(date)));
 
                 MyLogger.GetInstance.Info("Daily records was excuted for Company: " + company + " and date: " + date.ToString());
-
-                success = true;
             }
             catch (Exception e)
             {
+                success = false;
                 message = e.Message;
             }
 
-            return Json(new { success = success, message = message });
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
     }
 }
