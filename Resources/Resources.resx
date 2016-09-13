@@ -486,4 +486,16 @@
   <data name="Inactives" xml:space="preserve">
     <value>Inactives</value>
   </data>
+  <data name="ReplaceRecords" xml:space="preserve">
+    <value>Replace Records</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="ExtraHourText" xml:space="preserve">
+    <value>Extra Hour Code</value>
+  </data>
+  <data name="Count" xml:space="preserve">
+    <value>Count</value>
+  </data>
 </root>

@@ -465,4 +465,16 @@
   <data name="Inactives" xml:space="preserve">
     <value>Inactivos</value>
   </data>
+  <data name="ReplaceRecords" xml:space="preserve">
+    <value>Sobreescribir Marcas</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Ejecucion Exitosa</value>
+  </data>
+  <data name="ExtraHourText" xml:space="preserve">
+    <value>Codigo Horas Extra</value>
+  </data>
+  <data name="Count" xml:space="preserve">
+    <value>Cantidad</value>
+  </data>
 </root>
