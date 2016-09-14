@@ -439,6 +439,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to End Hour.
+        /// </summary>
+        public static string EndHour {
+            get {
+                return ResourceManager.GetString("EndHour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to EndTime.
         /// </summary>
         public static string EndTime {
@@ -1011,6 +1020,15 @@ namespace Resources {
         public static string StartDate {
             get {
                 return ResourceManager.GetString("StartDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Hour.
+        /// </summary>
+        public static string StartHour {
+            get {
+                return ResourceManager.GetString("StartHour", resourceCulture);
             }
         }
         

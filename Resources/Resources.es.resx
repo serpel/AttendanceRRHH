@@ -477,4 +477,10 @@
   <data name="Count" xml:space="preserve">
     <value>Cantidad</value>
   </data>
+  <data name="EndHour" xml:space="preserve">
+    <value>Final</value>
+  </data>
+  <data name="StartHour" xml:space="preserve">
+    <value>Inicio</value>
+  </data>
 </root>

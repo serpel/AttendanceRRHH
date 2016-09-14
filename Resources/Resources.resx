@@ -498,4 +498,10 @@
   <data name="Count" xml:space="preserve">
     <value>Count</value>
   </data>
+  <data name="EndHour" xml:space="preserve">
+    <value>End Hour</value>
+  </data>
+  <data name="StartHour" xml:space="preserve">
+    <value>Start Hour</value>
+  </data>
 </root>
