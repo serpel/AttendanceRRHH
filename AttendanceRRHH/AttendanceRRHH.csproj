@@ -248,6 +248,7 @@
     <Compile Include="Controllers\EmployeeAbsencesController.cs" />
     <Compile Include="Controllers\EmployeesController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\ExtraHourDetailsController.cs" />
     <Compile Include="Controllers\ExtraHoursController.cs" />
     <Compile Include="Controllers\HomeController - Copy.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -370,6 +371,7 @@
     <Compile Include="Models\EmployeeAbsence.cs" />
     <Compile Include="Models\ExtraHour.cs" />
     <Compile Include="Models\ExtraHourDetail.cs" />
+    <Compile Include="Models\ExtraHourViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\JobPosition.cs" />
     <Compile Include="Models\LogEntry.cs" />
@@ -1826,6 +1828,14 @@
     <Content Include="Views\ExtraHours\Edit.cshtml" />
     <Content Include="Views\ExtraHours\Index.cshtml" />
     <Content Include="Views\ExtraHours\GetExtraHourDetails.cshtml" />
+    <Content Include="Views\ExtraHourDetails\Create.cshtml" />
+    <Content Include="Views\ExtraHourDetails\Delete.cshtml" />
+    <Content Include="Views\ExtraHourDetails\Details.cshtml" />
+    <Content Include="Views\ExtraHourDetails\Edit.cshtml" />
+    <Content Include="Views\ExtraHourDetails\Index.cshtml" />
+    <Content Include="Views\ExtraHours\_EditExtraHourDetails.cshtml" />
+    <Content Include="Views\ExtraHours\_DeleteExtraHourDetails.cshtml" />
+    <Content Include="Views\ExtraHours\_CreateExtraHourDetails.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />

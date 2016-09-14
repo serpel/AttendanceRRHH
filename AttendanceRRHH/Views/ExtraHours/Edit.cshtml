@@ -8,7 +8,8 @@
 
 <div class="row-fluid">
     <ul class="breadcrumb">
-        <li><a href="@Url.Action("Index","ExtraHours")" class="active">@Resources.ExtraHour</a> </li>
+        <li><a href="@Url.Action("Index","TimeSheets")" class="active">@Resources.Records</a> </li>
+        <li><a href="@Url.Action("Index","Shifts")" class="active">@Resources.Shifts</a> </li>
     </ul>
 </div>
 
@@ -27,18 +28,18 @@
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
                     <div class="row column-seperation">
-                        <div class="col-md-1">
+                        <div class="col-md-3">
                             <div class="row form-row">
                                 <div class="col-md-12">
                                     <div class="input-with-icon  right">
                                         <i class=""></i>
-                                        <label>@Resources.IsActive</label>
-                                        @Html.EditorFor(model => model.CompanyId, new { @class = "form-control" })
+                                        <label>@Resources.Company</label>
+                                        @Html.DropDownList("CompanyId", null, htmlAttributes: new { @class = "form-control" })
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-9">
                             <div class="row form-row">
                                 <div class="col-md-12">
                                     <div class="input-with-icon  right">
@@ -73,7 +74,21 @@
     <script src="~/Content/assets/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
     <script type="text/javascript">
 
+        function LoadModal() {
+            $("a[data-modal]").on("click", function (e) {
+                $('#myModalContent').load(this.href, function () {
+                    $('#myModal').modal({
+                        keyboard: true
+                    }, 'show');
+                });
+                return false;
+            });
+        };
+
         $(document).ready(function () {
+
+            LoadModal();
+
             $('#extrahourform').validate({
                 errorElement: 'span',
                 errorClass: 'error',

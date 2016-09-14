@@ -1,4 +1,4 @@
-﻿@model AttendanceRRHH.Models.ExtraHour
+﻿@model AttendanceRRHH.Models.ExtraHourViewModel
 @using Resources
 
 @section Styles {
@@ -8,7 +8,8 @@
 
 <div class="row-fluid">
     <ul class="breadcrumb">
-        <li><a href="@Url.Action("Index","ExtraHours")" class="active">@Resources.ExtraHour</a> </li>
+        <li><a href="@Url.Action("Index","TimeSheets")" class="active">@Resources.Records</a> </li>
+        <li><a href="@Url.Action("Index","Shifts")" class="active">@Resources.Shifts</a> </li>
     </ul>
 </div>
 
@@ -53,6 +54,7 @@
                             <table class="table table-striped table-flip-scroll cf" id="extradetails">
                                 <thead class="cf">
                                     <tr>
+                                        <td>@Resources.Day</td>
                                         <td>@Resources.Code</td>
                                         <td>@Resources.StartTime</td>
                                         <td>@Resources.EndTime</td>
@@ -88,9 +90,10 @@
                 var rowCount = $('#extradetails >tbody >tr').length;
 
                 $('#extradetails > tbody:last-child').append('<tr>' +
+                                                               '<td>' + "<input type='number' name='" + ListName + "[" + rowCount + "].Day' class='form-control' placeholder = '" + '@Resources.Day' + "'  />" + '</td>' +
                                                                '<td>' + "<input type='text' name='" + ListName + "[" + rowCount + "].Code' class='form-control' placeholder = '" + '@Resources.Code' +  "' />" + '</td>' +
-                                                               '<td>' + "<input type='number' name='" + ListName + "[" + rowCount + "].StartHour' />" + '</td>' +
-                                                               '<td>' + "<input type='number' name='" + ListName + "[" + rowCount + "].EndHour'>" + '</td>' +
+                                                               '<td>' + "<input type='number' name='" + ListName + "[" + rowCount + "].StartHour' class='form-control' placeholder = '" + '@Resources.StartTime' + "'  />" + '</td>' +
+                                                               '<td>' + "<input type='number' name='" + ListName + "[" + rowCount + "].EndHour' class='form-control' placeholder = '" + '@Resources.EndDate' + "'  />" + '</td>' +
                                                              '</tr>');
             });
 
@@ -122,9 +125,10 @@
                     parent.removeClass('error-control').addClass('success-control');
                 },
                 submitHandler: function (form) {
+                    debugger;
                     $.ajax({
                         type: "POST",
-                        url: "@Url.Action("EditExtraHourDetail")",
+                        url: "@Url.Action("CreateExtraHourDetail")",
                         async: false,
                         data: $('#extrahourform').serialize(),
                         success: function (data) {

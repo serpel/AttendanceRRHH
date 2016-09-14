@@ -1,0 +1,72 @@
+﻿@model AttendanceRRHH.Models.ExtraHourDetail
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Delete</title>
+</head>
+<body>
+    <h3>Are you sure you want to delete this?</h3>
+    <div>
+        <h4>ExtraHourDetail</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.ExtraHour.Name)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.ExtraHour.Name)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.Code)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Code)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.StartHour)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.StartHour)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.EndHour)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.EndHour)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.Day)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Day)
+            </dd>
+    
+        </dl>
+    
+        @using (Html.BeginForm()) {
+            @Html.AntiForgeryToken()
+    
+            <div class="form-actions no-color">
+                <input type="submit" value="Delete" class="btn btn-default" /> |
+                @Html.ActionLink("Back to List", "Index")
+            </div>
+        }
+    </div>
+</body>
+</html>
