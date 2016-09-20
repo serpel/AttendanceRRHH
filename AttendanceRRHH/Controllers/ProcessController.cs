@@ -11,22 +11,31 @@ using AttendanceRRHH.DAL.Security;
 
 namespace AttendanceRRHH.Controllers
 {
-    [AccessAuthorizeAttribute(Roles = "Admin")]
+    [AccessAuthorizeAttribute(Roles = "Admin,Manager")]
     public class ProcessController : BaseController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         // GET: Process
         public ActionResult Index()
         {
-            ViewBag.company = new SelectList(db.Companies, "CompanyId", "Name");
+            var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
+            ViewBag.company = new SelectList(db.Companies.Where(w => companies.Contains(w.CompanyId)), "CompanyId", "Name");
             return View();
         }
 
         [AutomaticRetry(Attempts = 0)]
-        public void Process(int companyId, DateTime date)
+        public void Process(int companyId, DateTime date, bool replace)
         {
-            DailyProcess process = new DailyProcess(db);
-            process.GenerateEmployeeTimeSheetByDayAndCompany(date, companyId);
+            DailyProcess process = new DailyProcess();
+
+            if (replace)
+            {
+                process.GenerateEmployeeTimeSheetByDayAndCompany(date, companyId);
+            }
+            else
+            {
+                process.GenerateEmployeeTimeSheetByDayAndCompanyNonReplaceHours(date, companyId);
+            }
         }
 
 
@@ -39,7 +48,7 @@ namespace AttendanceRRHH.Controllers
             try
             {
                 BackgroundJob.Enqueue(
-                    () => Process(Int32.Parse(company), DateTime.Parse(date)));
+                    () => Process(Int32.Parse(company), DateTime.Parse(date), (bool)ReplaceRecords));
 
                 MyLogger.GetInstance.Info("Daily records was excuted for Company: " + company + " and date: " + date.ToString());
             }

@@ -19,7 +19,7 @@
             <div class="grid-title no-border">
             </div>
             <div class="grid-body no-border">
-                @using (Html.BeginForm("Run", "Process", FormMethod.Post, new { id = "runform" }))
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "runform" }))
                 {
                     <div class="form-group">
                         <label class="form-label">@Resources.Company</label>
@@ -34,10 +34,10 @@
                     </div>
                     <div class="form-actions">
                         <div class="pull-left">
-                            <div class="checkbox checkbox check-success">
-                                <input type="checkbox" value="1" id="ReplaceRecords" name="ReplaceRecords">
-                                <label for="ReplaceRecords">@Resources.ReplaceRecords</label>
-                            </div>
+                            <div class="form-group">                              
+                                @Html.CheckBox("ReplaceRecords", false, new { @class = "form-controls" })
+                                <label for="ReplaceRecords">@Resources.ReplaceRecords</label> 
+                            </div>                  
                         </div>
                         <div class="pull-right">
                             <button class="btn btn-danger btn-cons" type="submit"><i class="icon-ok"></i> @Resources.Run</button>
@@ -59,15 +59,16 @@
                 format: "yyyy-mm-dd"
             });
 
-            $('#run').click(function () {
+            $('#runform').submit(function () {
                 $.ajax({
                     url: '@Url.Action("Run")',
                     type: 'POST',
                     async: false,
                     data: $('#runform').serialize(),
                     success: function (result) {
+                        debugger;
                         if (result.success) {
-                            alert('Successfully');
+                            alert('@Resources.Success');
                         } else {
                             if (result.message != null) {
                                 Messenger().post({

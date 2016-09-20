@@ -340,6 +340,127 @@ namespace AttendanceRRHH.BLL
             return success;
         }
 
+        public bool GenerateEmployeeTimeSheetByDayAndCompanyNonReplaceHours(DateTime date, int companyId)
+        {
+            bool success = true;
+
+            //borrar data vieja
+            Func<TimeSheet, bool> filter = f => f.Date.Year == date.Year
+            && f.Date.Month == date.Month
+            && f.Date.Day == date.Day
+            && f.Employee.Department.CompanyId == companyId;
+
+            var timesheets = context.TimeSheets.Where(filter);
+            if (timesheets != null)
+                context.TimeSheets.RemoveRange(timesheets);
+
+            var employees = context.Employees.Include(i => i.Shift).Include(i => i.Schedules).Include(i => i.AttendanceRecords)
+                .Where(w => w.IsActive == true
+                       && w.Department.CompanyId == companyId)
+                .ToList();
+
+            foreach (var employee in employees)
+            {
+                //saco la lista de cambios de turnos de una fecha en especifico 
+                var schedule = employee
+                    .Schedules
+                    .Where(w => date >= w.StartDate && date <= w.EndDate)
+                    .FirstOrDefault();
+
+                // reviso si hay un cambio de turno y reemplazo los tiempo del turno
+                ShiftTime shifttime;
+                if (schedule != null)
+                {
+                    shifttime = schedule
+                    .Shift
+                    .ShiftTimes
+                    .Where(w => w.DayNumber == (int)date.DayOfWeek)
+                    .FirstOrDefault();
+                }
+                else
+                {
+                    var shift = employee.Shift;
+                    if (shift == null)
+                    {
+                        MyLogger.GetInstance.Info(String.Format("Employee Number: {0}, not have a shift assigned",employee.EmployeeCode));
+                        continue;
+                    }
+
+                    shifttime = employee
+                    .Shift
+                    .ShiftTimes
+                    .Where(w => w.DayNumber == (int)date.DayOfWeek)
+                    .FirstOrDefault();
+                }
+
+                if (shifttime == null)
+                {
+                    MyLogger.GetInstance.Info(String.Format("Employee Number: {0}, not have a shifttime assigned", employee.EmployeeCode));
+                    continue;
+                }
+
+                TimeSpan overtime = TimeSpan.FromHours(3);
+                DateTime start = date.toDateTime(shifttime.StartTime - overtime);
+                DateTime end = date.toDateTime(shifttime.EndTime + overtime);
+
+                //si el end date termina al dia siguiente
+                if (start >= end)
+                    end = end.AddDays(1);
+
+                TimeSheet timesheet = employee.AttendanceRecords
+                    .Where(w => w.Date >= start && w.Date <= end)
+                    .OrderBy(o => o.Date)
+                    .GroupBy(g => g.EmployeeId)
+                    .Select(s => new TimeSheet()
+                    {
+                        EmployeeId = s.Key,
+                        Date = date,
+                        In = s.FirstOrDefault().Date,
+                        Out = s.LastOrDefault().Date,
+                        IsManualIn = false,
+                        IsManualOut = false,
+                        InsertedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now,
+                        IsActive = true,
+                        ShiftTimeId = shifttime.ShiftTimeId
+                    }).FirstOrDefault();
+
+
+                if (timesheet == null)
+                {
+                    context.TimeSheets.Add(
+                        new TimeSheet()
+                        {
+                            EmployeeId = employee.EmployeeId,
+                            Date = date,
+                            IsManualIn = true,
+                            IsManualOut = true,
+                            InsertedAt = DateTime.Now,
+                            UpdatedAt = DateTime.Now,
+                            IsActive = true,
+                            ShiftTimeId = shifttime.ShiftTimeId
+                        });
+                }
+                else
+                {
+                    context.TimeSheets.Add(timesheet);
+                }
+            }
+
+            try
+            {
+                context.SaveChanges();
+            }
+            catch(Exception e)
+            {
+                MyLogger.GetInstance.Error(e.Message, e);
+                success = false;
+            }
+
+
+            return success;
+        }
+
         public void UpdateTimeSheetByEmployee(int employeeId)
         {
             var timesheets = context.TimeSheets
