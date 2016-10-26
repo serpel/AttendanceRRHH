@@ -340,19 +340,37 @@ namespace AttendanceRRHH.BLL
             return success;
         }
 
+        public void DeleteTimeSheetsByDayAndCompany(DateTime date, int companyId)
+        {
+            if (companyId > 0)
+            {
+                var timesheets = context.TimeSheets.Where(w => w.Date.Year == date.Year &&
+                                                               w.Date.Month == date.Month &&
+                                                               w.Date.Day == date.Day &&
+                                                               w.Employee.Department.CompanyId == companyId)
+                                                   .ToList();
+
+                foreach (var item in timesheets)
+                {
+                    context.TimeSheets.Remove(item);
+                }
+
+                try
+                {
+                    context.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    MyLogger.GetInstance.Error("Error on DeleteTimeSheetsByDayAndCompany", e);
+                }
+            }
+        }
+
         public bool GenerateEmployeeTimeSheetByDayAndCompanyNonReplaceHours(DateTime date, int companyId)
         {
             bool success = true;
 
-            //borrar data vieja
-            Func<TimeSheet, bool> filter = f => f.Date.Year == date.Year
-            && f.Date.Month == date.Month
-            && f.Date.Day == date.Day
-            && f.Employee.Department.CompanyId == companyId;
-
-            var timesheets = context.TimeSheets.Where(filter);
-            if (timesheets != null)
-                context.TimeSheets.RemoveRange(timesheets);
+            DeleteTimeSheetsByDayAndCompany(date, companyId);
 
             var employees = context.Employees.Include(i => i.Shift).Include(i => i.Schedules).Include(i => i.AttendanceRecords)
                 .Where(w => w.IsActive == true
@@ -361,89 +379,61 @@ namespace AttendanceRRHH.BLL
 
             foreach (var employee in employees)
             {
-                //saco la lista de cambios de turnos de una fecha en especifico 
-                var schedule = employee
-                    .Schedules
-                    .Where(w => date >= w.StartDate && date <= w.EndDate)
-                    .FirstOrDefault();
-
-                // reviso si hay un cambio de turno y reemplazo los tiempo del turno
-                ShiftTime shifttime;
-                if (schedule != null)
+                //validaciones
+                if (employee.Shift == null)
                 {
-                    shifttime = schedule
-                    .Shift
-                    .ShiftTimes
-                    .Where(w => w.DayNumber == (int)date.DayOfWeek)
-                    .FirstOrDefault();
-                }
-                else
-                {
-                    var shift = employee.Shift;
-                    if (shift == null)
-                    {
-                        MyLogger.GetInstance.Info(String.Format("Employee Number: {0}, not have a shift assigned",employee.EmployeeCode));
-                        continue;
-                    }
-
-                    shifttime = employee
-                    .Shift
-                    .ShiftTimes
-                    .Where(w => w.DayNumber == (int)date.DayOfWeek)
-                    .FirstOrDefault();
-                }
-
-                if (shifttime == null)
-                {
-                    MyLogger.GetInstance.Info(String.Format("Employee Number: {0}, not have a shifttime assigned", employee.EmployeeCode));
+                    MyLogger.GetInstance.Error(String.Format("{0} dont have a shift assigned ", employee.CodeAndFullName));
                     continue;
                 }
 
-                TimeSpan overtime = TimeSpan.FromHours(3);
-                DateTime start = date.toDateTime(shifttime.StartTime - overtime);
-                DateTime end = date.toDateTime(shifttime.EndTime + overtime);
-
-                //si el end date termina al dia siguiente
-                if (start >= end)
-                    end = end.AddDays(1);
-
-                TimeSheet timesheet = employee.AttendanceRecords
-                    .Where(w => w.Date >= start && w.Date <= end)
-                    .OrderBy(o => o.Date)
-                    .GroupBy(g => g.EmployeeId)
-                    .Select(s => new TimeSheet()
-                    {
-                        EmployeeId = s.Key,
-                        Date = date,
-                        In = s.FirstOrDefault().Date,
-                        Out = s.LastOrDefault().Date,
-                        IsManualIn = false,
-                        IsManualOut = false,
-                        InsertedAt = DateTime.Now,
-                        UpdatedAt = DateTime.Now,
-                        IsActive = true,
-                        ShiftTimeId = shifttime.ShiftTimeId
-                    }).FirstOrDefault();
-
-
-                if (timesheet == null)
+                if(employee.Shift.ShiftTimes == null)
                 {
-                    context.TimeSheets.Add(
-                        new TimeSheet()
-                        {
-                            EmployeeId = employee.EmployeeId,
-                            Date = date,
-                            IsManualIn = true,
-                            IsManualOut = true,
-                            InsertedAt = DateTime.Now,
-                            UpdatedAt = DateTime.Now,
-                            IsActive = true,
-                            ShiftTimeId = shifttime.ShiftTimeId
-                        });
+                    MyLogger.GetInstance.Error(String.Format("The employee {0}, With shift: {1} is not correcly configured", employee.CodeAndFullName, employee.Shift.Name));
+                    continue;
+                }
+
+                if (employee.Shift.IsSpecialShift)
+                {
+                    //TODO: arreglar cambios de turnos que varias segun dias
                 }
                 else
                 {
-                    context.TimeSheets.Add(timesheet);
+                    var shifttime = employee.Shift.ShiftTimes.Where(w => w.DayNumber == (int)date.DayOfWeek).FirstOrDefault();
+
+                    if(shifttime == null)
+                    {
+                        MyLogger.GetInstance.Error(String.Format("The employee {0}, With shift: {1} is not configured on day: {2}", employee.CodeAndFullName, employee.Shift.Name, date.DayOfWeek));
+                        continue;
+                    }
+
+                    //12:00 PM es 
+                    TimeSpan time = new TimeSpan(12, 0, 0);
+
+                    var records = employee.AttendanceRecords
+                                  .Where(w => w.Date.Year == date.Year && w.Date.Month == date.Month && w.Date.Day == date.Day);
+
+                    //solo si hay marcas en el biometrico preparo los registros
+                    if(records != null && records.Count() > 0)
+                    {                
+                        TimeSheet timesheet = records
+                                .OrderBy(o => o.Date)
+                                .GroupBy(g => g.EmployeeId)
+                                .Select(s => new TimeSheet()
+                                {
+                                   EmployeeId = s.Key,
+                                   Date = date,
+                                   In = s.FirstOrDefault().Date.TimeOfDay < time ? s.FirstOrDefault().Date : (DateTime?)null,
+                                   Out = s.LastOrDefault().Date.TimeOfDay >= time ? s.LastOrDefault().Date : (DateTime?)null,
+                                   IsManualIn = false,
+                                   IsManualOut = false,
+                                   InsertedAt = DateTime.Now,
+                                   UpdatedAt = DateTime.Now,
+                                   IsActive = true,
+                                   ShiftTimeId = shifttime.ShiftTimeId
+                                }).FirstOrDefault();
+
+                        context.TimeSheets.Add(timesheet);
+                    }
                 }
             }
 
@@ -456,7 +446,6 @@ namespace AttendanceRRHH.BLL
                 MyLogger.GetInstance.Error(e.Message, e);
                 success = false;
             }
-
 
             return success;
         }

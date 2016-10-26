@@ -52,11 +52,12 @@ namespace AttendanceRRHH.Controllers
                 var timesheets = db.TimeSheets.Include(i => i.Employee)
                     .Where(w => w.Date >= myDate && w.Date <= myDate);
 
-                if (departmentId > 0)
+                //si selecciona todos en la lista
+                if(departmentId > -1)
                 {
                     timesheets = timesheets
-                        .Where(w => w.Employee.DepartmentId == departmentId);
-                }
+                                .Where(w => w.Employee.DepartmentId == departmentId);
+                }               
 
                 var absences = (from t in timesheets
                                 join e in db.Employees on t.EmployeeId equals e.EmployeeId
@@ -72,7 +73,7 @@ namespace AttendanceRRHH.Controllers
                 var list = timesheets
                     .OrderBy(o => o.EmployeeId)
                     .ToList()
-                    .Select(s => new { s.TimeSheetId, FullName = s.Employee.FullName, s.EmployeeId, EmployeeCode = s.Employee.EmployeeCode, s.In, s.Out, s.IsManualIn, s.IsManualOut, DepartmentId = s.Employee.DepartmentId, DepartmentName = s.Employee.Department.Name, ShiftStartTime = s.ShiftTime.StartTime, ShiftEndTime = s.ShiftTime.EndTime });
+                    .Select(s => new { s.TimeSheetId, FullName = s.Employee.FullName, s.EmployeeId, EmployeeCode = s.Employee.EmployeeCode, s.In, s.Out, s.IsManualIn, s.IsManualOut, DepartmentId = s.Employee.DepartmentId, DepartmentName = s.Employee.Department.Name, ShiftStartTime = s.ShiftTime.StartTime, ShiftEndTime = s.ShiftTime.EndTime, ProfileUrl = s.Employee.ProfileUrl });
 
                 return Json(list, JsonRequestBehavior.AllowGet);
             }

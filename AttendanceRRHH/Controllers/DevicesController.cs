@@ -71,7 +71,7 @@ namespace AttendanceRRHH.Controllers
                 db.Devices.Add(device);
                 db.SaveChanges();
 
-                RecurringJob.AddOrUpdate("s" + device.DeviceId.ToString(), () => SyncTimeAndTransferByDevice(device.DeviceId), device.SyncTimeCronExpression);
+                RecurringJob.AddOrUpdate("s" + device.DeviceId.ToString(), () => SyncTimeAndTransferByDevice(device.DeviceId), device.SyncTimeCronExpression, TimeZoneInfo.Local);
                 //RecurringJob.AddOrUpdate("t" + device.DeviceId.ToString(), () => TransferRecordsByDevice(device.DeviceId), device.TransferCronExpression);
 
                 MyLogger.GetInstance.Info("Device was created succesfull, Id: " + device.DeviceId + ", Name: " + device.Description);
@@ -111,7 +111,7 @@ namespace AttendanceRRHH.Controllers
                 db.Entry(device).State = EntityState.Modified;
                 db.SaveChanges();
 
-                RecurringJob.AddOrUpdate("s" + device.DeviceId.ToString(), () => SyncTimeAndTransferByDevice(device.DeviceId), device.SyncTimeCronExpression);
+                RecurringJob.AddOrUpdate("s" + device.DeviceId.ToString(), () => SyncTimeAndTransferByDevice(device.DeviceId), device.SyncTimeCronExpression, TimeZoneInfo.Local);
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
             ViewBag.DeviceTypeId = new SelectList(db.DeviceTypes, "DeviceTypeId", "Name", device.DeviceTypeId);

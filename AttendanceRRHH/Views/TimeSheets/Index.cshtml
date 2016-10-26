@@ -58,6 +58,7 @@
                     <table class="table table-hover table-condensed" id="timesheet">
                         <thead>
                             <tr>
+                                <th style="width:1%">@Resources.Image</th>
                                 <th style="width:5%">@Resources.Employee</th>
                                 <th style="width:2%">@Resources.Code</th>
                                 <th style="width:6%">@Resources.ClockIn</th>
@@ -153,6 +154,7 @@
                         if (data.length > 0) {
                             $.each(data, function (i, val) {
                                 items += '<tr>';
+                                items += "<td><img src='" + val.ProfileUrl + "' style='width:35px;height:35px' /></td>";
                                 items += '<td>' + val.FullName + '</td>';
                                 items += '<td>' + val.EmployeeCode + '</td>';
 
