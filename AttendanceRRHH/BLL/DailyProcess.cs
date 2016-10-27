@@ -342,6 +342,8 @@ namespace AttendanceRRHH.BLL
 
         public void DeleteTimeSheetsByDayAndCompany(DateTime date, int companyId)
         {
+            MyLogger.GetInstance.Info(string.Format("Executing DeleteTimeSheetsByDayAndCompany date: {0}, company: {1}", date.ToShortDateString(), companyId));
+
             if (companyId > 0)
             {
                 var timesheets = context.TimeSheets.Where(w => w.Date.Year == date.Year &&
@@ -368,6 +370,8 @@ namespace AttendanceRRHH.BLL
 
         public bool GenerateEmployeeTimeSheetByDayAndCompanyNonReplaceHours(DateTime date, int companyId)
         {
+            MyLogger.GetInstance.Info(string.Format("Executing GenerateEmployeeTimeSheetByDayAndCompanyNonReplaceHours date: {0}, compay: {1}", date.ToShortDateString(), companyId));
+
             bool success = true;
 
             DeleteTimeSheetsByDayAndCompany(date, companyId);
@@ -380,21 +384,24 @@ namespace AttendanceRRHH.BLL
             foreach (var employee in employees)
             {
                 //validaciones
+                //si el empleado no tiene asignado un turno
                 if (employee.Shift == null)
                 {
                     MyLogger.GetInstance.Error(String.Format("{0} dont have a shift assigned ", employee.CodeAndFullName));
                     continue;
                 }
 
+                //si el turno no tiene configuradas las horas del turno
                 if(employee.Shift.ShiftTimes == null)
                 {
                     MyLogger.GetInstance.Error(String.Format("The employee {0}, With shift: {1} is not correcly configured", employee.CodeAndFullName, employee.Shift.Name));
                     continue;
                 }
 
+                //si es un turno rotativo
                 if (employee.Shift.IsSpecialShift)
                 {
-                    //TODO: arreglar cambios de turnos que varias segun dias
+                    //TODO: arreglar cambios de turnos que varian segun dias
                 }
                 else
                 {
@@ -406,13 +413,13 @@ namespace AttendanceRRHH.BLL
                         continue;
                     }
 
-                    //12:00 PM es 
-                    TimeSpan time = new TimeSpan(12, 0, 0);
+                    //Al horario del turno le sumo 4 horas para medir cual de los registros del empleado es la entra y cual es la salida: ejemplo 8:00 AM  = 8 + 4 = 12:00 PM es la mitad
+                    TimeSpan time = shifttime.StartTime.Add(new TimeSpan(4, 0, 0));
 
                     var records = employee.AttendanceRecords
                                   .Where(w => w.Date.Year == date.Year && w.Date.Month == date.Month && w.Date.Day == date.Day);
 
-                    //solo si hay marcas en el biometrico preparo los registros
+                    //Si hay mas de una marca agrego el registro de entrada y salida
                     if(records != null && records.Count() > 0)
                     {                
                         TimeSheet timesheet = records
@@ -431,6 +438,25 @@ namespace AttendanceRRHH.BLL
                                    IsActive = true,
                                    ShiftTimeId = shifttime.ShiftTimeId
                                 }).FirstOrDefault();
+
+                        context.TimeSheets.Add(timesheet);
+                    }
+                    //si no hay registros creo uno en blanco para que aparezca en el dashboard como que no hizo marca
+                    else
+                    {
+                        var timesheet = new TimeSheet()
+                        {
+                            EmployeeId = employee.EmployeeId,
+                            Date = date,
+                            In = (DateTime?)null,
+                            Out = (DateTime?)null,
+                            IsManualIn = false,
+                            IsManualOut = false,
+                            InsertedAt = DateTime.Now,
+                            UpdatedAt = DateTime.Now,
+                            IsActive = true,
+                            ShiftTimeId = shifttime.ShiftTimeId
+                        };
 
                         context.TimeSheets.Add(timesheet);
                     }
