@@ -104,7 +104,7 @@ namespace AttendanceRRHH.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "DeviceId,DeviceTypeId,Description,Location,IP,Port,IsSSR,IsActive,OpenDoors")] Device device)
+        public ActionResult Edit([Bind(Include = "DeviceId,DeviceTypeId,Description,Location,IP,Port,IsSSR,IsActive,OpenDoors,DeviceStatus,SyncTimeCronExpression")] Device device)
         {
             if (ModelState.IsValid)
             {
@@ -112,6 +112,7 @@ namespace AttendanceRRHH.Controllers
                 db.SaveChanges();
 
                 RecurringJob.AddOrUpdate("s" + device.DeviceId.ToString(), () => SyncTimeAndTransferByDevice(device.DeviceId), device.SyncTimeCronExpression, TimeZoneInfo.Local);
+                  
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
             ViewBag.DeviceTypeId = new SelectList(db.DeviceTypes, "DeviceTypeId", "Name", device.DeviceTypeId);
@@ -138,16 +139,22 @@ namespace AttendanceRRHH.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Device device = db.Devices.Find(id);
-            db.Devices.Remove(device);
-            db.SaveChanges();
+            bool success = false;
+            Device device = db.Devices.Where(w => w.DeviceId == id).FirstOrDefault();
 
-            RecurringJob.RemoveIfExists("s" + device.DeviceId);
-            //RecurringJob.RemoveIfExists("t" + device.DeviceId);
+            if(device != null)
+            {
+                db.Devices.Remove(device);
+                db.SaveChanges();
 
-            MyLogger.GetInstance.Info("Device was delete succesfull, Id: " + id);
+                RecurringJob.RemoveIfExists("s" + device.DeviceId);
 
-            return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+                MyLogger.GetInstance.Info("Device was delete succesfull, Id: " + id);
+
+                success = true;
+            }
+
+            return Json(new { success = success }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult RemoveDevice(int id)
@@ -268,7 +275,7 @@ namespace AttendanceRRHH.Controllers
         [AutomaticRetry(Attempts = 0)]
         public void SyncTimeAndTransferByDevice(int deviceId)
         {
-            MyLogger.GetInstance.Info("SyncTimeAndTransferByDevice");
+            MyLogger.GetInstance.Info(string.Format("SyncTimeAndTransferByDevice Device: {0}", deviceId));
 
             var device = db.Devices.Include(d => d.DeviceType).Where(w => w.DeviceId == deviceId).FirstOrDefault();
 

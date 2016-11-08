@@ -14,6 +14,7 @@
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.DeviceId)
+        @Html.HiddenFor(model => Model.DeviceStatus)
 
         <div class="row form-row">
             <div class="col-md-6">
@@ -68,21 +69,14 @@
 
         <div class="row form-row">
             <div class="col-md-6">
-                <label class="form-label">@Resources.IsActive</label>
-                @Html.CheckBoxFor(model => model.IsActive, htmlAttributes: new { @class = "form-control" })
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">@Resources.IsSSR</label>
-                @Html.CheckBoxFor(model => model.IsActive, htmlAttributes: new { @class = "form-control" })
-            </div>
-        </div>
-
-        <div class="row form-row">
-            <div class="col-md-6">
                 <label class="form-label">@Resources.OpenDoors</label>
                 @Html.CheckBoxFor(model => model.OpenDoors, htmlAttributes: new { @class = "form-control" })
             </div>
-        </div>     
+            <div class="col-md-6">
+                <label class="form-label">@Resources.IsSSR</label>
+                @Html.CheckBoxFor(model => model.IsSSR, htmlAttributes: new { @class = "form-control" })
+            </div>
+        </div>    
     </div>
 
     <div class="modal-footer">

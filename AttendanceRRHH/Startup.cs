@@ -1,12 +1,16 @@
-﻿using Hangfire;
-using Microsoft.Owin;
+﻿using Microsoft.Owin;
 using Owin;
+using Hangfire;
+using Hangfire.Dashboard;
+using AttendanceRRHH.BLL;
 
 [assembly: OwinStartupAttribute(typeof(AttendanceRRHH.Startup))]
+
 namespace AttendanceRRHH
 {
     public partial class Startup
     {
+
         public void Configuration(IAppBuilder app)
         {
             GlobalConfiguration.Configuration

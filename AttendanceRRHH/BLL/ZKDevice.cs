@@ -70,14 +70,9 @@ namespace AttendanceRRHH.BLL
                 }
                 else
                 {
-                    //this.Device.DeviceStatus = DeviceStatus.Unavailable;
                     axCZKEM1.GetLastError(ref idwErrorCode);
-                    MyLogger.GetInstance.Error("ZKDevice.ConnectDevice() - Unable to connect the device, ErrorCode=" + idwErrorCode.ToString());
+                    MyLogger.GetInstance.Error(string.Format("ZKDevice.ConnectDevice() - Unable to connect the Device: {0}, ErrorCode: {1}", this.Device.IP, idwErrorCode.ToString()));
                 }
-
-                // var device = context.Devices.Find(Device.DeviceId);
-                //context.Entry(Device).State = EntityState.Modified;
-                //context.SaveChanges();
             }
             catch (Exception e)
             {
@@ -101,7 +96,7 @@ namespace AttendanceRRHH.BLL
                 return true;
             }
             return false;
-        }  
+        }
 
         private bool SSRDownloadLogData()
         {
@@ -116,56 +111,63 @@ namespace AttendanceRRHH.BLL
             int idwMinute = 0;
             int idwSecond = 0;
             int idWorkCode = 0;
-
-
             int idwErrorCode = 0;
             int iGLCount = 0;
 
             axCZKEM1.EnableDevice(iMachineNumber, false);//disable the device
             if (axCZKEM1.ReadGeneralLogData(iMachineNumber))//read all the attendance records to the memory
             {
+                var device = context.Devices
+                            .Where(w => w.IP == this.Device.IP).FirstOrDefault();
+
                 while (axCZKEM1.SSR_GetGeneralLogData(iMachineNumber, out idwEnrollNumber,
                        out idwVerifyMode, out idwInOutMode, out idwYear, out idwMonth, out idwDay, out idwHour, out idwMinute, out idwSecond, ref idWorkCode))//get records from the memory
                 {
-                    try { 
-                        iGLCount++;
-                        DateTime recordDate = DateTime.Parse(idwYear.ToString() + '-' + idwMonth.ToString() + '-' + idwDay.ToString() + ' ' + idwHour.ToString() + ':' + idwMinute.ToString());
-                        //DateTime LocalDate = DateTime.Now;
 
+                    iGLCount++;
+                    var dtStr = idwYear.ToString() + '-' + idwMonth.ToString() + '-' + idwDay.ToString() + ' ' + idwHour.ToString() + ':' + idwMinute.ToString() + ':' + idwSecond.ToString();
+                    var dt = DateTime.Parse(dtStr);
+
+                    if (dt != null)
+                    {
                         var employee = context.Employees
-                            .Where(w => w.EmployeeCode == idwEnrollNumber).FirstOrDefault();
+                                       .Where(w => w.EmployeeCode == idwEnrollNumber)
+                                       .FirstOrDefault();
 
-                        var device = context.Devices
-                            .Where(w => w.Description == this.Device.Description).FirstOrDefault();
-
-                        if(employee == null && device != null)
+                        if (employee != null)
                         {
                             AttendanceRecord record = new AttendanceRecord()
                             {
                                 EmployeeId = employee.EmployeeId,
-                                Date = recordDate,
+                                Date = dt,
                                 DeviceId = device.DeviceId,
                                 InsertedAt = DateTime.Now
                             };
 
-                            context.AttendanceRecords.Add(record);
-                            context.SaveChanges();
+                            try
+                            {
+                                context.AttendanceRecords.Add(record);
+                                context.SaveChanges();
+                            }
+                            catch (Exception e)
+                            {
+                                result = false;
+                                MyLogger.GetInstance.Error(string.Format("ZKDevice.SSRDownloadLogData() - Error on device Ip: {0} ", this.Device.IP), e);
+                            }
 
-                            MyLogger.GetInstance.Info("ZKDevice.SSRDownloadLogData() - AttendanceRecord(" + idwEnrollNumber.ToString() + ", " + recordDate.ToString() + ", " + this.Device.Location + " )");
+                            MyLogger.GetInstance.Info(string.Format("ZKDevice.SSRDownloadLogData() - Insert into dbo.AttendanceRecord(DeviceId,EmployeeId,Date,InsertedDate) Values({0},{1},'{2}','{3}')", this.Device.DeviceId, idwEnrollNumber.ToString(), dt.ToString("yyyy-MM-dd HH:mm"), DateTime.Now.ToString("yyyy-MM-dd HH:mm")));
                         }
                         else
                         {
-                            MyLogger.GetInstance.Info("ZKDevice.SSRDownloadLogData() - Record not inserted at AttendanceRecord(" + idwEnrollNumber.ToString() + ", " + recordDate.ToString() + ", " + this.Device.Location + " )");
+                            MyLogger.GetInstance.Error(string.Format("ZKDevice.SSRDownloadLogData() - Employee Not Exist - Insert into dbo.AttendanceRecord(DeviceId,EmployeeId,Date,InsertedDate) Values({0},{1},'{2}','{3}')", this.Device.DeviceId, idwEnrollNumber.ToString(), dt.ToString("yyyy-MM-dd HH:mm"), DateTime.Now.ToString("yyyy-MM-dd HH:mm")));
                         }
-                       
                     }
-                    catch (Exception e)
+                    else
                     {
-                        MyLogger.GetInstance.Error("ZKDevice.SSRDownloadLogData() - Error ", e);                      
+                        result = false;
+                        MyLogger.GetInstance.Error(string.Format("ZKDevice.SSRDownloadLogData() - Time Error - Insert into dbo.AttendanceRecord(DeviceId,EmployeeId,Date,InsertedDate) Values({0},{1},'{2}','{3}')", this.Device.DeviceId, idwEnrollNumber.ToString(), dtStr, DateTime.Now.ToString("yyyy-MM-dd HH:mm")));
                     }
                 }
-
-                MyLogger.GetInstance.Debug("ZKDevice.SSRDownloadLogData() - Download: "+iGLCount+" records");
             }
             else
             {
@@ -182,6 +184,7 @@ namespace AttendanceRRHH.BLL
                 }
             }
             axCZKEM1.EnableDevice(iMachineNumber, true); //enable the device
+            MyLogger.GetInstance.Debug("ZKDevice.SSRDownloadLogData() - Download: " + iGLCount + " records");
 
             return result;
         }
@@ -206,47 +209,57 @@ namespace AttendanceRRHH.BLL
             axCZKEM1.EnableDevice(iMachineNumber, false);//disable the device
             if (axCZKEM1.ReadGeneralLogData(iMachineNumber))//read all the attendance records to the memory
             {
+                var device = context.Devices
+                     .Where(w => w.IP == this.Device.IP).FirstOrDefault();
+
                 while (axCZKEM1.GetGeneralLogData(iMachineNumber, ref idwTMachineNumber, ref idwEnrollNumber,
                         ref idwEMachineNumber, ref idwVerifyMode, ref idwInOutMode, ref idwYear, ref idwMonth, ref idwDay, ref idwHour, ref idwMinute))//get records from the memory
                 {
-                    try { 
+
                         iGLCount++;
-                        DateTime recordDate = DateTime.Parse(idwYear.ToString() + '-' + idwMonth.ToString() + '-' + idwDay.ToString() + ' ' + idwHour.ToString() + ':' + idwMinute.ToString());
+                        var dtStr = idwYear.ToString() + '-' + idwMonth.ToString() + '-' + idwDay.ToString() + ' ' + idwHour.ToString() + ':' + idwMinute.ToString();
+                        var dt = DateTime.Parse(dtStr);
 
-                        var employee = context.Employees
-                            .Where(w => w.EmployeeCode == idwEnrollNumber.ToString()).FirstOrDefault();
-
-                        var device = context.Devices
-                            .Where(w => w.Description == this.Device.Description).FirstOrDefault();
-
-                        if (employee != null && device != null)
+                        if (dt != null)
                         {
-                            AttendanceRecord record = new AttendanceRecord()
+                            var employee = context.Employees
+                                           .Where(w => w.EmployeeCode == idwEnrollNumber.ToString())
+                                           .FirstOrDefault();
+
+                            if (employee != null)
                             {
-                                EmployeeId = employee.EmployeeId,
-                                Date = recordDate,
-                                DeviceId = device.DeviceId,
-                                InsertedAt = DateTime.Now
-                            };
+                                AttendanceRecord record = new AttendanceRecord()
+                                {
+                                    EmployeeId = employee.EmployeeId,
+                                    Date = dt,
+                                    DeviceId = device.DeviceId,
+                                    InsertedAt = DateTime.Now
+                                };
+                           
+                            try
+                            {
+                                context.AttendanceRecords.Add(record);
+                                context.SaveChanges();                               
+                            }
+                            catch (Exception e)
+                            {
+                                result = false;
+                                MyLogger.GetInstance.Error(string.Format("ZKDevice.DownloadLogData() - Error on device Ip: {0} ", this.Device.IP), e);
+                            }
 
-                            context.AttendanceRecords.Add(record);
-                            context.SaveChanges();
-
-                            MyLogger.GetInstance.Info("ZKDevice.SSRDownloadLogData() - AttendanceRecord(" + idwEnrollNumber.ToString() + ", " + recordDate.ToString() + ", " + this.Device.Location + " )");
+                            MyLogger.GetInstance.Info(string.Format("ZKDevice.DownloadLogData() - Insert into dbo.AttendanceRecord(DeviceId,EmployeeId,Date,InsertedDate) Values({0},{1},'{2}','{3}')", this.Device.DeviceId, idwEnrollNumber.ToString(), dt.ToString("yyyy-MM-dd HH:mm"), DateTime.Now.ToString("yyyy-MM-dd HH:mm")));
                         }
                         else
                         {
-                            MyLogger.GetInstance.Info("ZKDevice.SSRDownloadLogData() - Record not inserted at AttendanceRecord(" + idwEnrollNumber.ToString() + ", " + recordDate.ToString() + ", " + this.Device.Location + " )");
-                        }                       
+                            MyLogger.GetInstance.Error(string.Format("ZKDevice.DownloadLogData() - Employee Not Exist - Insert into dbo.AttendanceRecord(DeviceId,EmployeeId,Date,InsertedDate) Values({0},{1},'{2}','{3}')", this.Device.DeviceId, idwEnrollNumber.ToString(), dt.ToString("yyyy-MM-dd HH:mm"), DateTime.Now.ToString("yyyy-MM-dd HH:mm")));
+                        }
                     }
-                    catch(Exception e)
+                    else
                     {
-                        MyLogger.GetInstance.Error("ZKDevice.DownloadLogData() - Error ", e);
+                        result = false;
+                        MyLogger.GetInstance.Error(string.Format("ZKDevice.DownloadLogData() - Time error - Insert into dbo.AttendanceRecord(DeviceId,EmployeeId,Date,InsertedDate) Values({0},{1},'{2}','{3}')", this.Device.DeviceId, idwEnrollNumber.ToString(), dtStr, DateTime.Now.ToString("yyyy-MM-dd HH:mm")));
                     }
-
-                    //context.SaveChanges();
-                }
-                MyLogger.GetInstance.Debug("ZKDevice.DownloadLogData() - Download: " + iGLCount + " records");
+                }          
             }
             else
             {
@@ -255,7 +268,7 @@ namespace AttendanceRRHH.BLL
 
                 if (idwErrorCode != 0)
                 {
-                    MyLogger.GetInstance.Error("ZKDevice.DownloadLogData() - Reading data from terminal failed,ErrorCode: " + idwErrorCode.ToString());
+                    MyLogger.GetInstance.Error("ZKDevice.DownloadLogData() - Reading data from terminal failed, ErrorCode: " + idwErrorCode.ToString());
                 }
                 else
                 {
@@ -263,6 +276,7 @@ namespace AttendanceRRHH.BLL
                 }
             }
             axCZKEM1.EnableDevice(iMachineNumber, true);//enable the device
+            MyLogger.GetInstance.Debug("ZKDevice.DownloadLogData() - Download: " + iGLCount + " records");
 
             return result;
         }
@@ -277,7 +291,7 @@ namespace AttendanceRRHH.BLL
 
             if (bIsConnected)
             {
-                if(this.Device.IsSSR)
+                if (this.Device.IsSSR)
                 {
                     result = SSRDownloadLogData();
                 }
@@ -296,6 +310,7 @@ namespace AttendanceRRHH.BLL
         {
             bool result = false;
 
+            MyLogger.GetInstance.Info("ZKDevice.SyncTime() Device IP: " + this.Device.IP);
             MyLogger.GetInstance.Info("ZKDevice.SyncTime() - The process for Sync devices is currently running");
 
             ConnectDevice();
@@ -321,7 +336,8 @@ namespace AttendanceRRHH.BLL
 
                     result = true;
 
-                    try { 
+                    try
+                    {
                         if (axCZKEM1.GetDeviceTime(iMachineNumber, ref idwYear, ref idwMonth, ref idwDay, ref idwHour, ref idwMinute, ref idwSecond))//show the time
                         {
                             var device = context.Devices.Find(Device.DeviceId);
@@ -332,7 +348,8 @@ namespace AttendanceRRHH.BLL
                             context.Entry(device).State = EntityState.Modified;
                             context.SaveChanges();
                         }
-                    }catch(Exception e)
+                    }
+                    catch (Exception e)
                     {
                         MyLogger.GetInstance.Error("ZKDevice.SyncTime() - Sync operation failed ", e);
                     }
@@ -362,10 +379,10 @@ namespace AttendanceRRHH.BLL
 
         public void GetStatus()
         {
-            MyLogger.GetInstance.Info("ZKDevice.GetStatus() - get device status and time ");
+            MyLogger.GetInstance.Info("ZKDevice.GetStatus() - Device IP: " + this.Device.IP);
 
-            try {
-
+            try
+            {
                 var device = context.Devices.Find(this._device.DeviceId);
 
                 if (device == null)
@@ -398,9 +415,10 @@ namespace AttendanceRRHH.BLL
                 context.Entry(device).State = EntityState.Modified;
                 context.SaveChanges();
 
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
-                MyLogger.GetInstance.Error("ZKDevice.GetStatus() - Error to get status ", e);
+                MyLogger.GetInstance.Error(string.Format("ZKDevice.GetStatus() - Error to get status on IP: ", this.Device.IP), e);
             }
 
             DisconnectDevice();
@@ -408,7 +426,7 @@ namespace AttendanceRRHH.BLL
 
         public bool ClearDevice()
         {
-            MyLogger.GetInstance.Info("ZKDevice.ClearDevice() - Clear Device");
+            MyLogger.GetInstance.Info("ZKDevice.ClearDevice() - Clear Device IP: " + this.Device.IP);
 
             bool result = false;
 
@@ -441,6 +459,7 @@ namespace AttendanceRRHH.BLL
 
         public void Dispose()
         {
+            MyLogger.GetInstance.Info("ZKDevice.Dispose()");
             ((IDisposable)context).Dispose();
         }
     }
