@@ -405,7 +405,8 @@ namespace AttendanceRRHH.BLL
                 }
                 else
                 {
-                    var shifttime = employee.Shift.ShiftTimes.Where(w => w.DayNumber == (int)date.DayOfWeek).FirstOrDefault();
+                    //Day of the week only gets 0 - 6 so this is a trick to return 1 - 7
+                    var shifttime = employee.Shift.ShiftTimes.Where(w => w.DayNumber == (int)(date.DayOfWeek + 6) % 7 + 1).FirstOrDefault();
 
                     if(shifttime == null)
                     {

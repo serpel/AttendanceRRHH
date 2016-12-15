@@ -49,21 +49,30 @@ namespace AttendanceRRHH.Controllers
                 int departmentId = Int32.Parse(department);
                 DateTime myDate = DateTime.Parse(date);
 
-                var timesheets = db.TimeSheets.Include(i => i.Employee)
-                    .Where(w => w.Date >= myDate && w.Date <= myDate);
+                //var companies = db.UserCompanies.Where(w => w.User.UserName == User.Identity.Name).Select(s => s.CompanyId).Distinct().ToList();
 
+               /* var timesheets = db.TimeSheets.Include(i => i.Employee)
+                    .Where(w => w.Date >= myDate && w.Date <= myDate);*/
+
+                var timesheets = from t in db.TimeSheets
+                                 join a in db.UserCompanies on t.Employee.Department.CompanyId equals a.CompanyId
+                                 where t.Date >= myDate && t.Date <= myDate
+                                    && a.User.UserName == User.Identity.Name
+                                 select t;
+                    
                 //si selecciona todos en la lista
                 if(departmentId > -1)
                 {
                     timesheets = timesheets
                                 .Where(w => w.Employee.DepartmentId == departmentId);
-                }               
+                }       
 
                 var absences = (from t in timesheets
                                 join e in db.Employees on t.EmployeeId equals e.EmployeeId
                                 join ea in db.EmployeeAbsences on e.EmployeeId equals ea.EmployeeId
                                 where myDate >= ea.StartDate && myDate <= ea.EndDate
                                 select t).Distinct();
+
 
                 if (absences.Count() > 0)
                 {
